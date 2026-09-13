@@ -18,10 +18,13 @@ const ProtectedRoute = ({ children, allowedRole }) => {
   return children;
 };
 
+import { LanguageProvider } from './contexts/LanguageContext';
+
 const App = () => {
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col bg-gray-50">
+    <LanguageProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col bg-gray-50">
         <Navbar />
         <main className="flex-grow container mx-auto px-4 py-8">
           <Routes>
@@ -53,6 +56,7 @@ const App = () => {
         </main>
       </div>
     </Router>
+    </LanguageProvider>
   );
 };
 

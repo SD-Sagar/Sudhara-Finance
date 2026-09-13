@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/axiosConfig';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const CustomerDashboard = () => {
+  const { t } = useLanguage();
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -26,7 +28,7 @@ const CustomerDashboard = () => {
   const getNextDueDate = (installments) => {
     const nextInst = installments.find(i => i.status === 'PENDING' || i.status === 'OVERDUE');
     if (nextInst) return new Date(nextInst.dueDate).toLocaleDateString();
-    return 'All Paid';
+    return t('all_paid');
   };
 
   const fetchLoans = async () => {
@@ -77,12 +79,12 @@ const CustomerDashboard = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">My Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-800">{t('my_dashboard')}</h1>
         <button 
           onClick={() => setShowLoanModal(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
         >
-          Request Loan
+          {t('request_loan')}
         </button>
       </div>
 
@@ -90,7 +92,7 @@ const CustomerDashboard = () => {
 
       {loans.length === 0 ? (
         <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500 text-lg">
-          No loan history found.
+          {t('no_loan_history')}
         </div>
       ) : (
         <div className="space-y-8">
@@ -101,8 +103,8 @@ const CustomerDashboard = () => {
                 onClick={() => toggleLoan(loan._id)}
               >
                 <div>
-                  <h3 className="text-xl font-bold text-blue-900">Loan: ₹{loan.approvedAmount}</h3>
-                  <p className="text-gray-600 font-medium">Next Due: <span className="text-red-600">{getNextDueDate(installments)}</span></p>
+                  <h3 className="text-xl font-bold text-blue-900">{t('loan')}: ₹{loan.approvedAmount}</h3>
+                  <p className="text-gray-600 font-medium">{t('next_due')}: <span className="text-red-600">{getNextDueDate(installments)}</span></p>
                 </div>
                 <div className="text-right flex items-center gap-4">
                   <div>
@@ -127,16 +129,16 @@ const CustomerDashboard = () => {
               
               {expandedLoans[loan._id] && (
               <div className="p-6 border-t border-gray-200">
-                <h4 className="font-semibold text-gray-700 mb-4">Installment Schedule</h4>
+                <h4 className="font-semibold text-gray-700 mb-4">{t('installment_schedule')}</h4>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Due Date</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fine</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('due_date')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('amount')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('fine')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('status')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('action')}</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -160,11 +162,11 @@ const CustomerDashboard = () => {
                                 onClick={() => handlePaymentContact(inst._id)}
                                 className="text-blue-600 hover:text-blue-900 font-medium"
                               >
-                                Pay / Contact Admin
+                                {t('pay_contact_admin')}
                               </button>
                             )}
                             {inst.status === 'PAID' && (
-                              <span className="text-green-600 font-medium">Paid on {new Date(inst.paymentDate).toLocaleDateString()}</span>
+                              <span className="text-green-600 font-medium">{t('paid_on')} {new Date(inst.paymentDate).toLocaleDateString()}</span>
                             )}
                           </td>
                         </tr>
@@ -183,7 +185,7 @@ const CustomerDashboard = () => {
       {showLoanModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <h3 className="text-xl font-bold mb-4">Request a New Loan</h3>
+            <h3 className="text-xl font-bold mb-4">{t('request_new_loan')}</h3>
             
             {requestStatus === 'success' ? (
               <div className="text-center">
@@ -205,7 +207,7 @@ const CustomerDashboard = () => {
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Amount Required (₹)</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('requested_amount')} (₹)</label>
                     <input 
                       type="number" 
                       required 
@@ -216,7 +218,7 @@ const CustomerDashboard = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Reason</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('reason_for_loan')}</label>
                     <textarea 
                       required 
                       className="mt-1 w-full border rounded px-3 py-2"
@@ -226,7 +228,7 @@ const CustomerDashboard = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Duration Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('duration_type')}</label>
                     <div className="flex gap-4 mb-2">
                       <label className="flex items-center gap-2">
                         <input 
@@ -236,7 +238,7 @@ const CustomerDashboard = () => {
                           checked={loanRequestData.loanType === 'months'}
                           onChange={() => setLoanRequestData({...loanRequestData, loanType: 'months', durationValue: '6'})}
                         /> 
-                        Months
+                        {t('months')}
                       </label>
                       <label className="flex items-center gap-2">
                         <input 
@@ -246,7 +248,7 @@ const CustomerDashboard = () => {
                           checked={loanRequestData.loanType === 'weeks'}
                           onChange={() => setLoanRequestData({...loanRequestData, loanType: 'weeks', durationValue: '24'})}
                         /> 
-                        Weeks
+                        {t('weeks')}
                       </label>
                     </div>
 
@@ -260,7 +262,7 @@ const CustomerDashboard = () => {
                               value={val}
                               checked={loanRequestData.durationValue === val}
                               onChange={e => setLoanRequestData({...loanRequestData, durationValue: e.target.value})}
-                            /> {val} Months
+                            /> {val} {t('months')}
                           </label>
                         ))
                       ) : (
@@ -272,7 +274,7 @@ const CustomerDashboard = () => {
                               value={val}
                               checked={loanRequestData.durationValue === val}
                               onChange={e => setLoanRequestData({...loanRequestData, durationValue: e.target.value})}
-                            /> {val} Weeks
+                            /> {val} {t('weeks')}
                           </label>
                         ))
                       )}
@@ -286,14 +288,14 @@ const CustomerDashboard = () => {
                     onClick={() => setShowLoanModal(false)}
                     className="px-4 py-2 text-gray-600 hover:text-gray-900"
                   >
-                    Cancel
+                    {t('cancel')}
                   </button>
                   <button 
                     type="submit" 
                     disabled={requestStatus === 'submitting'}
                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-400"
                   >
-                    Submit Request
+                    {t('submit_request')}
                   </button>
                 </div>
               </form>

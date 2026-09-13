@@ -5,12 +5,13 @@ Sudhara Finance is a comprehensive, full-stack web application designed for micr
 This project is built using a **Monorepo architecture**, separating the frontend (React + Vite) and the backend (Node.js + Express + MongoDB).
 
 ## Features
-- **Admin Dashboard**: Approve registrations, approve loan requests and set up tailored installment schedules, deactivate/activate customers, and search customers.
+- **Admin Dashboard**: Approve registrations, approve loan requests and set up tailored installment schedules, deactivate/activate customers, search customers, and generate PDF reports of loan histories.
 - **Customer Dashboard**: Request loans, check installment due dates, track late fees/fines, and view the entire payment history in an expandable layout.
 - **Automated Installments**: The backend algorithm breaks down loan durations into weekly or monthly installments.
 - **Notifications**: Automated email notifications for user approvals, loan approvals, and registration requests.
 - **File Uploads**: Cloudinary integration for Aadhaar, PAN, Voter ID, and passport photo uploads.
 - **Secure Authentication**: JWT with HTTP-only cookies and bcrypt for password hashing. Role-based access control (Admin & Customer).
+- **Export Capabilities**: Generate and download detailed PDF loan histories using jsPDF and jspdf-autotable.
 
 ## Tech Stack
 - **Frontend**: React, Vite, Tailwind CSS (v4), Redux Toolkit, React Router DOM, Axios
@@ -43,7 +44,7 @@ npm install
 
 Create a `.env` file in the `backend` directory (e.g. `backend/.env`) and add the following variables:
 ```env
-PORT=5000
+PORT=5001
 MONGO_URI=mongodb://127.0.0.1:27017/sudhara
 JWT_SECRET=your_super_secret_jwt_key
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
@@ -84,7 +85,7 @@ You need two separate terminal windows/tabs to run the stack.
 cd backend
 npm run dev
 ```
-*The backend server should start on `http://localhost:5000` and connect to MongoDB.*
+*The backend server should start on `http://localhost:5001` and connect to MongoDB.*
 
 **Terminal 2 (Frontend):**
 ```bash

@@ -3,8 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '../../features/auth/authSlice';
 import api from '../../utils/axiosConfig';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const CustomerLogin = () => {
+  const { t } = useLanguage();
   const [customerId, setCustomerId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -31,7 +33,7 @@ const CustomerLogin = () => {
 
   return (
     <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-lg shadow-md border border-gray-100">
-      <h2 className="text-2xl font-bold text-center text-blue-900 mb-6">Customer Login</h2>
+      <h2 className="text-2xl font-bold text-center text-blue-900 mb-6">{t('customer_login')}</h2>
       
       {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
       
@@ -48,7 +50,7 @@ const CustomerLogin = () => {
           />
         </div>
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Password</label>
+          <label className="block text-gray-700 font-medium mb-1">{t('password')}</label>
           <input 
             type="password" 
             value={password}
@@ -62,12 +64,12 @@ const CustomerLogin = () => {
           disabled={loading}
           className="w-full bg-blue-600 text-white font-medium py-2 rounded hover:bg-blue-700 transition disabled:bg-blue-400"
         >
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? t('submitting') : t('login')}
         </button>
       </form>
       
       <div className="mt-6 text-center text-gray-600">
-        Don't have an account? <Link to="/customer/register" className="text-blue-600 hover:underline">Register here</Link>
+        {t('dont_have_account')} <Link to="/customer/register" className="text-blue-600 hover:underline">{t('register_here')}</Link>
       </div>
     </div>
   );

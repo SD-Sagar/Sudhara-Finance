@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/axiosConfig';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const CustomerRegister = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     bankAccountNumber: '',
@@ -80,7 +82,7 @@ const CustomerRegister = () => {
 
   return (
     <div className="max-w-2xl mx-auto mt-8 bg-white p-8 rounded-lg shadow-md border border-gray-100">
-      <h2 className="text-2xl font-bold text-center text-blue-900 mb-6">Customer Registration</h2>
+      <h2 className="text-2xl font-bold text-center text-blue-900 mb-6">{t('register_new_customer')}</h2>
       
       {status.message && (
         <div className={`p-4 rounded mb-6 text-center font-medium ${status.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -92,62 +94,62 @@ const CustomerRegister = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Full Name</label>
+              <label className="block text-sm font-medium text-gray-700">{t('full_name')}</label>
               <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-gray-700">{t('email_address')}</label>
               <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">WhatsApp Number</label>
+              <label className="block text-sm font-medium text-gray-700">{t('whatsapp_number')}</label>
               <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Bank Account Number</label>
+              <label className="block text-sm font-medium text-gray-700">{t('bank_account_number')}</label>
               <input type="text" name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Aadhaar Number</label>
+              <label className="block text-sm font-medium text-gray-700">{t('aadhaar_number')}</label>
               <input type="text" name="aadhaar" value={formData.aadhaar} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">PAN Number</label>
+              <label className="block text-sm font-medium text-gray-700">{t('pan_number')}</label>
               <input type="text" name="pan" value={formData.pan} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Voter ID</label>
+              <label className="block text-sm font-medium text-gray-700">{t('voter_id')}</label>
               <input type="text" name="voterId" value={formData.voterId} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Marital Status</label>
+              <label className="block text-sm font-medium text-gray-700">{t('marital_status')}</label>
               <select name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} className="mt-1 w-full border rounded px-3 py-2">
-                <option value="Unmarried">Unmarried</option>
-                <option value="Married">Married</option>
+                <option value="Unmarried">{t('unmarried')}</option>
+                <option value="Married">{t('married')}</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Permanent Address</label>
+            <label className="block text-sm font-medium text-gray-700">{t('permanent_address')}</label>
             <textarea name="permanentAddress" value={formData.permanentAddress} onChange={handleInputChange} required rows="3" className="mt-1 w-full border rounded px-3 py-2"></textarea>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4 mt-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Self Photograph (Max 150KB)*</label>
+              <label className="block text-sm font-medium text-gray-700">{t('passport_photo')} (Max 150KB)*</label>
               <input type="file" name="photo" onChange={handleFileChange} accept="image/*" required className="mt-1 w-full text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Aadhaar Document (Max 150KB)</label>
+              <label className="block text-sm font-medium text-gray-700">{t('aadhaar_document')} (Max 150KB)</label>
               <input type="file" name="aadhaarDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="mt-1 w-full text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">PAN Document (Max 150KB)</label>
+              <label className="block text-sm font-medium text-gray-700">{t('pan_document')} (Max 150KB)</label>
               <input type="file" name="panDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="mt-1 w-full text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Voter ID Document (Max 150KB)</label>
+              <label className="block text-sm font-medium text-gray-700">{t('voter_document')} (Max 150KB)</label>
               <input type="file" name="voterIdDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="mt-1 w-full text-sm" />
             </div>
           </div>
@@ -157,7 +159,7 @@ const CustomerRegister = () => {
             disabled={loading}
             className="w-full mt-6 bg-blue-600 text-white font-medium py-3 rounded hover:bg-blue-700 transition disabled:bg-blue-400"
           >
-            {loading ? 'Submitting...' : 'Submit Registration Request'}
+            {loading ? t('submitting') : t('register')}
           </button>
         </form>
       ) : null}
