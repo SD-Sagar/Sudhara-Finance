@@ -1,9 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const LandingPage = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth);
+
+  React.useEffect(() => {
+    if (userInfo) {
+      if (userInfo.role === 'ADMIN') navigate('/admin/dashboard');
+      else if (userInfo.role === 'CUSTOMER') navigate('/customer/dashboard');
+    }
+  }, [userInfo, navigate]);
 
   return (
     <div className="flex flex-col items-center justify-start min-h-[calc(100vh-80px)] w-[100vw] relative left-1/2 -translate-x-1/2 pb-12 overflow-x-hidden">
@@ -40,8 +50,8 @@ const LandingPage = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800">{t('customer_portal')}</h2>
-          <p className="text-gray-500 mt-3 text-center text-lg">{t('customer_portal_desc')}</p>
+          <h2 className="text-3xl font-bold text-[#7b481c]">{t('customer_portal')}</h2>
+          <p className="text-[#d79e27] mt-3 text-center text-lg">{t('customer_portal_desc')}</p>
         </Link>
         
         <Link 
@@ -53,8 +63,8 @@ const LandingPage = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
-          <h2 className="text-3xl font-bold text-gray-800">{t('admin_portal')}</h2>
-          <p className="text-gray-500 mt-3 text-center text-lg">{t('admin_portal_desc')}</p>
+          <h2 className="text-3xl font-bold text-[#7b481c]">{t('admin_portal')}</h2>
+          <p className="text-[#d79e27] mt-3 text-center text-lg">{t('admin_portal_desc')}</p>
         </Link>
       </div>
 

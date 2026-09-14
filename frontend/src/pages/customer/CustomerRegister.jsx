@@ -82,7 +82,7 @@ const CustomerRegister = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-8 bg-white p-8 rounded-lg shadow-md border border-gray-100">
+    <div className="max-w-2xl mx-auto mt-8 bg-[#fbf8eb] p-8 rounded-xl border border-[#bc7b1f] shadow-md border border-gray-100">
       <h2 className="text-2xl font-bold text-center text-[#673c1c] mb-6">{t('register_new_customer')}</h2>
       
       {status.message && (
@@ -95,40 +95,40 @@ const CustomerRegister = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t('full_name')}</label>
-              <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('full_name')}</label>
+              <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t('email_address')}</label>
-              <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('email_address')}</label>
+              <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t('whatsapp_number')}</label>
-              <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('whatsapp_number')}</label>
+              <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Mobile Number</label>
-              <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('mobile_number')}</label>
+              <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t('bank_account_number')}</label>
-              <input type="text" name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('bank_account_number')}</label>
+              <input type="text" name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t('aadhaar_number')}</label>
-              <input type="text" name="aadhaar" value={formData.aadhaar} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('aadhaar_number')}</label>
+              <input type="text" name="aadhaar" value={formData.aadhaar} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t('pan_number')}</label>
-              <input type="text" name="pan" value={formData.pan} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('pan_number')}</label>
+              <input type="text" name="pan" value={formData.pan} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t('voter_id')}</label>
-              <input type="text" name="voterId" value={formData.voterId} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('voter_id')}</label>
+              <input type="text" name="voterId" value={formData.voterId} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t('marital_status')}</label>
-              <select name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} className="mt-1 w-full border rounded px-3 py-2">
+              <label className="block text-sm font-medium text-[#965a1a]">{t('marital_status')}</label>
+              <select name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]">
                 <option value="Unmarried">{t('unmarried')}</option>
                 <option value="Married">{t('married')}</option>
               </select>
@@ -136,16 +136,16 @@ const CustomerRegister = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">{t('permanent_address')}</label>
-            <textarea name="permanentAddress" value={formData.permanentAddress} onChange={handleInputChange} required rows="3" className="mt-1 w-full border rounded px-3 py-2"></textarea>
+            <label className="block text-sm font-medium text-[#965a1a]">{t('permanent_address')}</label>
+            <textarea name="permanentAddress" value={formData.permanentAddress} onChange={handleInputChange} required rows="3" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]"></textarea>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6 mt-6">
             
-            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+            <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
               <label className="cursor-pointer block">
-                <span className="block text-sm font-bold text-gray-700 mb-1">{t('passport_photo')}*</span>
-                <span className="block text-xs text-gray-500 mb-2">JPG, PNG, PDF (Max 150KB)</span>
+                <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('passport_photo')}*</span>
+                <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
@@ -154,10 +154,10 @@ const CustomerRegister = () => {
               </label>
             </div>
 
-            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+            <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
               <label className="cursor-pointer block">
-                <span className="block text-sm font-bold text-gray-700 mb-1">{t('aadhaar_document')}</span>
-                <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('aadhaar_document')}</span>
+                <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
@@ -166,10 +166,10 @@ const CustomerRegister = () => {
               </label>
             </div>
 
-            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+            <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
               <label className="cursor-pointer block">
-                <span className="block text-sm font-bold text-gray-700 mb-1">{t('pan_document')}</span>
-                <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('pan_document')}</span>
+                <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
@@ -178,10 +178,10 @@ const CustomerRegister = () => {
               </label>
             </div>
 
-            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+            <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
               <label className="cursor-pointer block">
-                <span className="block text-sm font-bold text-gray-700 mb-1">{t('voter_document')}</span>
-                <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('voter_document')}</span>
+                <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
@@ -195,14 +195,14 @@ const CustomerRegister = () => {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full mt-6 bg-[#bc7b1f] text-white font-medium py-3 rounded hover:bg-[#965a1a] transition disabled:bg-blue-400"
+            className="w-full mt-6 bg-[#bc7b1f] text-white font-medium py-3 rounded hover:bg-[#965a1a] transition hover:-translate-y-1 shadow-md hover:shadow-lg disabled:bg-blue-400"
           >
             {loading ? t('submitting') : t('register')}
           </button>
         </form>
       ) : null}
 
-      <div className="mt-6 text-center text-gray-600">
+      <div className="mt-6 text-center text-[#bc7b1f]">
         <Link to="/customer/login" className="text-[#bc7b1f] hover:underline">Back to Login</Link>
       </div>
     </div>

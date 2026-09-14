@@ -102,10 +102,10 @@ const CustomerDashboard = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">{t('my_dashboard')}</h1>
+        <h1 className="text-3xl font-bold text-[#7b481c]">{t('my_dashboard')}</h1>
         <button 
           onClick={() => setShowLoanModal(true)}
-          className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-[#965a1a] transition"
+          className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-[#965a1a] transition hover:-translate-y-1 shadow-md hover:shadow-lg"
         >
           {t('request_loan')}
         </button>
@@ -115,13 +115,13 @@ const CustomerDashboard = () => {
 
       <div className="flex border-b border-gray-200 mb-6">
         <button 
-          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'active' ? 'border-[#bc7b1f] text-[#bc7b1f]' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'active' ? 'border-[#bc7b1f] text-[#bc7b1f]' : 'border-transparent text-[#d79e27] hover:text-[#965a1a]'}`}
           onClick={() => setActiveTab('active')}
         >
           Active Loans
         </button>
         <button 
-          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'pending' ? 'border-[#bc7b1f] text-[#bc7b1f]' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'pending' ? 'border-[#bc7b1f] text-[#bc7b1f]' : 'border-transparent text-[#d79e27] hover:text-[#965a1a]'}`}
           onClick={() => setActiveTab('pending')}
         >
           Pending / Approved Requests
@@ -131,7 +131,7 @@ const CustomerDashboard = () => {
       {activeTab === 'pending' && (
         <div className="mb-8">
           {loanRequests.length === 0 ? (
-            <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500 text-lg">
+            <div className="bg-[#fbf8eb] p-8 rounded-xl border border-[#bc7b1f] shadow text-center text-[#d79e27] text-lg">
               No pending or approved requests found.
             </div>
           ) : (
@@ -142,10 +142,10 @@ const CustomerDashboard = () => {
                 const canCancel = req.status === 'PENDING' && daysDiff <= 2 && !req.cancellationRequested;
 
                 return (
-                  <div key={req._id} className="bg-white rounded-lg shadow p-6 border border-[#f5eecc] flex justify-between items-center transition hover:shadow-md">
+                  <div key={req._id} className="bg-[#fbf8eb] rounded-xl shadow-lg border border-[#e1b73e] p-6 border border-[#f5eecc] flex justify-between items-center transition hover:shadow-md">
                     <div>
                       <h3 className="font-bold text-xl text-[#673c1c] mb-1">Requested: ₹{req.requestedAmount}</h3>
-                      <p className="text-gray-600 mb-1 font-medium">Duration: {req.requestedDuration} | Reason: {req.reason}</p>
+                      <p className="text-[#bc7b1f] mb-1 font-medium">Duration: {req.requestedDuration} | Reason: {req.reason}</p>
                       <p className="text-sm text-gray-400">Requested on {new Date(req.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div className="text-right">
@@ -172,7 +172,7 @@ const CustomerDashboard = () => {
       )}
 
       {activeTab === 'active' && loans.length === 0 && (
-        <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500 text-lg">
+        <div className="bg-[#fbf8eb] p-8 rounded-xl border border-[#bc7b1f] shadow text-center text-[#d79e27] text-lg">
           {t('no_loan_history')}
         </div>
       )}
@@ -180,23 +180,23 @@ const CustomerDashboard = () => {
       {activeTab === 'active' && loans.length > 0 && (
         <div className="space-y-8">
           {loans.map(({ loan, installments }) => (
-            <div key={loan._id} className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+            <div key={loan._id} className="bg-[#fbf8eb] rounded-xl shadow-lg border border-[#e1b73e] overflow-hidden border border-gray-200">
               <div 
                 className="p-6 bg-[#fbf8eb] hover:bg-[#f5eecc] cursor-pointer transition flex flex-wrap justify-between items-center gap-4"
                 onClick={() => toggleLoan(loan._id)}
               >
                 <div>
                   <h3 className="text-xl font-bold text-[#673c1c]">{t('loan')}: ₹{loan.approvedAmount}</h3>
-                  <p className="text-gray-600 font-medium">{t('next_due')}: <span className="text-red-600">{getNextDueDate(installments)}</span></p>
+                  <p className="text-[#bc7b1f] font-medium">{t('next_due')}: <span className="text-red-600">{getNextDueDate(installments)}</span></p>
                 </div>
                 <div className="text-right flex items-center gap-4">
                   <div>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      loan.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-800'
+                      loan.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-[#efdf9e] text-[#7b481c]'
                     }`}>
                       {loan.status}
                     </span>
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-sm text-[#d79e27] mt-2">
                       {loan.completedInstallments} / {loan.totalInstallments} Paid
                     </p>
                   </div>
@@ -212,23 +212,23 @@ const CustomerDashboard = () => {
               
               {expandedLoans[loan._id] && (
               <div className="p-6 border-t border-gray-200">
-                <h4 className="font-semibold text-gray-700 mb-4">{t('installment_schedule')}</h4>
+                <h4 className="font-semibold text-[#965a1a] mb-4">{t('installment_schedule')}</h4>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-[#fbf8eb]">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('due_date')}</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('amount')}</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('fine')}</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('status')}</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('action')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-[#d79e27] uppercase">{t('due_date')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-[#d79e27] uppercase">{t('amount')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-[#d79e27] uppercase">{t('fine')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-[#d79e27] uppercase">{t('status')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-[#d79e27] uppercase">{t('action')}</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {installments.map(inst => (
                         <tr key={inst._id}>
-                          <td className="px-4 py-3 text-sm text-gray-900">{new Date(inst.dueDate).toLocaleDateString()}</td>
-                          <td className="px-4 py-3 text-sm text-gray-900">₹{inst.amount}</td>
+                          <td className="px-4 py-3 text-sm text-[#673c1c]">{new Date(inst.dueDate).toLocaleDateString()}</td>
+                          <td className="px-4 py-3 text-sm text-[#673c1c]">₹{inst.amount}</td>
                           <td className="px-4 py-3 text-sm text-red-600">{inst.fine > 0 ? `₹${inst.fine}` : '-'}</td>
                           <td className="px-4 py-3 text-sm">
                             <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -267,7 +267,7 @@ const CustomerDashboard = () => {
       {/* Loan Request Modal */}
       {showLoanModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+          <div className="bg-[#fbf8eb] rounded-xl shadow-lg border border-[#e1b73e]-xl max-w-md w-full p-6">
             <h3 className="text-xl font-bold mb-4">{t('request_new_loan')}</h3>
             
             {requestStatus === 'success' ? (
@@ -290,28 +290,28 @@ const CustomerDashboard = () => {
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">{t('requested_amount')} (₹)</label>
+                    <label className="block text-sm font-medium text-[#965a1a]">{t('requested_amount')} (₹)</label>
                     <input 
                       type="number" 
                       required 
                       min="1000"
-                      className="mt-1 w-full border rounded px-3 py-2"
+                      className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]"
                       value={loanRequestData.requestedAmount}
                       onChange={e => setLoanRequestData({...loanRequestData, requestedAmount: e.target.value})}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">{t('reason_for_loan')}</label>
+                    <label className="block text-sm font-medium text-[#965a1a]">{t('reason_for_loan')}</label>
                     <textarea 
                       required 
-                      className="mt-1 w-full border rounded px-3 py-2"
+                      className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]"
                       value={loanRequestData.reason}
                       onChange={e => setLoanRequestData({...loanRequestData, reason: e.target.value})}
                     ></textarea>
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('duration_type')}</label>
+                    <label className="block text-sm font-medium text-[#965a1a] mb-2">{t('duration_type')}</label>
                     <div className="flex gap-4 mb-2">
                       <label className="flex items-center gap-2">
                         <input 
@@ -369,7 +369,7 @@ const CustomerDashboard = () => {
                   <button 
                     type="button" 
                     onClick={() => setShowLoanModal(false)}
-                    className="px-4 py-2 text-gray-600 hover:text-gray-900"
+                    className="px-4 py-2 text-[#bc7b1f] hover:text-[#673c1c]"
                   >
                     {t('cancel')}
                   </button>

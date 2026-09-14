@@ -25,6 +25,7 @@ export const translations = {
     
     "full_name": "Full Name",
     "whatsapp_number": "WhatsApp Number",
+    "mobile_number": "Mobile Number",
     "bank_account_number": "Bank Account Number",
     "aadhaar_number": "Aadhaar Number",
     "pan_number": "PAN Number",
@@ -133,6 +134,7 @@ export const translations = {
 
     "full_name": "পুরো নাম",
     "whatsapp_number": "হোয়াটসঅ্যাপ নম্বর",
+    "mobile_number": "মোবাইল নম্বর",
     "bank_account_number": "ব্যাঙ্ক অ্যাকাউন্ট নম্বর",
     "aadhaar_number": "আধার নম্বর",
     "pan_number": "প্যান নম্বর",

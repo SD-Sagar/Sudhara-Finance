@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCredentials } from '../../features/auth/authSlice';
 import api from '../../utils/axiosConfig';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -14,6 +14,14 @@ const AdminLogin = () => {
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth);
+
+  React.useEffect(() => {
+    if (userInfo) {
+      if (userInfo.role === 'ADMIN') navigate('/admin/dashboard');
+      else if (userInfo.role === 'CUSTOMER') navigate('/customer/dashboard');
+    }
+  }, [userInfo, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,36 +40,36 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-lg shadow-md border border-gray-100 border-t-4 border-t-[#bc7b1f]">
+    <div className="max-w-md mx-auto mt-12 bg-[#fbf8eb] p-8 rounded-xl border border-[#bc7b1f] shadow-md border border-gray-100 border-t-4 border-t-[#bc7b1f]">
       <h2 className="text-2xl font-bold text-center text-emerald-900 mb-6">{t('admin_login')}</h2>
       
       {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-gray-700 font-medium mb-1">{t('email_address')}</label>
+          <label className="block text-[#965a1a] font-medium mb-1">{t('email_address')}</label>
           <input 
             type="email" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#d79e27]"
+            className="w-full border border-[#d79e27] rounded px-3 py-2 focus:outline-none focus:border-[#d79e27]"
             required 
           />
         </div>
         <div>
-          <label className="block text-gray-700 font-medium mb-1">{t('password')}</label>
+          <label className="block text-[#965a1a] font-medium mb-1">{t('password')}</label>
           <input 
             type="password" 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#d79e27]"
+            className="w-full border border-[#d79e27] rounded px-3 py-2 focus:outline-none focus:border-[#d79e27]"
             required 
           />
         </div>
         <button 
           type="submit" 
           disabled={loading}
-          className="w-full bg-emerald-600 text-white font-medium py-2 rounded hover:bg-emerald-700 transition disabled:bg-emerald-400"
+          className="w-full bg-emerald-600 text-white font-medium py-2 rounded hover:bg-emerald-700 transition hover:-translate-y-1 shadow-md hover:shadow-lg disabled:bg-emerald-400"
         >
           {loading ? t('submitting') : t('login')}
         </button>

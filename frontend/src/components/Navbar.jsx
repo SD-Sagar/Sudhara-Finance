@@ -23,6 +23,13 @@ const Navbar = () => {
 
   return (
     <nav className="bg-[#673c1c] text-white shadow-2xl border-b-4 border-[#bc7b1f]" style={{ animation: 'slideDown 0.8s ease-out forwards' }}>
+      <style jsx="true">{`
+        @keyframes shimmerText {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
       <div className="container mx-auto px-2 py-3 md:px-4 md:py-4 flex flex-wrap justify-between items-center gap-2">
         
         {/* Logo and Title */}
@@ -32,14 +39,14 @@ const Navbar = () => {
             {/* Desktop Title */}
             <span 
               className="text-lg md:text-xl lg:text-2xl font-extrabold tracking-wider drop-shadow-md hidden sm:block"
-              style={{ backgroundImage: 'linear-gradient(to right, #f5eecc, #e1b73e, #f5eecc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+              style={{ backgroundImage: 'linear-gradient(to right, #f5eecc, #e1b73e, #f5eecc, #e1b73e)', backgroundSize: '300% 100%', animation: 'shimmerText 5s ease-in-out infinite', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
             >
               Shudhara Women Development Organization
             </span>
             {/* Mobile Title */}
             <span 
               className="text-lg font-extrabold tracking-widest drop-shadow-md sm:hidden"
-              style={{ backgroundImage: 'linear-gradient(to right, #f5eecc, #e1b73e)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+              style={{ backgroundImage: 'linear-gradient(to right, #f5eecc, #e1b73e, #f5eecc, #e1b73e)', backgroundSize: '300% 100%', animation: 'shimmerText 5s ease-in-out infinite', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
             >
               SWDO
             </span>

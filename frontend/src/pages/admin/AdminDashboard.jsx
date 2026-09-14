@@ -362,7 +362,7 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">{t('admin_dashboard')}</h1>
+      <h1 className="text-3xl font-bold text-[#7b481c] mb-8">{t('admin_dashboard')}</h1>
 
       {/* Tabs */}
       <div className="flex gap-4 border-b border-gray-200 mb-6 overflow-x-auto">
@@ -373,7 +373,7 @@ const AdminDashboard = () => {
             className={`pb-2 px-4 font-medium capitalize whitespace-nowrap ${
               (activeTab === tab || (activeTab === 'add-customer' && tab === 'add_customer')) 
                 ? 'text-[#bc7b1f] border-b-2 border-[#bc7b1f]' 
-                : 'text-gray-500 hover:text-gray-700'
+                : 'text-[#d79e27] hover:text-[#965a1a]'
             }`}
           >
             {t(tab)}
@@ -387,28 +387,28 @@ const AdminDashboard = () => {
       {/* REGISTRATIONS TAB */}
       {activeTab === 'registrations' && (
         <div className="space-y-6">
-          {registrations.length === 0 && <p className="text-gray-500 text-center py-8">{t('no_pending_registrations')}</p>}
+          {registrations.length === 0 && <p className="text-[#d79e27] text-center py-8">{t('no_pending_registrations')}</p>}
           {registrations.map(req => (
             <div key={req._id} className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="flex items-center gap-6">
                   <img src={req.photoUrl || 'https://via.placeholder.com/150'} alt="Applicant" className="w-24 h-24 rounded-full object-cover border-4 border-[#fbf8eb]" />
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-800">{req.name}</h3>
-                    <p className="text-gray-600 mt-1"><strong className="text-gray-700">Email:</strong> {req.email} | <strong className="text-gray-700">WhatsApp:</strong> {req.whatsappNumber}</p>
-                    <p className="text-gray-600"><strong className="text-gray-700">Mobile:</strong> {req.mobileNumber} | <strong className="text-gray-700">Address:</strong> {req.permanentAddress}</p>
-                    <p className="text-gray-600 mt-2"><strong className="text-gray-700">Aadhaar:</strong> {req.aadhaar} | <strong className="text-gray-700">PAN:</strong> {req.pan}</p>
+                    <h3 className="text-2xl font-bold text-[#7b481c]">{req.name}</h3>
+                    <p className="text-[#bc7b1f] mt-1"><strong className="text-[#965a1a]">Email:</strong> {req.email} | <strong className="text-[#965a1a]">WhatsApp:</strong> {req.whatsappNumber}</p>
+                    <p className="text-[#bc7b1f]"><strong className="text-[#965a1a]">Mobile:</strong> {req.mobileNumber} | <strong className="text-[#965a1a]">Address:</strong> {req.permanentAddress}</p>
+                    <p className="text-[#bc7b1f] mt-2"><strong className="text-[#965a1a]">Aadhaar:</strong> {req.aadhaar} | <strong className="text-[#965a1a]">PAN:</strong> {req.pan}</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 min-w-[120px]">
-                  <button onClick={() => handleApproveRegistration(req._id)} className="bg-[#bc7b1f] text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition w-full shadow-sm">{t('approve')}</button>
+                  <button onClick={() => handleApproveRegistration(req._id)} className="bg-[#bc7b1f] text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition hover:-translate-y-1 shadow-md hover:shadow-lg w-full shadow-sm">{t('approve')}</button>
                   <button onClick={() => handleRejectRegistration(req._id)} className="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition w-full">{t('reject')}</button>
                 </div>
               </div>
 
               {/* Document Links */}
               <div className="mt-6 border-t border-gray-100 pt-4">
-                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Uploaded Documents</h4>
+                <h4 className="text-sm font-bold text-[#d79e27] uppercase tracking-wider mb-3">Uploaded Documents</h4>
                 <div className="flex flex-wrap gap-3">
                   {req.photoUrl && (
                     <a href={req.photoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#f5eecc] transition">
@@ -444,19 +444,19 @@ const AdminDashboard = () => {
       {/* LOANS TAB */}
       {activeTab === 'loans' && (
         <div className="space-y-4">
-          {loanRequests.length === 0 && <p className="text-gray-500">{t('no_pending_loans')}</p>}
+          {loanRequests.length === 0 && <p className="text-[#d79e27]">{t('no_pending_loans')}</p>}
           {loanRequests.map(req => (
             <div key={req._id} className="bg-white p-6 rounded shadow border">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-lg font-bold text-gray-800">
+                  <h3 className="text-lg font-bold text-[#7b481c]">
                     {t('customer')}: {req.customer?.name} ({req.customer?.customerId})
                     {req.cancellationRequested && (
                       <span className="ml-3 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Cancellation Requested</span>
                     )}
                   </h3>
-                  <p className="text-gray-600">{t('requested')}: ₹{req.requestedAmount} for {req.requestedDuration}</p>
-                  <p className="text-gray-600">{t('reason')}: {req.reason}</p>
+                  <p className="text-[#bc7b1f]">{t('requested')}: ₹{req.requestedAmount} for {req.requestedDuration}</p>
+                  <p className="text-[#bc7b1f]">{t('reason')}: {req.reason}</p>
                   <p className="text-sm text-gray-400">{t('date')}: {new Date(req.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -487,7 +487,7 @@ const AdminDashboard = () => {
                       </button>
                       <button 
                         onClick={() => handleResolveCancellation(req._id, 'reject')}
-                        className="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600"
+                        className="bg-[#fbf8eb]0 text-white px-3 py-1 rounded text-sm hover:bg-gray-600"
                       >
                         Reject Cancel
                       </button>
@@ -509,10 +509,10 @@ const AdminDashboard = () => {
               placeholder={t('search_customer')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full md:w-1/2 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-[#fbf8eb]0"
+              className="w-full md:w-1/2 border border-[#d79e27] rounded px-4 py-2 focus:outline-none focus:border-[#fbf8eb]0"
             />
           </div>
-          {filteredCustomers.length === 0 && <p className="text-gray-500">{t('no_customers_found')}</p>}
+          {filteredCustomers.length === 0 && <p className="text-[#d79e27]">{t('no_customers_found')}</p>}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCustomers.map(c => (
               <div 
@@ -525,7 +525,7 @@ const AdminDashboard = () => {
                   alt={c.name} 
                   className="w-20 h-20 rounded-full object-cover border-4 border-[#fbf8eb] mb-3"
                 />
-                <h3 className="font-bold text-lg text-gray-800">{c.name}</h3>
+                <h3 className="font-bold text-lg text-[#7b481c]">{c.name}</h3>
                 <span className="text-[#bc7b1f] font-medium mb-3">{c.customerId}</span>
                 <span className={`px-3 py-1 text-xs font-bold rounded-full ${c.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                   {c.status}
@@ -553,7 +553,7 @@ const AdminDashboard = () => {
               <div className="flex-1">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-3xl font-bold text-gray-800">{selectedCustomer.name}</h2>
+                    <h2 className="text-3xl font-bold text-[#7b481c]">{selectedCustomer.name}</h2>
                     <span className="inline-block mt-2 text-lg text-[#bc7b1f] font-medium">{selectedCustomer.customerId}</span>
                     <span className={`ml-4 inline-block px-3 py-1 text-xs font-bold rounded-full ${selectedCustomer.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                       {t('account_status')}: {selectedCustomer.status}
@@ -569,23 +569,23 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                  <div className="space-y-2 text-gray-600">
-                    <p><strong className="text-gray-800">Email:</strong> {selectedCustomer.email}</p>
-                    <p><strong className="text-gray-800">WhatsApp:</strong> {selectedCustomer.whatsappNumber}</p>
-                    <p><strong className="text-gray-800">Mobile:</strong> {selectedCustomer.mobileNumber}</p>
-                    <p><strong className="text-gray-800">Address:</strong> {selectedCustomer.permanentAddress}</p>
+                  <div className="space-y-2 text-[#bc7b1f]">
+                    <p><strong className="text-[#7b481c]">Email:</strong> {selectedCustomer.email}</p>
+                    <p><strong className="text-[#7b481c]">WhatsApp:</strong> {selectedCustomer.whatsappNumber}</p>
+                    <p><strong className="text-[#7b481c]">Mobile:</strong> {selectedCustomer.mobileNumber}</p>
+                    <p><strong className="text-[#7b481c]">Address:</strong> {selectedCustomer.permanentAddress}</p>
                   </div>
-                  <div className="space-y-2 text-gray-600">
-                    <p><strong className="text-gray-800">Aadhaar:</strong> {selectedCustomer.aadhaar}</p>
-                    <p><strong className="text-gray-800">PAN:</strong> {selectedCustomer.pan}</p>
-                    <p><strong className="text-gray-800">Bank A/C:</strong> {selectedCustomer.bankAccountNumber}</p>
-                    <p><strong className="text-gray-800">Login Password:</strong> <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 border">{selectedCustomer.plainPassword}</span></p>
+                  <div className="space-y-2 text-[#bc7b1f]">
+                    <p><strong className="text-[#7b481c]">Aadhaar:</strong> {selectedCustomer.aadhaar}</p>
+                    <p><strong className="text-[#7b481c]">PAN:</strong> {selectedCustomer.pan}</p>
+                    <p><strong className="text-[#7b481c]">Bank A/C:</strong> {selectedCustomer.bankAccountNumber}</p>
+                    <p><strong className="text-[#7b481c]">Login Password:</strong> <span className="font-mono bg-[#f5eecc] px-2 py-1 rounded text-[#7b481c] border">{selectedCustomer.plainPassword}</span></p>
                     
                     {/* CIBIL Score Display */}
-                    <div className="mt-4 p-4 rounded-xl border border-gray-100 bg-gray-50 flex flex-col justify-center items-center">
-                      <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">CIBIL Score</h4>
+                    <div className="mt-4 p-4 rounded-xl border border-gray-100 bg-[#fbf8eb] flex flex-col justify-center items-center">
+                      <h4 className="text-sm font-bold text-[#d79e27] uppercase tracking-wider mb-2">CIBIL Score</h4>
                       <div className="flex items-center gap-3">
-                        <span className="text-3xl font-bold text-gray-800">{selectedCustomer.cibilScore || 600}</span>
+                        <span className="text-3xl font-bold text-[#7b481c]">{selectedCustomer.cibilScore || 600}</span>
                         {(() => {
                           const score = selectedCustomer.cibilScore || 600;
                           if (score <= 300) return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-bold uppercase tracking-wider">Bad</span>;
@@ -619,12 +619,12 @@ const AdminDashboard = () => {
                     });
                     setIsEditingCustomer(true);
                   }} 
-                  className="bg-[#bc7b1f] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#965a1a] transition"
+                  className="bg-[#bc7b1f] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#965a1a] transition hover:-translate-y-1 shadow-md hover:shadow-lg"
                 >
                   Edit Customer Details
                 </button>
               ) : (
-                <button onClick={() => setIsEditingCustomer(false)} className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition">
+                <button onClick={() => setIsEditingCustomer(false)} className="bg-[#efdf9e] text-[#7b481c] px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition">
                   Cancel Edit
                 </button>
               )}
@@ -633,11 +633,11 @@ const AdminDashboard = () => {
             {/* EDIT CUSTOMER FORM */}
             {isEditingCustomer && (
               <form onSubmit={handleEditCustomerSubmit} className="bg-[#fbf8eb]/50 p-6 rounded-xl border border-[#f5eecc] mb-8">
-                <h4 className="text-xl font-bold text-gray-800 mb-4">Edit Information</h4>
+                <h4 className="text-xl font-bold text-[#7b481c] mb-4">Edit Information</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <input type="text" placeholder="Full Name" value={editCustomerData.name} onChange={e => setEditCustomerData({...editCustomerData, name: e.target.value})} className="p-3 border rounded-lg" required />
                   <input type="email" placeholder="Email" value={editCustomerData.email} onChange={e => setEditCustomerData({...editCustomerData, email: e.target.value})} className="p-3 border rounded-lg" required />
-                  <input type="text" placeholder="Mobile Number" value={editCustomerData.mobileNumber} onChange={e => setEditCustomerData({...editCustomerData, mobileNumber: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="text" placeholder={t('mobile_number') || "Mobile Number"} value={editCustomerData.mobileNumber} onChange={e => setEditCustomerData({...editCustomerData, mobileNumber: e.target.value})} className="p-3 border rounded-lg" required />
                   <input type="text" placeholder="WhatsApp Number" value={editCustomerData.whatsappNumber} onChange={e => setEditCustomerData({...editCustomerData, whatsappNumber: e.target.value})} className="p-3 border rounded-lg" required />
                   <input type="text" placeholder="Bank Account Number" value={editCustomerData.bankAccountNumber} onChange={e => setEditCustomerData({...editCustomerData, bankAccountNumber: e.target.value})} className="p-3 border rounded-lg" required />
                   <input type="text" placeholder="Aadhaar Number" value={editCustomerData.aadhaar} onChange={e => setEditCustomerData({...editCustomerData, aadhaar: e.target.value})} className="p-3 border rounded-lg" required />
@@ -650,15 +650,15 @@ const AdminDashboard = () => {
                   <textarea placeholder="Permanent Address" value={editCustomerData.permanentAddress} onChange={e => setEditCustomerData({...editCustomerData, permanentAddress: e.target.value})} className="p-3 border rounded-lg" rows="1" required></textarea>
                 </div>
                 
-                <h4 className="text-lg font-bold text-gray-800 mt-6 mb-4">Update Documents (Optional - leave blank to keep existing)</h4>
+                <h4 className="text-lg font-bold text-[#7b481c] mt-6 mb-4">Update Documents (Optional - leave blank to keep existing)</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex flex-col"><label className="text-sm font-medium text-gray-700">Passport Photo</label><input type="file" name="photo" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
-                  <div className="flex flex-col"><label className="text-sm font-medium text-gray-700">Aadhaar Doc</label><input type="file" name="aadhaarDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
-                  <div className="flex flex-col"><label className="text-sm font-medium text-gray-700">PAN Doc</label><input type="file" name="panDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
-                  <div className="flex flex-col"><label className="text-sm font-medium text-gray-700">Voter Doc</label><input type="file" name="voterIdDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
+                  <div className="flex flex-col"><label className="text-sm font-medium text-[#965a1a]">Passport Photo</label><input type="file" name="photo" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
+                  <div className="flex flex-col"><label className="text-sm font-medium text-[#965a1a]">Aadhaar Doc</label><input type="file" name="aadhaarDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
+                  <div className="flex flex-col"><label className="text-sm font-medium text-[#965a1a]">PAN Doc</label><input type="file" name="panDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
+                  <div className="flex flex-col"><label className="text-sm font-medium text-[#965a1a]">Voter Doc</label><input type="file" name="voterIdDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
                 </div>
                 
-                <button type="submit" disabled={loading} className="mt-6 w-full bg-[#bc7b1f] text-white font-bold py-3 rounded-lg hover:bg-emerald-700 transition">
+                <button type="submit" disabled={loading} className="mt-6 w-full bg-[#bc7b1f] text-white font-bold py-3 rounded-lg hover:bg-emerald-700 transition hover:-translate-y-1 shadow-md hover:shadow-lg">
                   {loading ? 'Saving Changes...' : 'Save Changes'}
                 </button>
               </form>
@@ -666,7 +666,7 @@ const AdminDashboard = () => {
 
             {/* Document Links */}
             <div className="mt-8 border-t border-gray-100 pt-6">
-              <h4 className="text-lg font-bold text-gray-800 mb-4">Uploaded Documents</h4>
+              <h4 className="text-lg font-bold text-[#7b481c] mb-4">Uploaded Documents</h4>
               <div className="flex flex-wrap gap-4">
                 {selectedCustomer.photoUrl && (
                   <a href={selectedCustomer.photoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-4 py-2 rounded-lg hover:bg-[#f5eecc] transition font-medium">
@@ -697,22 +697,22 @@ const AdminDashboard = () => {
           </div>
 
           <h3 className="text-xl font-bold mb-4">{t('loan_history')}</h3>
-          {selectedCustomer.loansData?.length === 0 && <p className="text-gray-500">{t('no_loan_history')}</p>}
+          {selectedCustomer.loansData?.length === 0 && <p className="text-[#d79e27]">{t('no_loan_history')}</p>}
           
           <div className="space-y-6">
             {selectedCustomer.loansData?.map(data => (
               <div key={data.loan._id} className="bg-white rounded border overflow-hidden shadow-sm">
-                <div className="bg-gray-50 p-4 border-b flex justify-between">
+                <div className="bg-[#fbf8eb] p-4 border-b flex justify-between">
                   <div>
                     <h4 className="font-bold">Loan: ₹{data.loan.approvedAmount}</h4>
-                    <p className="text-sm text-gray-600">Duration: {data.loan.duration} | Status: {data.loan.status}</p>
+                    <p className="text-sm text-[#bc7b1f]">Duration: {data.loan.duration} | Status: {data.loan.status}</p>
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
                     <p className="text-sm font-medium">{data.loan.completedInstallments} / {data.loan.totalInstallments} Paid</p>
                     <div className="flex gap-2">
                       <button 
                         onClick={() => handleDownloadLoanPDF(data, selectedCustomer)}
-                        className="text-xs bg-[#bc7b1f] text-white px-2 py-1 rounded hover:bg-[#965a1a] transition"
+                        className="text-xs bg-[#bc7b1f] text-white px-2 py-1 rounded hover:bg-[#965a1a] transition hover:-translate-y-1 shadow-md hover:shadow-lg"
                       >
                         Download PDF
                       </button>
@@ -727,13 +727,13 @@ const AdminDashboard = () => {
                 </div>
                 
                 <table className="min-w-full text-sm divide-y divide-gray-200">
-                  <thead className="bg-gray-100">
+                  <thead className="bg-[#f5eecc]">
                     <tr>
-                      <th className="px-4 py-2 text-left text-gray-600">Due Date</th>
-                      <th className="px-4 py-2 text-left text-gray-600">Amount</th>
-                      <th className="px-4 py-2 text-left text-gray-600">Fine</th>
-                      <th className="px-4 py-2 text-left text-gray-600">Status</th>
-                      <th className="px-4 py-2 text-left text-gray-600">Action</th>
+                      <th className="px-4 py-2 text-left text-[#bc7b1f]">Due Date</th>
+                      <th className="px-4 py-2 text-left text-[#bc7b1f]">Amount</th>
+                      <th className="px-4 py-2 text-left text-[#bc7b1f]">Fine</th>
+                      <th className="px-4 py-2 text-left text-[#bc7b1f]">Status</th>
+                      <th className="px-4 py-2 text-left text-[#bc7b1f]">Action</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
@@ -761,7 +761,7 @@ const AdminDashboard = () => {
                             </button>
                           )}
                           {inst.status === 'PAID' && (
-                            <span className="text-gray-500">Paid on {new Date(inst.paymentDate).toLocaleDateString()}</span>
+                            <span className="text-[#d79e27]">Paid on {new Date(inst.paymentDate).toLocaleDateString()}</span>
                           )}
                         </td>
                       </tr>
@@ -777,45 +777,45 @@ const AdminDashboard = () => {
       {/* LOAN APPROVAL MODAL */}
       {selectedLoanRequest && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
+          <div className="bg-[#fbf8eb] rounded-xl shadow-lg border border-[#e1b73e]-xl max-w-lg w-full p-6">
             <h3 className="text-xl font-bold mb-4">{t('configure_loan_schedule')}</h3>
-            <p className="mb-4 text-gray-600">
+            <p className="mb-4 text-[#bc7b1f]">
               {t('requested')}: ₹{selectedLoanRequest.requestedAmount} for {selectedLoanRequest.requestedDuration}
             </p>
             
             <form onSubmit={handleApproveLoan} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">{t('approved_amount')}</label>
-                  <input type="number" required value={loanConfig.approvedAmount} onChange={e => setLoanConfig({...loanConfig, approvedAmount: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                  <label className="block text-sm font-medium text-[#965a1a]">{t('approved_amount')}</label>
+                  <input type="number" required value={loanConfig.approvedAmount} onChange={e => setLoanConfig({...loanConfig, approvedAmount: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">{t('final_duration')}</label>
-                  <input type="text" required value={loanConfig.duration} onChange={e => handleDurationChange(e.target.value)} placeholder="e.g. 6 months" className="mt-1 w-full border rounded px-3 py-2" />
+                  <label className="block text-sm font-medium text-[#965a1a]">{t('final_duration')}</label>
+                  <input type="text" required value={loanConfig.duration} onChange={e => handleDurationChange(e.target.value)} placeholder="e.g. 6 months" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">{t('installment_amount')}</label>
-                  <input type="number" required value={loanConfig.installmentAmount} onChange={e => setLoanConfig({...loanConfig, installmentAmount: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                  <label className="block text-sm font-medium text-[#965a1a]">{t('installment_amount')}</label>
+                  <input type="number" required value={loanConfig.installmentAmount} onChange={e => setLoanConfig({...loanConfig, installmentAmount: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">{t('frequency')}</label>
-                  <select required value={loanConfig.installmentFrequency} onChange={e => handleDatesChange('installmentFrequency', e.target.value)} className="mt-1 w-full border rounded px-3 py-2">
+                  <label className="block text-sm font-medium text-[#965a1a]">{t('frequency')}</label>
+                  <select required value={loanConfig.installmentFrequency} onChange={e => handleDatesChange('installmentFrequency', e.target.value)} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]">
                     <option value="Monthly">{t('monthly')}</option>
                     <option value="Weekly">{t('weekly')}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">{t('start_date')}</label>
-                  <input type="date" required value={loanConfig.startDate} onChange={e => handleDatesChange('startDate', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
+                  <label className="block text-sm font-medium text-[#965a1a]">{t('start_date')}</label>
+                  <input type="date" required value={loanConfig.startDate} onChange={e => handleDatesChange('startDate', e.target.value)} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">{t('completion_date')}</label>
-                  <input type="date" required value={loanConfig.completionDate} onChange={e => handleDatesChange('completionDate', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
+                  <label className="block text-sm font-medium text-[#965a1a]">{t('completion_date')}</label>
+                  <input type="date" required value={loanConfig.completionDate} onChange={e => handleDatesChange('completionDate', e.target.value)} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
                 </div>
               </div>
 
               <div className="mt-6 flex justify-end gap-3">
-                <button type="button" onClick={() => setSelectedLoanRequest(null)} className="px-4 py-2 text-gray-600">{t('cancel')}</button>
+                <button type="button" onClick={() => setSelectedLoanRequest(null)} className="px-4 py-2 text-[#bc7b1f]">{t('cancel')}</button>
                 <button type="submit" className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-emerald-700">{t('generate_approve')}</button>
               </div>
             </form>
@@ -830,40 +830,40 @@ const AdminDashboard = () => {
           <form onSubmit={handleAddCustomerSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">{t('full_name')}</label>
-                <input type="text" required value={addCustomerData.name} onChange={e => setAddCustomerData({...addCustomerData, name: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('full_name')}</label>
+                <input type="text" required value={addCustomerData.name} onChange={e => setAddCustomerData({...addCustomerData, name: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">{t('email_address')}</label>
-                <input type="email" required value={addCustomerData.email} onChange={e => setAddCustomerData({...addCustomerData, email: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('email_address')}</label>
+                <input type="email" required value={addCustomerData.email} onChange={e => setAddCustomerData({...addCustomerData, email: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">{t('whatsapp_number')}</label>
-                <input type="text" required value={addCustomerData.whatsappNumber} onChange={e => setAddCustomerData({...addCustomerData, whatsappNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('whatsapp_number')}</label>
+                <input type="text" required value={addCustomerData.whatsappNumber} onChange={e => setAddCustomerData({...addCustomerData, whatsappNumber: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Mobile Number</label>
-                <input type="text" required value={addCustomerData.mobileNumber} onChange={e => setAddCustomerData({...addCustomerData, mobileNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('mobile_number') || "Mobile Number"}</label>
+                <input type="text" required value={addCustomerData.mobileNumber} onChange={e => setAddCustomerData({...addCustomerData, mobileNumber: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">{t('bank_account_number')}</label>
-                <input type="text" required value={addCustomerData.bankAccountNumber} onChange={e => setAddCustomerData({...addCustomerData, bankAccountNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('bank_account_number')}</label>
+                <input type="text" required value={addCustomerData.bankAccountNumber} onChange={e => setAddCustomerData({...addCustomerData, bankAccountNumber: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">{t('aadhaar_number')}</label>
-                <input type="text" required value={addCustomerData.aadhaar} onChange={e => setAddCustomerData({...addCustomerData, aadhaar: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('aadhaar_number')}</label>
+                <input type="text" required value={addCustomerData.aadhaar} onChange={e => setAddCustomerData({...addCustomerData, aadhaar: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">{t('pan_number')}</label>
-                <input type="text" required value={addCustomerData.pan} onChange={e => setAddCustomerData({...addCustomerData, pan: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('pan_number')}</label>
+                <input type="text" required value={addCustomerData.pan} onChange={e => setAddCustomerData({...addCustomerData, pan: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">{t('voter_id')}</label>
-                <input type="text" required value={addCustomerData.voterId} onChange={e => setAddCustomerData({...addCustomerData, voterId: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('voter_id')}</label>
+                <input type="text" required value={addCustomerData.voterId} onChange={e => setAddCustomerData({...addCustomerData, voterId: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">{t('marital_status')}</label>
-                <select required value={addCustomerData.maritalStatus} onChange={e => setAddCustomerData({...addCustomerData, maritalStatus: e.target.value})} className="mt-1 w-full border rounded px-3 py-2">
+                <label className="block text-sm font-medium text-[#965a1a]">{t('marital_status')}</label>
+                <select required value={addCustomerData.maritalStatus} onChange={e => setAddCustomerData({...addCustomerData, maritalStatus: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]">
                   <option value="Unmarried">{t('unmarried')}</option>
                   <option value="Married">{t('married')}</option>
                 </select>
@@ -871,22 +871,22 @@ const AdminDashboard = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">{t('permanent_address')}</label>
-              <textarea required value={addCustomerData.permanentAddress} onChange={e => setAddCustomerData({...addCustomerData, permanentAddress: e.target.value})} className="mt-1 w-full border rounded px-3 py-2"></textarea>
+              <label className="block text-sm font-medium text-[#965a1a]">{t('permanent_address')}</label>
+              <textarea required value={addCustomerData.permanentAddress} onChange={e => setAddCustomerData({...addCustomerData, permanentAddress: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]"></textarea>
             </div>
             
             <div className="grid grid-cols-1 gap-4 mb-4">
                <div>
-                  <label className="block text-sm font-medium text-gray-700">{t('set_initial_password')}</label>
-                  <input type="text" required value={addCustomerData.password} onChange={e => setAddCustomerData({...addCustomerData, password: e.target.value})} placeholder="e.g. password123" className="mt-1 w-full border rounded px-3 py-2" />
+                  <label className="block text-sm font-medium text-[#965a1a]">{t('set_initial_password')}</label>
+                  <input type="text" required value={addCustomerData.password} onChange={e => setAddCustomerData({...addCustomerData, password: e.target.value})} placeholder="e.g. password123" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6 mt-6">
-              <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+              <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-gray-700 mb-1">{t('passport_photo')}*</span>
-                  <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('passport_photo')}*</span>
+                  <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
@@ -895,10 +895,10 @@ const AdminDashboard = () => {
                 </label>
               </div>
 
-              <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+              <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-gray-700 mb-1">{t('aadhaar_document')}</span>
-                  <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('aadhaar_document')}</span>
+                  <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
@@ -907,10 +907,10 @@ const AdminDashboard = () => {
                 </label>
               </div>
 
-              <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+              <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-gray-700 mb-1">{t('pan_document')}</span>
-                  <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('pan_document')}</span>
+                  <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
@@ -919,10 +919,10 @@ const AdminDashboard = () => {
                 </label>
               </div>
 
-              <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+              <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-gray-700 mb-1">{t('voter_document')}</span>
-                  <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('voter_document')}</span>
+                  <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
