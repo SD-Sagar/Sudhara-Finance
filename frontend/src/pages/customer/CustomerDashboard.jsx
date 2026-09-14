@@ -5,6 +5,8 @@ import { useLanguage } from '../../contexts/LanguageContext';
 const CustomerDashboard = () => {
   const { t } = useLanguage();
   const [loans, setLoans] = useState([]);
+  const [loanRequests, setLoanRequests] = useState([]);
+  const [customerProfile, setCustomerProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showLoanModal, setShowLoanModal] = useState(false);
@@ -15,6 +17,7 @@ const CustomerDashboard = () => {
     durationValue: '6' // default
   });
   const [requestStatus, setRequestStatus] = useState('');
+  const [activeTab, setActiveTab] = useState('active'); // 'active' or 'pending'
 
   const [expandedLoans, setExpandedLoans] = useState({});
 
@@ -35,6 +38,11 @@ const CustomerDashboard = () => {
     try {
       // Get loans
       const { data } = await api.get('/api/loans/myloans');
+      
+      // Get profile
+      const profileRes = await api.get('/api/auth/profile');
+      setCustomerProfile(profileRes.data);
+
       // For each loan, fetch details (installments)
       const loansWithDetails = await Promise.all(
         data.map(async (loan) => {
@@ -43,6 +51,9 @@ const CustomerDashboard = () => {
         })
       );
       setLoans(loansWithDetails);
+      
+      const requestsRes = await api.get('/api/loans/my-requests');
+      setLoanRequests(requestsRes.data);
     } catch (err) {
       setError('Failed to fetch loans');
     } finally {
@@ -74,6 +85,18 @@ const CustomerDashboard = () => {
     alert(`Please contact the administrator and provide your Customer ID to verify and process payment for installment.`);
   };
 
+  const handleCancelRequest = async (requestId) => {
+    if (window.confirm('Are you sure you want to request cancellation for this loan?')) {
+      try {
+        await api.post(`/api/loans/request/${requestId}/cancel-request`);
+        alert('Cancellation requested successfully.');
+        fetchLoans();
+      } catch (err) {
+        alert(err.response?.data?.message || 'Error requesting cancellation');
+      }
+    }
+  };
+
   if (loading) return <div className="text-center p-8">Loading dashboard...</div>;
 
   return (
@@ -90,11 +113,71 @@ const CustomerDashboard = () => {
 
       {error && <div className="bg-red-100 text-red-700 p-4 rounded mb-6">{error}</div>}
 
-      {loans.length === 0 ? (
+      <div className="flex border-b border-gray-200 mb-6">
+        <button 
+          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'active' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          onClick={() => setActiveTab('active')}
+        >
+          Active Loans
+        </button>
+        <button 
+          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'pending' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          onClick={() => setActiveTab('pending')}
+        >
+          Pending / Approved Requests
+        </button>
+      </div>
+
+      {activeTab === 'pending' && (
+        <div className="mb-8">
+          {loanRequests.length === 0 ? (
+            <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500 text-lg">
+              No pending or approved requests found.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {loanRequests.map(req => {
+                const timeDiff = new Date().getTime() - new Date(req.createdAt).getTime();
+                const daysDiff = timeDiff / (1000 * 3600 * 24);
+                const canCancel = req.status === 'PENDING' && daysDiff <= 2 && !req.cancellationRequested;
+
+                return (
+                  <div key={req._id} className="bg-white rounded-lg shadow p-6 border border-blue-100 flex justify-between items-center transition hover:shadow-md">
+                    <div>
+                      <h3 className="font-bold text-xl text-blue-900 mb-1">Requested: ₹{req.requestedAmount}</h3>
+                      <p className="text-gray-600 mb-1 font-medium">Duration: {req.requestedDuration} | Reason: {req.reason}</p>
+                      <p className="text-sm text-gray-400">Requested on {new Date(req.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className={`inline-block px-4 py-2 rounded-full text-sm font-bold ${req.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : req.status === 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                        {req.cancellationRequested ? 'Cancellation Requested' : req.status}
+                      </span>
+                      {canCancel && (
+                        <div className="mt-3">
+                          <button 
+                            onClick={() => handleCancelRequest(req._id)}
+                            className="text-sm bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-100 transition font-medium"
+                          >
+                            Request Cancellation
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'active' && loans.length === 0 && (
         <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500 text-lg">
           {t('no_loan_history')}
         </div>
-      ) : (
+      )}
+
+      {activeTab === 'active' && loans.length > 0 && (
         <div className="space-y-8">
           {loans.map(({ loan, installments }) => (
             <div key={loan._id} className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">

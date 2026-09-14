@@ -8,6 +8,7 @@ const installmentSchema = new mongoose.Schema({
     status: { type: String, enum: ['PENDING', 'PAID', 'OVERDUE'], default: 'PENDING' },
     paymentDate: { type: Date },
     fine: { type: Number, default: 0 },
+    penaltyAppliedDays: { type: Number, default: 0 },
     paymentMethod: { type: String, enum: ['Cash', 'Online'], default: null },
     verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } // Admin who verified
 }, { timestamps: true });

@@ -20,15 +20,25 @@ const AdminDashboard = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [selectedLoanRequest, setSelectedLoanRequest] = useState(null);
   
+  // Edit Customer State
+  const [isEditingCustomer, setIsEditingCustomer] = useState(false);
+  const [editCustomerData, setEditCustomerData] = useState({});
+  const [editCustomerFiles, setEditCustomerFiles] = useState({ photo: null, aadhaarDoc: null, voterIdDoc: null, panDoc: null });
+  
   // Customer Search
   const [searchQuery, setSearchQuery] = useState('');
 
   // Add Customer State
   const [addCustomerData, setAddCustomerData] = useState({
-    name: '', bankAccountNumber: '', whatsappNumber: '', email: '',
+    name: '', bankAccountNumber: '', whatsappNumber: '', mobileNumber: '', email: '',
     aadhaar: '', voterId: '', pan: '', maritalStatus: 'Unmarried', permanentAddress: '', password: ''
   });
-  const [addCustomerPhoto, setAddCustomerPhoto] = useState(null);
+  const [addCustomerFiles, setAddCustomerFiles] = useState({
+    photo: null,
+    aadhaarDoc: null,
+    voterIdDoc: null,
+    panDoc: null
+  });
   
   // Loan Config State
   const [loanConfig, setLoanConfig] = useState({
@@ -39,6 +49,43 @@ const AdminDashboard = () => {
     startDate: new Date().toISOString().split('T')[0],
     completionDate: ''
   });
+
+  const handleDurationChange = (val) => {
+    const newConfig = { ...loanConfig, duration: val };
+    const durationStr = val.toLowerCase();
+    const match = durationStr.match(/(\d+)\s*(week|month)/);
+    if (match && newConfig.startDate) {
+      const value = parseInt(match[1]);
+      const unit = match[2];
+      const date = new Date(newConfig.startDate);
+      if (unit === 'week') {
+        date.setDate(date.getDate() + (value * 7));
+      } else if (unit === 'month') {
+        date.setMonth(date.getMonth() + value);
+      }
+      newConfig.completionDate = date.toISOString().split('T')[0];
+    }
+    setLoanConfig(newConfig);
+  };
+
+  const handleDatesChange = (field, val) => {
+    const newConfig = { ...loanConfig, [field]: val };
+    
+    if (newConfig.startDate && newConfig.completionDate) {
+      const start = new Date(newConfig.startDate);
+      const end = new Date(newConfig.completionDate);
+      if (end > start) {
+        const timeDiff = end.getTime() - start.getTime();
+        const daysDiff = timeDiff / (1000 * 3600 * 24);
+        if (newConfig.installmentFrequency === 'Monthly') {
+          newConfig.duration = `${Math.ceil(daysDiff / 30)} months`;
+        } else if (newConfig.installmentFrequency === 'Weekly') {
+          newConfig.duration = `${Math.ceil(daysDiff / 7)} weeks`;
+        }
+      }
+    }
+    setLoanConfig(newConfig);
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -66,6 +113,7 @@ const AdminDashboard = () => {
     setSelectedCustomer(null);
   }, [activeTab]);
 
+  // Removed auto-calculate useEffects to prevent infinite loops
   // Actions - Registrations
   const handleApproveRegistration = async (id) => {
     const password = prompt('Create a password for this customer:');
@@ -102,6 +150,17 @@ const AdminDashboard = () => {
       alert('Loan approved and schedule generated.');
     } catch (err) {
       alert(err.response?.data?.message || 'Error approving loan');
+    }
+  };
+
+  const handleResolveCancellation = async (requestId, action) => {
+    if (window.confirm(`Are you sure you want to ${action} this cancellation request?`)) {
+      try {
+        await api.post(`/api/loans/request/${requestId}/cancel-resolve`, { action });
+        fetchData();
+      } catch (err) {
+        alert(err.response?.data?.message || 'Error resolving cancellation');
+      }
     }
   };
 
@@ -157,16 +216,63 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleEditCustomerFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size > 150 * 1024) {
+      alert(`${e.target.name} must be less than 150KB`);
+      e.target.value = null; // reset
+      return;
+    }
+    setEditCustomerFiles({ ...editCustomerFiles, [e.target.name]: file });
+  };
+
+  const handleEditCustomerSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData();
+    Object.keys(editCustomerData).forEach(key => formData.append(key, editCustomerData[key]));
+    if (editCustomerFiles.photo) formData.append('photo', editCustomerFiles.photo);
+    if (editCustomerFiles.aadhaarDoc) formData.append('aadhaarDoc', editCustomerFiles.aadhaarDoc);
+    if (editCustomerFiles.voterIdDoc) formData.append('voterIdDoc', editCustomerFiles.voterIdDoc);
+    if (editCustomerFiles.panDoc) formData.append('panDoc', editCustomerFiles.panDoc);
+
+    try {
+      await api.put(`/api/customers/${selectedCustomer._id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      alert('Customer updated successfully.');
+      setIsEditingCustomer(false);
+      viewCustomerProfile(selectedCustomer._id);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Error updating customer');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddCustomerFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size > 150 * 1024) {
+      alert(`${e.target.name} must be less than 150KB`);
+      e.target.value = null; // reset
+      return;
+    }
+    setAddCustomerFiles({ ...addCustomerFiles, [e.target.name]: file });
+  };
+
   const handleAddCustomerSubmit = async (e) => {
     e.preventDefault();
-    if (!addCustomerPhoto) {
+    if (!addCustomerFiles.photo) {
       alert("Photograph is required");
       return;
     }
     setLoading(true);
     const formData = new FormData();
     Object.keys(addCustomerData).forEach(key => formData.append(key, addCustomerData[key]));
-    formData.append('photo', addCustomerPhoto);
+    if (addCustomerFiles.photo) formData.append('photo', addCustomerFiles.photo);
+    if (addCustomerFiles.aadhaarDoc) formData.append('aadhaarDoc', addCustomerFiles.aadhaarDoc);
+    if (addCustomerFiles.voterIdDoc) formData.append('voterIdDoc', addCustomerFiles.voterIdDoc);
+    if (addCustomerFiles.panDoc) formData.append('panDoc', addCustomerFiles.panDoc);
 
     try {
       await api.post('/api/customers', formData, {
@@ -174,10 +280,10 @@ const AdminDashboard = () => {
       });
       alert('Customer created successfully and credentials sent to customer email.');
       setAddCustomerData({
-        name: '', bankAccountNumber: '', whatsappNumber: '', email: '',
+        name: '', bankAccountNumber: '', whatsappNumber: '', mobileNumber: '', email: '',
         aadhaar: '', voterId: '', pan: '', maritalStatus: 'Unmarried', permanentAddress: '', password: ''
       });
-      setAddCustomerPhoto(null);
+      setAddCustomerFiles({ photo: null, aadhaarDoc: null, voterIdDoc: null, panDoc: null });
       setActiveTab('customers');
     } catch (err) {
       alert(err.response?.data?.message || 'Error adding customer');
@@ -229,6 +335,26 @@ const AdminDashboard = () => {
     doc.save(`Loan_${customer.customerId}_${loanData.loan._id.substring(0, 6)}.pdf`);
   };
 
+  const handleDeleteLoan = async (loanData, customer) => {
+    const password = prompt('Enter your admin password to delete this loan history:');
+    if (!password) {
+      return;
+    }
+
+    // Auto-download PDF as requested
+    handleDownloadLoanPDF(loanData, customer);
+
+    try {
+      await api.delete(`/api/loans/${loanData.loan._id}`, {
+        data: { password }
+      });
+      alert('Loan history deleted successfully.');
+      viewCustomerProfile(customer._id);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Error deleting loan history');
+    }
+  };
+
   const filteredCustomers = customers.filter(c => 
     c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     c.customerId.toLowerCase().includes(searchQuery.toLowerCase())
@@ -260,20 +386,54 @@ const AdminDashboard = () => {
 
       {/* REGISTRATIONS TAB */}
       {activeTab === 'registrations' && (
-        <div className="space-y-4">
-          {registrations.length === 0 && <p className="text-gray-500">{t('no_pending_registrations')}</p>}
+        <div className="space-y-6">
+          {registrations.length === 0 && <p className="text-gray-500 text-center py-8">{t('no_pending_registrations')}</p>}
           {registrations.map(req => (
-            <div key={req._id} className="bg-white p-6 rounded shadow border">
-              <div className="flex justify-between">
-                <div>
-                  <h3 className="text-xl font-bold">{req.name}</h3>
-                  <p className="text-gray-600">{t('email')}: {req.email} | {t('whatsapp_number')}: {req.whatsappNumber}</p>
-                  <p className="text-gray-600">{t('aadhaar_number')}: {req.aadhaar} | {t('pan_number')}: {req.pan}</p>
-                  <a href={req.photoUrl} target="_blank" rel="noreferrer" className="text-blue-500 text-sm hover:underline">{t('view_photo')}</a>
+            <div key={req._id} className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div className="flex items-center gap-6">
+                  <img src={req.photoUrl || 'https://via.placeholder.com/150'} alt="Applicant" className="w-24 h-24 rounded-full object-cover border-4 border-blue-50" />
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-800">{req.name}</h3>
+                    <p className="text-gray-600 mt-1"><strong className="text-gray-700">Email:</strong> {req.email} | <strong className="text-gray-700">WhatsApp:</strong> {req.whatsappNumber}</p>
+                    <p className="text-gray-600"><strong className="text-gray-700">Mobile:</strong> {req.mobileNumber} | <strong className="text-gray-700">Address:</strong> {req.permanentAddress}</p>
+                    <p className="text-gray-600 mt-2"><strong className="text-gray-700">Aadhaar:</strong> {req.aadhaar} | <strong className="text-gray-700">PAN:</strong> {req.pan}</p>
+                  </div>
                 </div>
-                <div className="flex gap-2 items-start">
-                  <button onClick={() => handleApproveRegistration(req._id)} className="bg-emerald-600 text-white px-3 py-1 rounded hover:bg-emerald-700">{t('approve')}</button>
-                  <button onClick={() => handleRejectRegistration(req._id)} className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">{t('reject')}</button>
+                <div className="flex flex-col gap-3 min-w-[120px]">
+                  <button onClick={() => handleApproveRegistration(req._id)} className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition w-full shadow-sm">{t('approve')}</button>
+                  <button onClick={() => handleRejectRegistration(req._id)} className="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition w-full">{t('reject')}</button>
+                </div>
+              </div>
+
+              {/* Document Links */}
+              <div className="mt-6 border-t border-gray-100 pt-4">
+                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Uploaded Documents</h4>
+                <div className="flex flex-wrap gap-3">
+                  {req.photoUrl && (
+                    <a href={req.photoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" /></svg>
+                      Passport Photo
+                    </a>
+                  )}
+                  {req.aadhaarDocUrl && (
+                    <a href={req.aadhaarDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
+                      Aadhaar Document
+                    </a>
+                  )}
+                  {req.panDocUrl && (
+                    <a href={req.panDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
+                      PAN Document
+                    </a>
+                  )}
+                  {req.voterIdDocUrl && (
+                    <a href={req.voterIdDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
+                      Voter Document
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -291,28 +451,48 @@ const AdminDashboard = () => {
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">
                     {t('customer')}: {req.customer?.name} ({req.customer?.customerId})
+                    {req.cancellationRequested && (
+                      <span className="ml-3 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Cancellation Requested</span>
+                    )}
                   </h3>
                   <p className="text-gray-600">{t('requested')}: ₹{req.requestedAmount} for {req.requestedDuration}</p>
                   <p className="text-gray-600">{t('reason')}: {req.reason}</p>
                   <p className="text-sm text-gray-400">{t('date')}: {new Date(req.createdAt).toLocaleDateString()}</p>
                 </div>
-                <div>
-                  <button 
-                    onClick={() => {
-                      setSelectedLoanRequest(req);
-                      setLoanConfig({
-                        approvedAmount: req.requestedAmount,
-                        duration: req.requestedDuration,
-                        installmentAmount: '',
-                        installmentFrequency: req.requestedDuration.includes('weeks') ? 'Weekly' : 'Monthly',
-                        startDate: new Date().toISOString().split('T')[0],
-                        completionDate: ''
-                      });
-                    }} 
-                    className="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
-                  >
-                    {t('configure_approve')}
-                  </button>
+                <div className="flex flex-col gap-2">
+                  {!req.cancellationRequested ? (
+                    <button 
+                      onClick={() => {
+                        setSelectedLoanRequest(req);
+                        setLoanConfig({
+                          approvedAmount: req.requestedAmount,
+                          duration: req.requestedDuration,
+                          installmentAmount: '',
+                          installmentFrequency: req.requestedDuration.includes('weeks') ? 'Weekly' : 'Monthly',
+                          startDate: new Date().toISOString().split('T')[0],
+                          completionDate: ''
+                        });
+                      }} 
+                      className="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
+                    >
+                      {t('configure_approve')}
+                    </button>
+                  ) : (
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleResolveCancellation(req._id, 'approve')}
+                        className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+                      >
+                        Approve Cancel
+                      </button>
+                      <button 
+                        onClick={() => handleResolveCancellation(req._id, 'reject')}
+                        className="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600"
+                      >
+                        Reject Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -333,17 +513,26 @@ const AdminDashboard = () => {
             />
           </div>
           {filteredCustomers.length === 0 && <p className="text-gray-500">{t('no_customers_found')}</p>}
-          {filteredCustomers.map(c => (
-            <div key={c._id} className="bg-white p-4 rounded shadow border flex justify-between items-center hover:bg-gray-50 transition cursor-pointer" onClick={() => viewCustomerProfile(c._id)}>
-              <div>
-                <span className="font-bold text-gray-800">{c.customerId}</span>
-                <span className="ml-4 text-gray-700">{c.name}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredCustomers.map(c => (
+              <div 
+                key={c._id} 
+                className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-emerald-200 transition cursor-pointer flex flex-col items-center text-center" 
+                onClick={() => viewCustomerProfile(c._id)}
+              >
+                <img 
+                  src={c.photoUrl || 'https://via.placeholder.com/150'} 
+                  alt={c.name} 
+                  className="w-20 h-20 rounded-full object-cover border-4 border-emerald-50 mb-3"
+                />
+                <h3 className="font-bold text-lg text-gray-800">{c.name}</h3>
+                <span className="text-emerald-600 font-medium mb-3">{c.customerId}</span>
+                <span className={`px-3 py-1 text-xs font-bold rounded-full ${c.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  {c.status}
+                </span>
               </div>
-              <span className={`px-2 py-1 text-xs rounded ${c.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {c.status}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
@@ -354,23 +543,154 @@ const AdminDashboard = () => {
             &larr; Back to Customers List
           </button>
           
-          <div className="bg-white p-6 rounded shadow border mb-6">
-            <div className="flex justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{selectedCustomer.name} <span className="text-gray-500 text-lg">({selectedCustomer.customerId})</span></h2>
-                <p className="text-gray-600 mt-2">Email: {selectedCustomer.email} | WhatsApp: {selectedCustomer.whatsappNumber}</p>
-                <p className="text-gray-600">Aadhaar: {selectedCustomer.aadhaar} | PAN: {selectedCustomer.pan}</p>
-                <p className="text-gray-600">Address: {selectedCustomer.permanentAddress}</p>
-                <p className="text-gray-600 font-medium mt-2">Login Password: <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800">{selectedCustomer.plainPassword}</span></p>
-                <span className={`inline-block mt-2 px-2 py-1 text-xs rounded ${selectedCustomer.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                  {t('account_status')}: {selectedCustomer.status}
-                </span>
+          <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 mb-8">
+            <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
+              <img 
+                src={selectedCustomer.photoUrl || 'https://via.placeholder.com/150'} 
+                alt={selectedCustomer.name} 
+                className="w-32 h-32 rounded-xl object-cover shadow-sm border border-gray-200"
+              />
+              <div className="flex-1">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-3xl font-bold text-gray-800">{selectedCustomer.name}</h2>
+                    <span className="inline-block mt-2 text-lg text-emerald-600 font-medium">{selectedCustomer.customerId}</span>
+                    <span className={`ml-4 inline-block px-3 py-1 text-xs font-bold rounded-full ${selectedCustomer.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {t('account_status')}: {selectedCustomer.status}
+                    </span>
+                  </div>
+                  <div>
+                    {selectedCustomer.status === 'ACTIVE' ? (
+                       <button onClick={() => handleToggleCustomerStatus(selectedCustomer._id, selectedCustomer.status)} className="text-red-600 border-2 border-red-200 bg-red-50 px-4 py-2 rounded-lg hover:bg-red-100 transition font-medium">{t('deactivate')}</button>
+                    ) : (
+                       <button onClick={() => handleToggleCustomerStatus(selectedCustomer._id, selectedCustomer.status)} className="text-green-600 border-2 border-green-200 bg-green-50 px-4 py-2 rounded-lg hover:bg-green-100 transition font-medium">{t('activate')}</button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  <div className="space-y-2 text-gray-600">
+                    <p><strong className="text-gray-800">Email:</strong> {selectedCustomer.email}</p>
+                    <p><strong className="text-gray-800">WhatsApp:</strong> {selectedCustomer.whatsappNumber}</p>
+                    <p><strong className="text-gray-800">Mobile:</strong> {selectedCustomer.mobileNumber}</p>
+                    <p><strong className="text-gray-800">Address:</strong> {selectedCustomer.permanentAddress}</p>
+                  </div>
+                  <div className="space-y-2 text-gray-600">
+                    <p><strong className="text-gray-800">Aadhaar:</strong> {selectedCustomer.aadhaar}</p>
+                    <p><strong className="text-gray-800">PAN:</strong> {selectedCustomer.pan}</p>
+                    <p><strong className="text-gray-800">Bank A/C:</strong> {selectedCustomer.bankAccountNumber}</p>
+                    <p><strong className="text-gray-800">Login Password:</strong> <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800 border">{selectedCustomer.plainPassword}</span></p>
+                    
+                    {/* CIBIL Score Display */}
+                    <div className="mt-4 p-4 rounded-xl border border-gray-100 bg-gray-50 flex flex-col justify-center items-center">
+                      <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">CIBIL Score</h4>
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl font-bold text-gray-800">{selectedCustomer.cibilScore || 600}</span>
+                        {(() => {
+                          const score = selectedCustomer.cibilScore || 600;
+                          if (score <= 300) return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-bold uppercase tracking-wider">Bad</span>;
+                          if (score <= 500) return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold uppercase tracking-wider">Moderate</span>;
+                          if (score <= 700) return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold uppercase tracking-wider">Good</span>;
+                          return <span className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold uppercase tracking-wider">Excellent</span>;
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col gap-2">
-                {selectedCustomer.status === 'ACTIVE' ? (
-                   <button onClick={() => handleToggleCustomerStatus(selectedCustomer._id, selectedCustomer.status)} className="text-red-600 border border-red-600 px-3 py-1 rounded hover:bg-red-50">{t('deactivate')}</button>
-                ) : (
-                   <button onClick={() => handleToggleCustomerStatus(selectedCustomer._id, selectedCustomer.status)} className="text-green-600 border border-green-600 px-3 py-1 rounded hover:bg-green-50">{t('activate')}</button>
+            </div>
+
+            {/* EDIT CUSTOMER TOGGLE */}
+            <div className="mt-6 flex justify-end mb-6">
+              {!isEditingCustomer ? (
+                <button 
+                  onClick={() => {
+                    setEditCustomerData({
+                      name: selectedCustomer.name,
+                      bankAccountNumber: selectedCustomer.bankAccountNumber,
+                      whatsappNumber: selectedCustomer.whatsappNumber,
+                      mobileNumber: selectedCustomer.mobileNumber,
+                      email: selectedCustomer.email,
+                      aadhaar: selectedCustomer.aadhaar,
+                      voterId: selectedCustomer.voterId,
+                      pan: selectedCustomer.pan,
+                      maritalStatus: selectedCustomer.maritalStatus,
+                      permanentAddress: selectedCustomer.permanentAddress
+                    });
+                    setIsEditingCustomer(true);
+                  }} 
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+                >
+                  Edit Customer Details
+                </button>
+              ) : (
+                <button onClick={() => setIsEditingCustomer(false)} className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition">
+                  Cancel Edit
+                </button>
+              )}
+            </div>
+
+            {/* EDIT CUSTOMER FORM */}
+            {isEditingCustomer && (
+              <form onSubmit={handleEditCustomerSubmit} className="bg-blue-50/50 p-6 rounded-xl border border-blue-100 mb-8">
+                <h4 className="text-xl font-bold text-gray-800 mb-4">Edit Information</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input type="text" placeholder="Full Name" value={editCustomerData.name} onChange={e => setEditCustomerData({...editCustomerData, name: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="email" placeholder="Email" value={editCustomerData.email} onChange={e => setEditCustomerData({...editCustomerData, email: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="text" placeholder="Mobile Number" value={editCustomerData.mobileNumber} onChange={e => setEditCustomerData({...editCustomerData, mobileNumber: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="text" placeholder="WhatsApp Number" value={editCustomerData.whatsappNumber} onChange={e => setEditCustomerData({...editCustomerData, whatsappNumber: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="text" placeholder="Bank Account Number" value={editCustomerData.bankAccountNumber} onChange={e => setEditCustomerData({...editCustomerData, bankAccountNumber: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="text" placeholder="Aadhaar Number" value={editCustomerData.aadhaar} onChange={e => setEditCustomerData({...editCustomerData, aadhaar: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="text" placeholder="PAN Number" value={editCustomerData.pan} onChange={e => setEditCustomerData({...editCustomerData, pan: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="text" placeholder="Voter ID" value={editCustomerData.voterId} onChange={e => setEditCustomerData({...editCustomerData, voterId: e.target.value})} className="p-3 border rounded-lg" required />
+                  <select value={editCustomerData.maritalStatus} onChange={e => setEditCustomerData({...editCustomerData, maritalStatus: e.target.value})} className="p-3 border rounded-lg">
+                    <option value="Unmarried">Unmarried</option>
+                    <option value="Married">Married</option>
+                  </select>
+                  <textarea placeholder="Permanent Address" value={editCustomerData.permanentAddress} onChange={e => setEditCustomerData({...editCustomerData, permanentAddress: e.target.value})} className="p-3 border rounded-lg" rows="1" required></textarea>
+                </div>
+                
+                <h4 className="text-lg font-bold text-gray-800 mt-6 mb-4">Update Documents (Optional - leave blank to keep existing)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col"><label className="text-sm font-medium text-gray-700">Passport Photo</label><input type="file" name="photo" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
+                  <div className="flex flex-col"><label className="text-sm font-medium text-gray-700">Aadhaar Doc</label><input type="file" name="aadhaarDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
+                  <div className="flex flex-col"><label className="text-sm font-medium text-gray-700">PAN Doc</label><input type="file" name="panDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
+                  <div className="flex flex-col"><label className="text-sm font-medium text-gray-700">Voter Doc</label><input type="file" name="voterIdDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
+                </div>
+                
+                <button type="submit" disabled={loading} className="mt-6 w-full bg-emerald-600 text-white font-bold py-3 rounded-lg hover:bg-emerald-700 transition">
+                  {loading ? 'Saving Changes...' : 'Save Changes'}
+                </button>
+              </form>
+            )}
+
+            {/* Document Links */}
+            <div className="mt-8 border-t border-gray-100 pt-6">
+              <h4 className="text-lg font-bold text-gray-800 mb-4">Uploaded Documents</h4>
+              <div className="flex flex-wrap gap-4">
+                {selectedCustomer.photoUrl && (
+                  <a href={selectedCustomer.photoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" /></svg>
+                    Passport Photo
+                  </a>
+                )}
+                {selectedCustomer.aadhaarDocUrl && (
+                  <a href={selectedCustomer.aadhaarDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
+                    Aadhaar Document
+                  </a>
+                )}
+                {selectedCustomer.panDocUrl && (
+                  <a href={selectedCustomer.panDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
+                    PAN Document
+                  </a>
+                )}
+                {selectedCustomer.voterIdDocUrl && (
+                  <a href={selectedCustomer.voterIdDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
+                    Voter Document
+                  </a>
                 )}
               </div>
             </div>
@@ -389,12 +709,20 @@ const AdminDashboard = () => {
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
                     <p className="text-sm font-medium">{data.loan.completedInstallments} / {data.loan.totalInstallments} Paid</p>
-                    <button 
-                      onClick={() => handleDownloadLoanPDF(data, selectedCustomer)}
-                      className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition"
-                    >
-                      Download PDF
-                    </button>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleDownloadLoanPDF(data, selectedCustomer)}
+                        className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition"
+                      >
+                        Download PDF
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteLoan(data, selectedCustomer)}
+                        className="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 transition"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
                 
@@ -463,7 +791,7 @@ const AdminDashboard = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">{t('final_duration')}</label>
-                  <input type="text" required value={loanConfig.duration} onChange={e => setLoanConfig({...loanConfig, duration: e.target.value})} placeholder="e.g. 6 months" className="mt-1 w-full border rounded px-3 py-2" />
+                  <input type="text" required value={loanConfig.duration} onChange={e => handleDurationChange(e.target.value)} placeholder="e.g. 6 months" className="mt-1 w-full border rounded px-3 py-2" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">{t('installment_amount')}</label>
@@ -471,18 +799,18 @@ const AdminDashboard = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">{t('frequency')}</label>
-                  <select required value={loanConfig.installmentFrequency} onChange={e => setLoanConfig({...loanConfig, installmentFrequency: e.target.value})} className="mt-1 w-full border rounded px-3 py-2">
+                  <select required value={loanConfig.installmentFrequency} onChange={e => handleDatesChange('installmentFrequency', e.target.value)} className="mt-1 w-full border rounded px-3 py-2">
                     <option value="Monthly">{t('monthly')}</option>
                     <option value="Weekly">{t('weekly')}</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">{t('start_date')}</label>
-                  <input type="date" required value={loanConfig.startDate} onChange={e => setLoanConfig({...loanConfig, startDate: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                  <input type="date" required value={loanConfig.startDate} onChange={e => handleDatesChange('startDate', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">{t('completion_date')}</label>
-                  <input type="date" required value={loanConfig.completionDate} onChange={e => setLoanConfig({...loanConfig, completionDate: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                  <input type="date" required value={loanConfig.completionDate} onChange={e => handleDatesChange('completionDate', e.target.value)} className="mt-1 w-full border rounded px-3 py-2" />
                 </div>
               </div>
 
@@ -511,11 +839,15 @@ const AdminDashboard = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">{t('whatsapp_number')}</label>
-                <input type="text" required value={addCustomerData.whatsappNumber} onChange={e => setAddCustomerData({...addCustomerData, whatsappNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                <input type="text" required value={addCustomerData.whatsappNumber} onChange={e => setAddCustomerData({...addCustomerData, whatsappNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Mobile Number</label>
+                <input type="text" required value={addCustomerData.mobileNumber} onChange={e => setAddCustomerData({...addCustomerData, mobileNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">{t('bank_account_number')}</label>
-                <input type="text" required value={addCustomerData.bankAccountNumber} onChange={e => setAddCustomerData({...addCustomerData, bankAccountNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2" />
+                <input type="text" required value={addCustomerData.bankAccountNumber} onChange={e => setAddCustomerData({...addCustomerData, bankAccountNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">{t('aadhaar_number')}</label>
@@ -543,15 +875,61 @@ const AdminDashboard = () => {
               <textarea required value={addCustomerData.permanentAddress} onChange={e => setAddCustomerData({...addCustomerData, permanentAddress: e.target.value})} className="mt-1 w-full border rounded px-3 py-2"></textarea>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 mb-4">
                <div>
                   <label className="block text-sm font-medium text-gray-700">{t('set_initial_password')}</label>
                   <input type="text" required value={addCustomerData.password} onChange={e => setAddCustomerData({...addCustomerData, password: e.target.value})} placeholder="e.g. password123" className="mt-1 w-full border rounded px-3 py-2" />
                </div>
-               <div>
-                  <label className="block text-sm font-medium text-gray-700">{t('passport_photo')}</label>
-                  <input type="file" required onChange={e => setAddCustomerPhoto(e.target.files[0])} accept="image/*" className="mt-1 w-full text-sm" />
-               </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6 mt-6">
+              <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+                <label className="cursor-pointer block">
+                  <span className="block text-sm font-bold text-gray-700 mb-1">{t('passport_photo')}*</span>
+                  <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                  <div className="bg-emerald-50 text-emerald-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  </div>
+                  <input type="file" name="photo" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <span className="text-sm font-medium text-emerald-600">{addCustomerFiles.photo ? addCustomerFiles.photo.name : 'Click to Upload'}</span>
+                </label>
+              </div>
+
+              <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+                <label className="cursor-pointer block">
+                  <span className="block text-sm font-bold text-gray-700 mb-1">{t('aadhaar_document')}</span>
+                  <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                  <div className="bg-emerald-50 text-emerald-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  </div>
+                  <input type="file" name="aadhaarDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <span className="text-sm font-medium text-emerald-600">{addCustomerFiles.aadhaarDoc ? addCustomerFiles.aadhaarDoc.name : 'Click to Upload'}</span>
+                </label>
+              </div>
+
+              <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+                <label className="cursor-pointer block">
+                  <span className="block text-sm font-bold text-gray-700 mb-1">{t('pan_document')}</span>
+                  <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                  <div className="bg-emerald-50 text-emerald-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  </div>
+                  <input type="file" name="panDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <span className="text-sm font-medium text-emerald-600">{addCustomerFiles.panDoc ? addCustomerFiles.panDoc.name : 'Click to Upload'}</span>
+                </label>
+              </div>
+
+              <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+                <label className="cursor-pointer block">
+                  <span className="block text-sm font-bold text-gray-700 mb-1">{t('voter_document')}</span>
+                  <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                  <div className="bg-emerald-50 text-emerald-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  </div>
+                  <input type="file" name="voterIdDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <span className="text-sm font-medium text-emerald-600">{addCustomerFiles.voterIdDoc ? addCustomerFiles.voterIdDoc.name : 'Click to Upload'}</span>
+                </label>
+              </div>
             </div>
 
             <button type="submit" disabled={loading} className="mt-4 bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">

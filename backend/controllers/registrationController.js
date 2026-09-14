@@ -10,7 +10,7 @@ const bcrypt = require('bcryptjs');
 const submitRegistration = async (req, res, next) => {
     try {
         const {
-            name, bankAccountNumber, whatsappNumber, email,
+            name, bankAccountNumber, whatsappNumber, mobileNumber, email,
             aadhaar, voterId, pan, maritalStatus, permanentAddress
         } = req.body;
 
@@ -39,24 +39,24 @@ const submitRegistration = async (req, res, next) => {
         let panDocUrl = '';
 
         if (req.files && req.files.photo && req.files.photo[0]) {
-            photoUrl = await uploadToCloudinary(req.files.photo[0].buffer, 'sudhara/photos');
+            photoUrl = await uploadToCloudinary(req.files.photo[0].buffer, 'sudhara/photos', req.files.photo[0].originalname);
         } else {
              res.status(400);
              return next(new Error('Photograph is required'));
         }
         
         if (req.files && req.files.aadhaarDoc && req.files.aadhaarDoc[0]) {
-            aadhaarDocUrl = await uploadToCloudinary(req.files.aadhaarDoc[0].buffer, 'sudhara/documents');
+            aadhaarDocUrl = await uploadToCloudinary(req.files.aadhaarDoc[0].buffer, 'sudhara/documents', req.files.aadhaarDoc[0].originalname);
         }
         if (req.files && req.files.voterIdDoc && req.files.voterIdDoc[0]) {
-            voterIdDocUrl = await uploadToCloudinary(req.files.voterIdDoc[0].buffer, 'sudhara/documents');
+            voterIdDocUrl = await uploadToCloudinary(req.files.voterIdDoc[0].buffer, 'sudhara/documents', req.files.voterIdDoc[0].originalname);
         }
         if (req.files && req.files.panDoc && req.files.panDoc[0]) {
-            panDocUrl = await uploadToCloudinary(req.files.panDoc[0].buffer, 'sudhara/documents');
+            panDocUrl = await uploadToCloudinary(req.files.panDoc[0].buffer, 'sudhara/documents', req.files.panDoc[0].originalname);
         }
 
         const request = await RegistrationRequest.create({
-            name, bankAccountNumber, whatsappNumber, email,
+            name, bankAccountNumber, whatsappNumber, mobileNumber, email,
             aadhaar, voterId, pan, maritalStatus, permanentAddress,
             photoUrl, aadhaarDocUrl, voterIdDocUrl, panDocUrl
         });
@@ -136,11 +136,15 @@ const approveRegistration = async (req, res, next) => {
             name: request.name,
             bankAccountNumber: request.bankAccountNumber,
             whatsappNumber: request.whatsappNumber,
+            mobileNumber: request.mobileNumber,
             email: request.email,
             aadhaar: request.aadhaar,
             voterId: request.voterId,
             pan: request.pan,
             photoUrl: request.photoUrl,
+            aadhaarDocUrl: request.aadhaarDocUrl,
+            voterIdDocUrl: request.voterIdDocUrl,
+            panDocUrl: request.panDocUrl,
             maritalStatus: request.maritalStatus,
             permanentAddress: request.permanentAddress,
             password: plainPassword,

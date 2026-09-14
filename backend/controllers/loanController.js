@@ -1,6 +1,7 @@
 const LoanRequest = require('../models/LoanRequest');
 const Loan = require('../models/Loan');
 const Installment = require('../models/Installment');
+const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
 
 // @desc    Request a loan
@@ -182,10 +183,165 @@ const getLoanDetails = async (req, res, next) => {
     }
 };
 
+// @desc    Get customer's pending loan requests
+// @route   GET /api/loans/my-requests
+// @access  Private/Customer
+const getMyLoanRequests = async (req, res, next) => {
+    try {
+        const requests = await LoanRequest.find({ customer: req.user._id }).sort({ createdAt: -1 });
+        res.json(requests);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Customer requests cancellation of a pending loan request
+// @route   POST /api/loans/request/:id/cancel-request
+// @access  Private/Customer
+const requestCancellation = async (req, res, next) => {
+    try {
+        const loanRequest = await LoanRequest.findById(req.params.id);
+        if (!loanRequest) {
+            res.status(404);
+            return next(new Error('Loan request not found'));
+        }
+
+        if (loanRequest.customer.toString() !== req.user._id.toString()) {
+            res.status(403);
+            return next(new Error('Not authorized'));
+        }
+
+        if (loanRequest.status !== 'PENDING') {
+            res.status(400);
+            return next(new Error('Can only cancel pending requests'));
+        }
+
+        const now = new Date();
+        const createdDate = new Date(loanRequest.createdAt);
+        const timeDiff = now.getTime() - createdDate.getTime();
+        const daysDiff = timeDiff / (1000 * 3600 * 24);
+
+        if (daysDiff > 2) {
+            res.status(400);
+            return next(new Error('Cancellation request is only allowed within 2 days of initial request.'));
+        }
+
+        loanRequest.cancellationRequested = true;
+        await loanRequest.save();
+
+        // Email notification to admin
+        await sendEmail({
+            email: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
+            subject: 'Sudhara Finance - Loan Cancellation Requested',
+            message: `Customer ${req.user.name} (${req.user.customerId}) has requested cancellation for their loan request of ₹${loanRequest.requestedAmount}. Please review in the Admin Dashboard.`
+        });
+
+        res.json({ message: 'Cancellation requested successfully', loanRequest });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Admin resolves a cancellation request
+// @route   POST /api/loans/request/:id/cancel-resolve
+// @access  Private/Admin
+const resolveCancellation = async (req, res, next) => {
+    try {
+        const { action } = req.body; // 'approve' or 'reject'
+        const loanRequest = await LoanRequest.findById(req.params.id).populate('customer');
+        
+        if (!loanRequest) {
+            res.status(404);
+            return next(new Error('Loan request not found'));
+        }
+
+        if (!loanRequest.cancellationRequested) {
+            res.status(400);
+            return next(new Error('This request does not have a pending cancellation request.'));
+        }
+
+        if (action === 'approve') {
+            loanRequest.status = 'REJECTED'; // effectively cancelled
+            loanRequest.cancellationRequested = false; // resolved
+            await loanRequest.save();
+
+            await sendEmail({
+                email: loanRequest.customer.email,
+                subject: 'Sudhara Finance - Loan Request Cancelled',
+                message: `Dear ${loanRequest.customer.name}, your request to cancel the loan for ₹${loanRequest.requestedAmount} has been approved.`
+            });
+
+            res.json({ message: 'Cancellation approved', loanRequest });
+        } else if (action === 'reject') {
+            loanRequest.cancellationRequested = false; // back to normal pending
+            await loanRequest.save();
+
+            await sendEmail({
+                email: loanRequest.customer.email,
+                subject: 'Sudhara Finance - Cancellation Request Rejected',
+                message: `Dear ${loanRequest.customer.name}, your request to cancel the loan for ₹${loanRequest.requestedAmount} was rejected. Your loan request is still pending processing.`
+            });
+
+            res.json({ message: 'Cancellation rejected', loanRequest });
+        } else {
+            res.status(400);
+            return next(new Error('Invalid action'));
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Admin deletes a loan history
+// @route   DELETE /api/loans/:id
+// @access  Private/Admin
+const deleteLoan = async (req, res, next) => {
+    try {
+        const { password } = req.body;
+        if (!password) {
+            res.status(400);
+            return next(new Error('Admin password is required to delete a loan history.'));
+        }
+
+        // Verify admin password
+        const adminUser = await User.findById(req.user._id);
+        if (!adminUser) {
+            res.status(404);
+            return next(new Error('Admin user not found.'));
+        }
+
+        const isMatch = await adminUser.matchPassword(password);
+        if (!isMatch) {
+            res.status(401);
+            return next(new Error('Invalid admin password.'));
+        }
+
+        const loan = await Loan.findById(req.params.id);
+        if (!loan) {
+            res.status(404);
+            return next(new Error('Loan not found'));
+        }
+
+        // Delete all associated installments
+        await Installment.deleteMany({ loan: loan._id });
+        
+        // Delete the loan itself
+        await Loan.deleteOne({ _id: loan._id });
+
+        res.json({ message: 'Loan history and all installments deleted successfully.' });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     requestLoan,
     getLoanRequests,
     approveLoan,
     getMyLoans,
-    getLoanDetails
+    getLoanDetails,
+    getMyLoanRequests,
+    requestCancellation,
+    resolveCancellation,
+    deleteLoan
 };

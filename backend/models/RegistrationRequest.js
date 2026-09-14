@@ -4,6 +4,7 @@ const registrationRequestSchema = new mongoose.Schema({
     name: { type: String, required: true },
     bankAccountNumber: { type: String, required: true },
     whatsappNumber: { type: String, required: true },
+    mobileNumber: { type: String, required: true },
     email: { type: String, required: true },
     aadhaar: { type: String, required: true },
     voterId: { type: String, required: true },

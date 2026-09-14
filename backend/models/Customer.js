@@ -10,16 +10,21 @@ const customerSchema = new mongoose.Schema({
     name: { type: String, required: true },
     bankAccountNumber: { type: String, required: true },
     whatsappNumber: { type: String, required: true },
+    mobileNumber: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     aadhaar: { type: String, required: true },
     voterId: { type: String, required: true },
     pan: { type: String, required: true },
     photoUrl: { type: String, required: true },
+    aadhaarDocUrl: { type: String },
+    voterIdDocUrl: { type: String },
+    panDocUrl: { type: String },
     maritalStatus: { type: String, enum: ['Married', 'Unmarried'], required: true },
     permanentAddress: { type: String, required: true },
     password: { type: String, required: true },
     plainPassword: { type: String }, // For admin to view prototype credentials
     role: { type: String, enum: ['CUSTOMER'], default: 'CUSTOMER' },
+    cibilScore: { type: Number, default: 600, min: 150, max: 800 },
     status: { type: String, enum: ['ACTIVE', 'INACTIVE'], default: 'ACTIVE' }
 }, { timestamps: true });
 

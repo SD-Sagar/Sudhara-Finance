@@ -7,16 +7,38 @@ const {
     getCustomerById,
     addCustomerDirectly,
     deleteCustomer,
-    activateCustomer
+    activateCustomer,
+    updateCustomer
 } = require('../controllers/customerController');
 
 router.route('/')
     .get(protect, admin, getAllCustomers)
-    .post(protect, admin, upload.fields([{ name: 'photo', maxCount: 1 }]), addCustomerDirectly);
+    .post(
+        protect, 
+        admin, 
+        upload.fields([
+            { name: 'photo', maxCount: 1 },
+            { name: 'aadhaarDoc', maxCount: 1 },
+            { name: 'voterIdDoc', maxCount: 1 },
+            { name: 'panDoc', maxCount: 1 }
+        ]), 
+        addCustomerDirectly
+    );
 
 router.route('/:id')
     .get(protect, admin, getCustomerById)
-    .delete(protect, admin, deleteCustomer);
+    .delete(protect, admin, deleteCustomer)
+    .put(
+        protect, 
+        admin, 
+        upload.fields([
+            { name: 'photo', maxCount: 1 },
+            { name: 'aadhaarDoc', maxCount: 1 },
+            { name: 'voterIdDoc', maxCount: 1 },
+            { name: 'panDoc', maxCount: 1 }
+        ]), 
+        updateCustomer
+    );
 
 router.put('/:id/activate', protect, admin, activateCustomer);
 

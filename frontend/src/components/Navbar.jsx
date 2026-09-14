@@ -35,13 +35,22 @@ const Navbar = () => {
             {language === 'en' ? 'EN / বাং' : 'বাং / EN'}
           </button>
           {userInfo ? (
-            <div className="flex items-center gap-4">
-              <span className="font-medium">
+            <div className="flex items-center gap-2 md:gap-4 flex-wrap justify-end">
+              {userInfo.role === 'CUSTOMER' && userInfo.photoUrl && (
+                <div className="flex items-center gap-2 bg-blue-800/50 pr-3 rounded-full border border-blue-700">
+                  <img src={userInfo.photoUrl} alt="Profile" className="w-8 h-8 rounded-full object-cover" />
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-blue-200 uppercase tracking-wider leading-none mt-1">CIBIL</span>
+                    <span className="text-xs font-bold text-emerald-400 leading-none">{userInfo.cibilScore || 600}</span>
+                  </div>
+                </div>
+              )}
+              <span className="font-medium whitespace-nowrap text-sm md:text-base hidden sm:inline-block">
                 Welcome, {userInfo.name || userInfo.email}
               </span>
               <button 
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition"
+                className="bg-red-600 hover:bg-red-700 px-3 py-1.5 md:px-4 md:py-2 text-sm rounded transition"
               >
                 {t('logout')}
               </button>

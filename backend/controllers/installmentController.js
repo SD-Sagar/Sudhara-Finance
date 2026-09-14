@@ -26,6 +26,14 @@ const markInstallmentPaid = async (req, res, next) => {
         installment.paymentMethod = paymentMethod;
         installment.verifiedBy = req.user._id;
 
+        // CIBIL Score Logic (Paid on time or early)
+        const isPaidOnTime = new Date(installment.paymentDate) <= new Date(installment.dueDate);
+        if (isPaidOnTime) {
+            const currentScore = installment.customer.cibilScore || 600;
+            installment.customer.cibilScore = Math.min(800, currentScore + 5);
+            await installment.customer.save();
+        }
+
         await installment.save();
 
         // Update Loan
@@ -58,24 +66,46 @@ const checkOverdueInstallments = async (req, res, next) => {
     try {
         const currentDate = new Date();
         
-        // Find all pending installments where due date has passed
+        // Find all pending or overdue installments where due date has passed
         const overdueInstallments = await Installment.find({
-            status: 'PENDING',
+            status: { $in: ['PENDING', 'OVERDUE'] },
             dueDate: { $lt: currentDate }
-        });
+        }).populate('customer');
 
         let updatedCount = 0;
 
         for (const installment of overdueInstallments) {
-            installment.status = 'OVERDUE';
-            installment.fine += 10; // Apply ₹10 fine
-            await installment.save();
-            updatedCount++;
+            let hasChanges = false;
+            
+            // Mark as overdue and apply one-time fine if it was PENDING
+            if (installment.status === 'PENDING') {
+                installment.status = 'OVERDUE';
+                installment.fine += 10; // Apply ₹10 fine once
+                hasChanges = true;
+            }
 
-            // Optional: send overdue notification
-            /*
-            await sendEmail({ ... })
-            */
+            // Calculate daily CIBIL penalty
+            const timeDiff = currentDate.getTime() - new Date(installment.dueDate).getTime();
+            const daysOverdue = Math.floor(timeDiff / (1000 * 3600 * 24));
+            
+            const currentPenaltyDays = installment.penaltyAppliedDays || 0;
+            if (daysOverdue > currentPenaltyDays) {
+                const penaltyDaysToApply = daysOverdue - currentPenaltyDays;
+                installment.penaltyAppliedDays = daysOverdue;
+                hasChanges = true;
+                
+                // Deduct 5 points per overdue day
+                if (installment.customer) {
+                    const currentScore = installment.customer.cibilScore || 600;
+                    installment.customer.cibilScore = Math.max(150, currentScore - (5 * penaltyDaysToApply));
+                    await installment.customer.save();
+                }
+            }
+
+            if (hasChanges) {
+                await installment.save();
+                updatedCount++;
+            }
         }
 
         res.json({ message: `Checked overdue installments. Updated: ${updatedCount}` });

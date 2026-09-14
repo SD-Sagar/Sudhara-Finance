@@ -51,7 +51,9 @@ const authCustomer = async (req, res, next) => {
                 customerId: customer.customerId,
                 name: customer.name,
                 email: customer.email,
-                role: customer.role
+                role: customer.role,
+                photoUrl: customer.photoUrl,
+                cibilScore: customer.cibilScore || 600
             });
         } else {
             res.status(401);

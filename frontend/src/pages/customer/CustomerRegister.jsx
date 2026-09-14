@@ -9,6 +9,7 @@ const CustomerRegister = () => {
     name: '',
     bankAccountNumber: '',
     whatsappNumber: '',
+    mobileNumber: '',
     email: '',
     aadhaar: '',
     voterId: '',
@@ -66,7 +67,7 @@ const CustomerRegister = () => {
       });
       // Reset form
       setFormData({
-        name: '', bankAccountNumber: '', whatsappNumber: '', email: '',
+        name: '', bankAccountNumber: '', whatsappNumber: '', mobileNumber: '', email: '',
         aadhaar: '', voterId: '', pan: '', maritalStatus: 'Unmarried', permanentAddress: ''
       });
       // File inputs can't be easily reset without refs, but keeping it simple for prototype
@@ -103,11 +104,15 @@ const CustomerRegister = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">{t('whatsapp_number')}</label>
-              <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
+              <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Mobile Number</label>
+              <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">{t('bank_account_number')}</label>
-              <input type="text" name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2" />
+              <input type="text" name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleInputChange} required className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">{t('aadhaar_number')}</label>
@@ -135,23 +140,56 @@ const CustomerRegister = () => {
             <textarea name="permanentAddress" value={formData.permanentAddress} onChange={handleInputChange} required rows="3" className="mt-1 w-full border rounded px-3 py-2"></textarea>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4 mt-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">{t('passport_photo')} (Max 150KB)*</label>
-              <input type="file" name="photo" onChange={handleFileChange} accept="image/*" required className="mt-1 w-full text-sm" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6 mt-6">
+            
+            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+              <label className="cursor-pointer block">
+                <span className="block text-sm font-bold text-gray-700 mb-1">{t('passport_photo')}*</span>
+                <span className="block text-xs text-gray-500 mb-2">JPG, PNG, PDF (Max 150KB)</span>
+                <div className="bg-blue-50 text-blue-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                </div>
+                <input type="file" name="photo" onChange={handleFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <span className="text-sm font-medium text-blue-600">{files.photo ? files.photo.name : 'Click to Upload'}</span>
+              </label>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">{t('aadhaar_document')} (Max 150KB)</label>
-              <input type="file" name="aadhaarDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="mt-1 w-full text-sm" />
+
+            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+              <label className="cursor-pointer block">
+                <span className="block text-sm font-bold text-gray-700 mb-1">{t('aadhaar_document')}</span>
+                <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                <div className="bg-blue-50 text-blue-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                </div>
+                <input type="file" name="aadhaarDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <span className="text-sm font-medium text-blue-600">{files.aadhaarDoc ? files.aadhaarDoc.name : 'Click to Upload'}</span>
+              </label>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">{t('pan_document')} (Max 150KB)</label>
-              <input type="file" name="panDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="mt-1 w-full text-sm" />
+
+            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+              <label className="cursor-pointer block">
+                <span className="block text-sm font-bold text-gray-700 mb-1">{t('pan_document')}</span>
+                <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                <div className="bg-blue-50 text-blue-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                </div>
+                <input type="file" name="panDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <span className="text-sm font-medium text-blue-600">{files.panDoc ? files.panDoc.name : 'Click to Upload'}</span>
+              </label>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">{t('voter_document')} (Max 150KB)</label>
-              <input type="file" name="voterIdDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="mt-1 w-full text-sm" />
+
+            <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center hover:bg-gray-50 transition relative">
+              <label className="cursor-pointer block">
+                <span className="block text-sm font-bold text-gray-700 mb-1">{t('voter_document')}</span>
+                <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
+                <div className="bg-blue-50 text-blue-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                </div>
+                <input type="file" name="voterIdDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <span className="text-sm font-medium text-blue-600">{files.voterIdDoc ? files.voterIdDoc.name : 'Click to Upload'}</span>
+              </label>
             </div>
+
           </div>
 
           <button 
