@@ -64,8 +64,8 @@ const submitRegistration = async (req, res, next) => {
         // Notify Admin
         await sendEmail({
             email: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
-            subject: 'Sudhara Finance - New Registration Request',
-            message: `A new registration request has been submitted by ${name}. Please check the Admin Dashboard.`
+            subject: 'Shudhara Women Development Organization - New Registration Request',
+            text: `A new registration request has been submitted by ${name}. \n\nEmail: ${email}\nPhone: ${whatsappNumber}\n\nPlease review it in the admin dashboard.`
         });
 
         res.status(201).json({ message: 'Registration request submitted successfully', request });
@@ -155,21 +155,10 @@ const approveRegistration = async (req, res, next) => {
         await request.save();
 
         // Send Email
-        const emailMessage = `
-            Dear ${customer.name},
-
-            Your registration request has been approved.
-            
-            Customer ID: ${customer.customerId}
-            Password: ${plainPassword}
-            
-            Please login at ${process.env.FRONTEND_URL}
-        `;
-        
         await sendEmail({
             email: customer.email,
-            subject: 'Sudhara Finance - Registration Approved',
-            message: emailMessage
+            subject: 'Shudhara Women Development Organization - Registration Approved',
+            text: `Dear ${customer.name},\n\nYour registration to Shudhara Women Development Organization has been approved.\n\nYour login credentials are:\nCustomer ID: ${customer.customerId}\nEmail: ${customer.email}\nPassword: ${plainPassword}\n\nPlease login at ${process.env.FRONTEND_URL}`
         });
 
         res.json({ message: 'Request approved and customer created', customerId: customer.customerId });
@@ -201,13 +190,13 @@ const rejectRegistration = async (req, res, next) => {
         const emailMessage = `
             Dear ${request.name},
 
-            We regret to inform you that your registration request to Sudhara Finance has been rejected.
+            We regret to inform you that your registration request to Shudhara Women Development Organization has been rejected.
             For more details, please contact our support.
         `;
         
         await sendEmail({
             email: request.email,
-            subject: 'Sudhara Finance - Registration Rejected',
+            subject: 'Shudhara Women Development Organization - Registration Rejected',
             message: emailMessage
         });
 

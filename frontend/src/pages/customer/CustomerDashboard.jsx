@@ -105,7 +105,7 @@ const CustomerDashboard = () => {
         <h1 className="text-3xl font-bold text-gray-800">{t('my_dashboard')}</h1>
         <button 
           onClick={() => setShowLoanModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-[#965a1a] transition"
         >
           {t('request_loan')}
         </button>
@@ -115,13 +115,13 @@ const CustomerDashboard = () => {
 
       <div className="flex border-b border-gray-200 mb-6">
         <button 
-          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'active' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'active' ? 'border-[#bc7b1f] text-[#bc7b1f]' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
           onClick={() => setActiveTab('active')}
         >
           Active Loans
         </button>
         <button 
-          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'pending' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'pending' ? 'border-[#bc7b1f] text-[#bc7b1f]' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
           onClick={() => setActiveTab('pending')}
         >
           Pending / Approved Requests
@@ -142,9 +142,9 @@ const CustomerDashboard = () => {
                 const canCancel = req.status === 'PENDING' && daysDiff <= 2 && !req.cancellationRequested;
 
                 return (
-                  <div key={req._id} className="bg-white rounded-lg shadow p-6 border border-blue-100 flex justify-between items-center transition hover:shadow-md">
+                  <div key={req._id} className="bg-white rounded-lg shadow p-6 border border-[#f5eecc] flex justify-between items-center transition hover:shadow-md">
                     <div>
-                      <h3 className="font-bold text-xl text-blue-900 mb-1">Requested: ₹{req.requestedAmount}</h3>
+                      <h3 className="font-bold text-xl text-[#673c1c] mb-1">Requested: ₹{req.requestedAmount}</h3>
                       <p className="text-gray-600 mb-1 font-medium">Duration: {req.requestedDuration} | Reason: {req.reason}</p>
                       <p className="text-sm text-gray-400">Requested on {new Date(req.createdAt).toLocaleDateString()}</p>
                     </div>
@@ -182,11 +182,11 @@ const CustomerDashboard = () => {
           {loans.map(({ loan, installments }) => (
             <div key={loan._id} className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
               <div 
-                className="p-6 bg-blue-50 hover:bg-blue-100 cursor-pointer transition flex flex-wrap justify-between items-center gap-4"
+                className="p-6 bg-[#fbf8eb] hover:bg-[#f5eecc] cursor-pointer transition flex flex-wrap justify-between items-center gap-4"
                 onClick={() => toggleLoan(loan._id)}
               >
                 <div>
-                  <h3 className="text-xl font-bold text-blue-900">{t('loan')}: ₹{loan.approvedAmount}</h3>
+                  <h3 className="text-xl font-bold text-[#673c1c]">{t('loan')}: ₹{loan.approvedAmount}</h3>
                   <p className="text-gray-600 font-medium">{t('next_due')}: <span className="text-red-600">{getNextDueDate(installments)}</span></p>
                 </div>
                 <div className="text-right flex items-center gap-4">
@@ -200,7 +200,7 @@ const CustomerDashboard = () => {
                       {loan.completedInstallments} / {loan.totalInstallments} Paid
                     </p>
                   </div>
-                  <div className="text-blue-500">
+                  <div className="text-[#fbf8eb]0">
                     {expandedLoans[loan._id] ? (
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
                     ) : (
@@ -243,7 +243,7 @@ const CustomerDashboard = () => {
                             {inst.status !== 'PAID' && (
                               <button 
                                 onClick={() => handlePaymentContact(inst._id)}
-                                className="text-blue-600 hover:text-blue-900 font-medium"
+                                className="text-[#bc7b1f] hover:text-[#673c1c] font-medium"
                               >
                                 {t('pay_contact_admin')}
                               </button>
@@ -277,7 +277,7 @@ const CustomerDashboard = () => {
                 </div>
                 <button 
                   onClick={() => { setShowLoanModal(false); setRequestStatus(''); }}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-[#965a1a]"
                 >
                   Return to Dashboard
                 </button>
@@ -376,7 +376,7 @@ const CustomerDashboard = () => {
                   <button 
                     type="submit" 
                     disabled={requestStatus === 'submitting'}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-400"
+                    className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-[#965a1a] disabled:bg-blue-400"
                   >
                     {t('submit_request')}
                   </button>

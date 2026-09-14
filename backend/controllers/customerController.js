@@ -136,7 +136,7 @@ const addCustomerDirectly = async (req, res, next) => {
         
         await sendEmail({
             email: customer.email,
-            subject: 'Sudhara Finance - Account Created',
+            subject: 'Shudhara Women Development Organization - Account Created',
             message: emailMessage
         });
 

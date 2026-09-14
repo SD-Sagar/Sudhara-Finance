@@ -13,7 +13,7 @@ const importData = async () => {
         
         const adminUser = await User.create({
             name: 'Super Admin',
-            email: 'admin@sudharafinance.com',
+            email: 'admin@shudharafinance.com',
             password: 'password123', // will be hashed by pre-save hook
             role: 'ADMIN'
         });

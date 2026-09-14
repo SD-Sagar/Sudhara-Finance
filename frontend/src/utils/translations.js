@@ -8,7 +8,7 @@ export const translations = {
     "dashboard": "Dashboard",
 
     // Landing Page
-    "welcome_title": "Welcome to Sudhara Finance",
+    "welcome_title": "Welcome to Shudhara Women Development Organization",
     "welcome_subtitle": "Your trusted partner for financial growth. Please select your portal to continue.",
     "customer_portal": "Customer Portal",
     "customer_portal_desc": "Login or register for a new account.",

@@ -49,7 +49,7 @@ const markInstallmentPaid = async (req, res, next) => {
         // Notify customer
         await sendEmail({
             email: installment.customer.email,
-            subject: 'Sudhara Finance - Payment Received',
+            subject: 'Shudhara Women Development Organization - Payment Received',
             message: `Dear ${installment.customer.name}, your payment of ${installment.amount} for the installment due on ${new Date(installment.dueDate).toLocaleDateString()} has been successfully recorded.`
         });
 

@@ -297,7 +297,7 @@ const AdminDashboard = () => {
     
     // Header
     doc.setFontSize(18);
-    doc.text(`Loan History - Sudhara Finance`, 14, 20);
+    doc.text(`Loan History - Shudhara Women Development Organization`, 14, 20);
     
     // Customer Info
     doc.setFontSize(12);
@@ -329,7 +329,7 @@ const AdminDashboard = () => {
       body: tableRows,
       startY: 70,
       styles: { fontSize: 10 },
-      headStyles: { fillColor: [16, 185, 129] } // emerald-500 equivalent
+      headStyles: { fillColor: [16, 185, 129] } // gold-500 equivalent
     });
 
     doc.save(`Loan_${customer.customerId}_${loanData.loan._id.substring(0, 6)}.pdf`);
@@ -372,7 +372,7 @@ const AdminDashboard = () => {
             onClick={() => setActiveTab(tab === 'add_customer' ? 'add-customer' : tab)}
             className={`pb-2 px-4 font-medium capitalize whitespace-nowrap ${
               (activeTab === tab || (activeTab === 'add-customer' && tab === 'add_customer')) 
-                ? 'text-emerald-600 border-b-2 border-emerald-600' 
+                ? 'text-[#bc7b1f] border-b-2 border-[#bc7b1f]' 
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -392,7 +392,7 @@ const AdminDashboard = () => {
             <div key={req._id} className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="flex items-center gap-6">
-                  <img src={req.photoUrl || 'https://via.placeholder.com/150'} alt="Applicant" className="w-24 h-24 rounded-full object-cover border-4 border-blue-50" />
+                  <img src={req.photoUrl || 'https://via.placeholder.com/150'} alt="Applicant" className="w-24 h-24 rounded-full object-cover border-4 border-[#fbf8eb]" />
                   <div>
                     <h3 className="text-2xl font-bold text-gray-800">{req.name}</h3>
                     <p className="text-gray-600 mt-1"><strong className="text-gray-700">Email:</strong> {req.email} | <strong className="text-gray-700">WhatsApp:</strong> {req.whatsappNumber}</p>
@@ -401,7 +401,7 @@ const AdminDashboard = () => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 min-w-[120px]">
-                  <button onClick={() => handleApproveRegistration(req._id)} className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition w-full shadow-sm">{t('approve')}</button>
+                  <button onClick={() => handleApproveRegistration(req._id)} className="bg-[#bc7b1f] text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition w-full shadow-sm">{t('approve')}</button>
                   <button onClick={() => handleRejectRegistration(req._id)} className="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition w-full">{t('reject')}</button>
                 </div>
               </div>
@@ -411,25 +411,25 @@ const AdminDashboard = () => {
                 <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Uploaded Documents</h4>
                 <div className="flex flex-wrap gap-3">
                   {req.photoUrl && (
-                    <a href={req.photoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                    <a href={req.photoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#f5eecc] transition">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" /></svg>
                       Passport Photo
                     </a>
                   )}
                   {req.aadhaarDocUrl && (
-                    <a href={req.aadhaarDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                    <a href={req.aadhaarDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#f5eecc] transition">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
                       Aadhaar Document
                     </a>
                   )}
                   {req.panDocUrl && (
-                    <a href={req.panDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                    <a href={req.panDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#f5eecc] transition">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
                       PAN Document
                     </a>
                   )}
                   {req.voterIdDocUrl && (
-                    <a href={req.voterIdDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition">
+                    <a href={req.voterIdDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#f5eecc] transition">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
                       Voter Document
                     </a>
@@ -473,7 +473,7 @@ const AdminDashboard = () => {
                           completionDate: ''
                         });
                       }} 
-                      className="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
+                      className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-emerald-700"
                     >
                       {t('configure_approve')}
                     </button>
@@ -509,7 +509,7 @@ const AdminDashboard = () => {
               placeholder={t('search_customer')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full md:w-1/2 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-emerald-500"
+              className="w-full md:w-1/2 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-[#fbf8eb]0"
             />
           </div>
           {filteredCustomers.length === 0 && <p className="text-gray-500">{t('no_customers_found')}</p>}
@@ -523,10 +523,10 @@ const AdminDashboard = () => {
                 <img 
                   src={c.photoUrl || 'https://via.placeholder.com/150'} 
                   alt={c.name} 
-                  className="w-20 h-20 rounded-full object-cover border-4 border-emerald-50 mb-3"
+                  className="w-20 h-20 rounded-full object-cover border-4 border-[#fbf8eb] mb-3"
                 />
                 <h3 className="font-bold text-lg text-gray-800">{c.name}</h3>
-                <span className="text-emerald-600 font-medium mb-3">{c.customerId}</span>
+                <span className="text-[#bc7b1f] font-medium mb-3">{c.customerId}</span>
                 <span className={`px-3 py-1 text-xs font-bold rounded-full ${c.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                   {c.status}
                 </span>
@@ -539,7 +539,7 @@ const AdminDashboard = () => {
       {/* CUSTOMER PROFILE VIEW */}
       {selectedCustomer && (
         <div>
-          <button onClick={() => setSelectedCustomer(null)} className="mb-4 text-blue-600 hover:underline">
+          <button onClick={() => setSelectedCustomer(null)} className="mb-4 text-[#bc7b1f] hover:underline">
             &larr; Back to Customers List
           </button>
           
@@ -554,7 +554,7 @@ const AdminDashboard = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <h2 className="text-3xl font-bold text-gray-800">{selectedCustomer.name}</h2>
-                    <span className="inline-block mt-2 text-lg text-emerald-600 font-medium">{selectedCustomer.customerId}</span>
+                    <span className="inline-block mt-2 text-lg text-[#bc7b1f] font-medium">{selectedCustomer.customerId}</span>
                     <span className={`ml-4 inline-block px-3 py-1 text-xs font-bold rounded-full ${selectedCustomer.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                       {t('account_status')}: {selectedCustomer.status}
                     </span>
@@ -590,8 +590,8 @@ const AdminDashboard = () => {
                           const score = selectedCustomer.cibilScore || 600;
                           if (score <= 300) return <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-bold uppercase tracking-wider">Bad</span>;
                           if (score <= 500) return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold uppercase tracking-wider">Moderate</span>;
-                          if (score <= 700) return <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold uppercase tracking-wider">Good</span>;
-                          return <span className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold uppercase tracking-wider">Excellent</span>;
+                          if (score <= 700) return <span className="px-3 py-1 bg-[#f5eecc] text-[#7b481c] rounded-full text-xs font-bold uppercase tracking-wider">Good</span>;
+                          return <span className="px-3 py-1 bg-[#f5eecc] text-emerald-800 rounded-full text-xs font-bold uppercase tracking-wider">Excellent</span>;
                         })()}
                       </div>
                     </div>
@@ -619,7 +619,7 @@ const AdminDashboard = () => {
                     });
                     setIsEditingCustomer(true);
                   }} 
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
+                  className="bg-[#bc7b1f] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#965a1a] transition"
                 >
                   Edit Customer Details
                 </button>
@@ -632,7 +632,7 @@ const AdminDashboard = () => {
 
             {/* EDIT CUSTOMER FORM */}
             {isEditingCustomer && (
-              <form onSubmit={handleEditCustomerSubmit} className="bg-blue-50/50 p-6 rounded-xl border border-blue-100 mb-8">
+              <form onSubmit={handleEditCustomerSubmit} className="bg-[#fbf8eb]/50 p-6 rounded-xl border border-[#f5eecc] mb-8">
                 <h4 className="text-xl font-bold text-gray-800 mb-4">Edit Information</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <input type="text" placeholder="Full Name" value={editCustomerData.name} onChange={e => setEditCustomerData({...editCustomerData, name: e.target.value})} className="p-3 border rounded-lg" required />
@@ -658,7 +658,7 @@ const AdminDashboard = () => {
                   <div className="flex flex-col"><label className="text-sm font-medium text-gray-700">Voter Doc</label><input type="file" name="voterIdDoc" onChange={handleEditCustomerFileChange} accept=".jpg,.jpeg,.png" className="p-2 border rounded-lg bg-white" /></div>
                 </div>
                 
-                <button type="submit" disabled={loading} className="mt-6 w-full bg-emerald-600 text-white font-bold py-3 rounded-lg hover:bg-emerald-700 transition">
+                <button type="submit" disabled={loading} className="mt-6 w-full bg-[#bc7b1f] text-white font-bold py-3 rounded-lg hover:bg-emerald-700 transition">
                   {loading ? 'Saving Changes...' : 'Save Changes'}
                 </button>
               </form>
@@ -669,25 +669,25 @@ const AdminDashboard = () => {
               <h4 className="text-lg font-bold text-gray-800 mb-4">Uploaded Documents</h4>
               <div className="flex flex-wrap gap-4">
                 {selectedCustomer.photoUrl && (
-                  <a href={selectedCustomer.photoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium">
+                  <a href={selectedCustomer.photoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-4 py-2 rounded-lg hover:bg-[#f5eecc] transition font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" /></svg>
                     Passport Photo
                   </a>
                 )}
                 {selectedCustomer.aadhaarDocUrl && (
-                  <a href={selectedCustomer.aadhaarDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium">
+                  <a href={selectedCustomer.aadhaarDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-4 py-2 rounded-lg hover:bg-[#f5eecc] transition font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
                     Aadhaar Document
                   </a>
                 )}
                 {selectedCustomer.panDocUrl && (
-                  <a href={selectedCustomer.panDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium">
+                  <a href={selectedCustomer.panDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-4 py-2 rounded-lg hover:bg-[#f5eecc] transition font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
                     PAN Document
                   </a>
                 )}
                 {selectedCustomer.voterIdDocUrl && (
-                  <a href={selectedCustomer.voterIdDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium">
+                  <a href={selectedCustomer.voterIdDocUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-[#fbf8eb] text-[#965a1a] px-4 py-2 rounded-lg hover:bg-[#f5eecc] transition font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
                     Voter Document
                   </a>
@@ -712,7 +712,7 @@ const AdminDashboard = () => {
                     <div className="flex gap-2">
                       <button 
                         onClick={() => handleDownloadLoanPDF(data, selectedCustomer)}
-                        className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition"
+                        className="text-xs bg-[#bc7b1f] text-white px-2 py-1 rounded hover:bg-[#965a1a] transition"
                       >
                         Download PDF
                       </button>
@@ -755,7 +755,7 @@ const AdminDashboard = () => {
                           {inst.status !== 'PAID' && (
                             <button 
                               onClick={() => handleMarkPaid(inst._id)}
-                              className="text-emerald-600 hover:underline font-medium"
+                              className="text-[#bc7b1f] hover:underline font-medium"
                             >
                               Mark Paid
                             </button>
@@ -816,7 +816,7 @@ const AdminDashboard = () => {
 
               <div className="mt-6 flex justify-end gap-3">
                 <button type="button" onClick={() => setSelectedLoanRequest(null)} className="px-4 py-2 text-gray-600">{t('cancel')}</button>
-                <button type="submit" className="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">{t('generate_approve')}</button>
+                <button type="submit" className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-emerald-700">{t('generate_approve')}</button>
               </div>
             </form>
           </div>
@@ -839,15 +839,15 @@ const AdminDashboard = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">{t('whatsapp_number')}</label>
-                <input type="text" required value={addCustomerData.whatsappNumber} onChange={e => setAddCustomerData({...addCustomerData, whatsappNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                <input type="text" required value={addCustomerData.whatsappNumber} onChange={e => setAddCustomerData({...addCustomerData, whatsappNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Mobile Number</label>
-                <input type="text" required value={addCustomerData.mobileNumber} onChange={e => setAddCustomerData({...addCustomerData, mobileNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                <input type="text" required value={addCustomerData.mobileNumber} onChange={e => setAddCustomerData({...addCustomerData, mobileNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">{t('bank_account_number')}</label>
-                <input type="text" required value={addCustomerData.bankAccountNumber} onChange={e => setAddCustomerData({...addCustomerData, bankAccountNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                <input type="text" required value={addCustomerData.bankAccountNumber} onChange={e => setAddCustomerData({...addCustomerData, bankAccountNumber: e.target.value})} className="mt-1 w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">{t('aadhaar_number')}</label>
@@ -887,11 +887,11 @@ const AdminDashboard = () => {
                 <label className="cursor-pointer block">
                   <span className="block text-sm font-bold text-gray-700 mb-1">{t('passport_photo')}*</span>
                   <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
-                  <div className="bg-emerald-50 text-emerald-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                  <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
                   <input type="file" name="photo" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <span className="text-sm font-medium text-emerald-600">{addCustomerFiles.photo ? addCustomerFiles.photo.name : 'Click to Upload'}</span>
+                  <span className="text-sm font-medium text-[#bc7b1f]">{addCustomerFiles.photo ? addCustomerFiles.photo.name : 'Click to Upload'}</span>
                 </label>
               </div>
 
@@ -899,11 +899,11 @@ const AdminDashboard = () => {
                 <label className="cursor-pointer block">
                   <span className="block text-sm font-bold text-gray-700 mb-1">{t('aadhaar_document')}</span>
                   <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
-                  <div className="bg-emerald-50 text-emerald-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                  <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
                   <input type="file" name="aadhaarDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <span className="text-sm font-medium text-emerald-600">{addCustomerFiles.aadhaarDoc ? addCustomerFiles.aadhaarDoc.name : 'Click to Upload'}</span>
+                  <span className="text-sm font-medium text-[#bc7b1f]">{addCustomerFiles.aadhaarDoc ? addCustomerFiles.aadhaarDoc.name : 'Click to Upload'}</span>
                 </label>
               </div>
 
@@ -911,11 +911,11 @@ const AdminDashboard = () => {
                 <label className="cursor-pointer block">
                   <span className="block text-sm font-bold text-gray-700 mb-1">{t('pan_document')}</span>
                   <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
-                  <div className="bg-emerald-50 text-emerald-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                  <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
                   <input type="file" name="panDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <span className="text-sm font-medium text-emerald-600">{addCustomerFiles.panDoc ? addCustomerFiles.panDoc.name : 'Click to Upload'}</span>
+                  <span className="text-sm font-medium text-[#bc7b1f]">{addCustomerFiles.panDoc ? addCustomerFiles.panDoc.name : 'Click to Upload'}</span>
                 </label>
               </div>
 
@@ -923,16 +923,16 @@ const AdminDashboard = () => {
                 <label className="cursor-pointer block">
                   <span className="block text-sm font-bold text-gray-700 mb-1">{t('voter_document')}</span>
                   <span className="block text-xs text-gray-500 mb-2">JPG, PNG (Max 150KB)</span>
-                  <div className="bg-emerald-50 text-emerald-600 p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
+                  <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
                   <input type="file" name="voterIdDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <span className="text-sm font-medium text-emerald-600">{addCustomerFiles.voterIdDoc ? addCustomerFiles.voterIdDoc.name : 'Click to Upload'}</span>
+                  <span className="text-sm font-medium text-[#bc7b1f]">{addCustomerFiles.voterIdDoc ? addCustomerFiles.voterIdDoc.name : 'Click to Upload'}</span>
                 </label>
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="mt-4 bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700">
+            <button type="submit" disabled={loading} className="mt-4 bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-emerald-700">
               {loading ? t('submitting') : t('register_new_customer')}
             </button>
           </form>

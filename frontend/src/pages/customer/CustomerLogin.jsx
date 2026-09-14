@@ -33,7 +33,7 @@ const CustomerLogin = () => {
 
   return (
     <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-lg shadow-md border border-gray-100">
-      <h2 className="text-2xl font-bold text-center text-blue-900 mb-6">{t('customer_login')}</h2>
+      <h2 className="text-2xl font-bold text-center text-[#673c1c] mb-6">{t('customer_login')}</h2>
       
       {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
       
@@ -44,7 +44,7 @@ const CustomerLogin = () => {
             type="text" 
             value={customerId}
             onChange={(e) => setCustomerId(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#d79e27]"
             required 
             placeholder="e.g. SH-1234"
           />
@@ -55,21 +55,21 @@ const CustomerLogin = () => {
             type="password" 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#d79e27]"
             required 
           />
         </div>
         <button 
           type="submit" 
           disabled={loading}
-          className="w-full bg-blue-600 text-white font-medium py-2 rounded hover:bg-blue-700 transition disabled:bg-blue-400"
+          className="w-full bg-[#bc7b1f] text-white font-medium py-2 rounded hover:bg-[#965a1a] transition disabled:bg-gray-400"
         >
           {loading ? t('submitting') : t('login')}
         </button>
       </form>
       
       <div className="mt-6 text-center text-gray-600">
-        {t('dont_have_account')} <Link to="/customer/register" className="text-blue-600 hover:underline">{t('register_here')}</Link>
+        {t('dont_have_account')} <Link to="/customer/register" className="text-[#bc7b1f] hover:underline">{t('register_here')}</Link>
       </div>
     </div>
   );

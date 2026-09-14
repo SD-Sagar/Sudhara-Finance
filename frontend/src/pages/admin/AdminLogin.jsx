@@ -32,7 +32,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-lg shadow-md border border-gray-100 border-t-4 border-t-emerald-600">
+    <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-lg shadow-md border border-gray-100 border-t-4 border-t-[#bc7b1f]">
       <h2 className="text-2xl font-bold text-center text-emerald-900 mb-6">{t('admin_login')}</h2>
       
       {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
@@ -44,7 +44,7 @@ const AdminLogin = () => {
             type="email" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#d79e27]"
             required 
           />
         </div>
@@ -54,7 +54,7 @@ const AdminLogin = () => {
             type="password" 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#d79e27]"
             required 
           />
         </div>

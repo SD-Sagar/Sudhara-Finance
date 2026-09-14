@@ -12,7 +12,7 @@ const sendEmail = async (options) => {
         });
 
         const message = {
-            from: `${process.env.FROM_NAME || 'Sudhara Finance'} <${process.env.FROM_EMAIL || 'noreply@sudharafinance.com'}>`,
+            from: `${process.env.FROM_NAME || 'Shudhara Women Developement Organization'} <${process.env.FROM_EMAIL || 'noreply@shudharafinance.com'}>`,
             to: options.email,
             subject: options.subject,
             text: options.message,

@@ -35,14 +35,14 @@ const requestLoan = async (req, res, next) => {
         // Email notification to customer
         await sendEmail({
             email: req.user.email,
-            subject: 'Sudhara Finance - Loan Request Received',
+            subject: 'Shudhara Women Development Organization - Loan Request Received',
             message: `Dear ${req.user.name}, your loan request for ${requestedAmount} has been received. You will be notified once it is processed.`
         });
 
         // Email notification to admin
         await sendEmail({
             email: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
-            subject: 'Sudhara Finance - New Loan Request',
+            subject: 'Shudhara Women Development Organization - New Loan Request',
             message: `A new loan request for ₹${requestedAmount} has been submitted by ${req.user.name} (${req.user.customerId}). Please review in the Admin Dashboard.`
         });
 
@@ -136,7 +136,7 @@ const approveLoan = async (req, res, next) => {
         // Notify customer
         await sendEmail({
             email: loanRequest.customer.email,
-            subject: 'Sudhara Finance - Loan Approved',
+            subject: 'Shudhara Women Development Organization - Loan Approved',
             message: `Dear ${loanRequest.customer.name}, your loan request has been approved for amount ${approvedAmount}. Check your dashboard for the installment schedule.`
         });
 
@@ -232,7 +232,7 @@ const requestCancellation = async (req, res, next) => {
         // Email notification to admin
         await sendEmail({
             email: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
-            subject: 'Sudhara Finance - Loan Cancellation Requested',
+            subject: 'Shudhara Women Development Organization - Loan Cancellation Requested',
             message: `Customer ${req.user.name} (${req.user.customerId}) has requested cancellation for their loan request of ₹${loanRequest.requestedAmount}. Please review in the Admin Dashboard.`
         });
 
@@ -267,7 +267,7 @@ const resolveCancellation = async (req, res, next) => {
 
             await sendEmail({
                 email: loanRequest.customer.email,
-                subject: 'Sudhara Finance - Loan Request Cancelled',
+                subject: 'Shudhara Women Development Organization - Loan Request Cancelled',
                 message: `Dear ${loanRequest.customer.name}, your request to cancel the loan for ₹${loanRequest.requestedAmount} has been approved.`
             });
 
@@ -278,7 +278,7 @@ const resolveCancellation = async (req, res, next) => {
 
             await sendEmail({
                 email: loanRequest.customer.email,
-                subject: 'Sudhara Finance - Cancellation Request Rejected',
+                subject: 'Shudhara Women Development Organization - Cancellation Request Rejected',
                 message: `Dear ${loanRequest.customer.name}, your request to cancel the loan for ₹${loanRequest.requestedAmount} was rejected. Your loan request is still pending processing.`
             });
 
