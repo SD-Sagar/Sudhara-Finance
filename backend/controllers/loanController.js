@@ -303,15 +303,8 @@ const deleteLoan = async (req, res, next) => {
             return next(new Error('Admin password is required to delete a loan history.'));
         }
 
-        // Verify admin password
-        const adminUser = await User.findById(req.user._id);
-        if (!adminUser) {
-            res.status(404);
-            return next(new Error('Admin user not found.'));
-        }
-
-        const isMatch = await adminUser.matchPassword(password);
-        if (!isMatch) {
+        // Verify admin password against .env
+        if (password !== process.env.ADMIN_PASS) {
             res.status(401);
             return next(new Error('Invalid admin password.'));
         }

@@ -9,20 +9,22 @@ const authAdmin = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
+        const adminEmail = process.env.SMTP_USER;
+        const adminPass = process.env.ADMIN_PASS;
 
-        if (user && (await user.matchPassword(password))) {
-            generateToken(res, user._id, 'ADMIN');
+        if (email === adminEmail && password === adminPass) {
+            // Using a static ID 'admin' for the JWT payload since we bypass MongoDB
+            generateToken(res, 'admin', 'ADMIN');
 
             res.json({
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
+                _id: 'admin',
+                name: 'Super Admin',
+                email: adminEmail,
+                role: 'ADMIN'
             });
         } else {
             res.status(401);
-            return next(new Error('Invalid email or password'));
+            return next(new Error('Invalid admin email or password'));
         }
     } catch (error) {
         next(error);
@@ -81,13 +83,12 @@ const logoutUser = (req, res) => {
 const getUserProfile = async (req, res, next) => {
     try {
         if (req.userRole === 'ADMIN') {
-            const user = await User.findById(req.user._id).select('-password');
-            if (user) {
-                res.json({ ...user._doc, role: 'ADMIN' });
-            } else {
-                res.status(404);
-                return next(new Error('Admin not found'));
-            }
+            res.json({
+                _id: 'admin',
+                name: 'Super Admin',
+                email: process.env.SMTP_USER,
+                role: 'ADMIN'
+            });
         } else if (req.userRole === 'CUSTOMER') {
             const customer = await Customer.findById(req.user._id).select('-password');
             if (customer) {

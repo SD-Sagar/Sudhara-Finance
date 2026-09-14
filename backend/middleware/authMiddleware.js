@@ -10,7 +10,7 @@ const protect = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
             if (decoded.role === 'ADMIN') {
-                req.user = await User.findById(decoded.id).select('-password');
+                req.user = { _id: 'admin', email: process.env.SMTP_USER, role: 'ADMIN' };
                 req.userRole = 'ADMIN';
             } else if (decoded.role === 'CUSTOMER') {
                 req.user = await Customer.findById(decoded.id).select('-password');
