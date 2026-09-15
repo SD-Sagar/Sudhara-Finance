@@ -72,8 +72,14 @@ const addCustomerDirectly = async (req, res, next) => {
             aadhaar, voterId, pan, maritalStatus, permanentAddress, password
         } = req.body;
 
-        const conflictQuery = [{ aadhaar }, { pan }];
-        if (email) conflictQuery.push({ email });
+        const crypto = require('crypto');
+        const conflictQuery = [
+            { aadhaarHash: crypto.createHash('sha256').update(aadhaar).digest('hex') },
+            { panHash: crypto.createHash('sha256').update(pan.toUpperCase()).digest('hex') }
+        ];
+        if (email) {
+            conflictQuery.push({ emailHash: crypto.createHash('sha256').update(email.toLowerCase()).digest('hex') });
+        }
 
         const existingCustomer = await Customer.findOne({
             $or: conflictQuery
@@ -117,11 +123,10 @@ const addCustomerDirectly = async (req, res, next) => {
 
         const customer = await Customer.create({
             customerId,
-            name, bankAccountNumber, whatsappNumber, mobileNumber, email,
+            name, whatsappNumber, mobileNumber, email,
             aadhaar, voterId, pan, maritalStatus, permanentAddress,
             photoUrl, aadhaarDocUrl, voterIdDocUrl, panDocUrl,
-            password: plainPassword,
-            plainPassword: plainPassword
+            password: plainPassword
         });
 
         // Send Email
@@ -237,11 +242,38 @@ const updateCustomer = async (req, res, next) => {
     }
 };
 
+// @desc    Reset customer password
+// @route   PUT /api/customers/:id/reset-password
+// @access  Private/Admin
+const resetCustomerPassword = async (req, res, next) => {
+    try {
+        const customer = await Customer.findById(req.params.id);
+        if (!customer) {
+            res.status(404);
+            return next(new Error('Customer not found'));
+        }
+
+        const { newPassword } = req.body;
+        if (!newPassword || newPassword.length < 6) {
+            res.status(400);
+            return next(new Error('Password must be at least 6 characters'));
+        }
+
+        customer.password = newPassword;
+        await customer.save(); // The pre('save') hook will hash it
+
+        res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllCustomers,
     getCustomerById,
     addCustomerDirectly,
     deleteCustomer,
     activateCustomer,
-    updateCustomer
+    updateCustomer,
+    resetCustomerPassword
 };

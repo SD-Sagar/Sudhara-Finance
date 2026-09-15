@@ -8,7 +8,8 @@ const {
     addCustomerDirectly,
     deleteCustomer,
     activateCustomer,
-    updateCustomer
+    updateCustomer,
+    resetCustomerPassword
 } = require('../controllers/customerController');
 
 router.route('/')
@@ -41,5 +42,6 @@ router.route('/:id')
     );
 
 router.put('/:id/activate', protect, admin, activateCustomer);
+router.put('/:id/reset-password', protect, admin, resetCustomerPassword);
 
 module.exports = router;

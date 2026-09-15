@@ -250,6 +250,22 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleResetPassword = async (customerId) => {
+    const newPassword = prompt('Enter a new password for this customer (min 6 chars):');
+    if (!newPassword) return;
+    if (newPassword.length < 6) {
+      alert('Password must be at least 6 characters.');
+      return;
+    }
+    
+    try {
+      await api.put(`/api/customers/${customerId}/reset-password`, { newPassword });
+      alert('Password reset successfully.');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Error resetting password');
+    }
+  };
+
   const handleAddCustomerFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.size > 150 * 1024) {
@@ -642,6 +658,7 @@ const AdminDashboard = () => {
                     ) : (
                        <button onClick={() => handleToggleCustomerStatus(selectedCustomer._id, selectedCustomer.status)} className="text-green-600 border-2 border-green-200 bg-green-50 px-4 py-2 rounded-lg hover:bg-green-100 transition font-medium">{t('activate')}</button>
                     )}
+                    <button onClick={() => handleResetPassword(selectedCustomer._id)} className="ml-3 text-[#7b481c] border-2 border-[#d79e27] bg-[#fbf8eb] px-4 py-2 rounded-lg hover:bg-[#f5eecc] transition font-medium">Reset Password</button>
                   </div>
                 </div>
 
@@ -655,7 +672,6 @@ const AdminDashboard = () => {
                   <div className="space-y-2 text-[#bc7b1f]">
                     <p><strong className="text-[#7b481c]">Aadhaar:</strong> {selectedCustomer.aadhaar}</p>
                     <p><strong className="text-[#7b481c]">PAN:</strong> {selectedCustomer.pan}</p>
-                    <p><strong className="text-[#7b481c]">Login Password:</strong> <span className="font-mono bg-[#f5eecc] px-2 py-1 rounded text-[#7b481c] border">{selectedCustomer.plainPassword}</span></p>
                     
                     {/* CIBIL Score Display */}
                     <div className="mt-4 p-4 rounded-xl border border-gray-100 bg-[#fbf8eb] flex flex-col justify-center items-center">

@@ -16,8 +16,14 @@ const submitRegistration = async (req, res, next) => {
         } = req.body;
 
         // Check if customer already exists with email or aadhaar/pan
-        const conflictQuery = [{ aadhaar }, { pan }];
-        if (email) conflictQuery.push({ email });
+        const crypto = require('crypto');
+        const conflictQuery = [
+            { aadhaarHash: crypto.createHash('sha256').update(aadhaar).digest('hex') },
+            { panHash: crypto.createHash('sha256').update(pan.toUpperCase()).digest('hex') }
+        ];
+        if (email) {
+            conflictQuery.push({ emailHash: crypto.createHash('sha256').update(email.toLowerCase()).digest('hex') });
+        }
 
         const existingCustomer = await Customer.findOne({
             $or: conflictQuery
@@ -150,8 +156,7 @@ const approveRegistration = async (req, res, next) => {
             panDocUrl: request.panDocUrl,
             maritalStatus: request.maritalStatus,
             permanentAddress: request.permanentAddress,
-            password: plainPassword,
-            plainPassword: plainPassword
+            password: plainPassword
         });
 
         request.status = 'APPROVED';
