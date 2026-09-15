@@ -29,7 +29,7 @@ const customerSchema = new mongoose.Schema({
     status: { type: String, enum: ['ACTIVE', 'INACTIVE'], default: 'ACTIVE' }
 }, { timestamps: true });
 
-customerSchema.pre('save', async function(next) {
+customerSchema.pre('validate', function(next) {
     const crypto = require('crypto');
     if (this.isModified('email') && this.email) {
         this.emailHash = crypto.createHash('sha256').update(this.email.toLowerCase()).digest('hex');
@@ -40,7 +40,10 @@ customerSchema.pre('save', async function(next) {
     if (this.isModified('pan') && this.pan) {
         this.panHash = crypto.createHash('sha256').update(this.pan.toUpperCase()).digest('hex');
     }
+    next();
+});
 
+customerSchema.pre('save', async function(next) {
     if (!this.isModified('password')) {
         return next();
     }

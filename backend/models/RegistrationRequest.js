@@ -26,7 +26,7 @@ registrationRequestSchema.plugin(mongooseFieldEncryption, {
     secret: process.env.ENCRYPTION_KEY || 'sudhara_secret_encryption_key_change_in_prod'
 });
 
-registrationRequestSchema.pre('save', function(next) {
+registrationRequestSchema.pre('validate', function(next) {
     const crypto = require('crypto');
     if (this.isModified('email') && this.email) {
         this.emailHash = crypto.createHash('sha256').update(this.email.toLowerCase()).digest('hex');
