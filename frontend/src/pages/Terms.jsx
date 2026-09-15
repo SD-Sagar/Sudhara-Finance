@@ -1,15 +1,20 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Terms = () => {
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 mb-24">
       <div className="bg-[#fbf8eb] rounded-xl shadow-lg border border-[#e1b73e] p-6 md:p-10">
         <h1 className="text-3xl md:text-4xl font-bold text-[#673c1c] mb-6 border-b-2 border-[#bc7b1f] pb-4">
-          Terms and Conditions
+          {t('terms_and_conditions')}
         </h1>
 
         <div className="prose prose-amber max-w-none text-[#965a1a]">
@@ -136,7 +141,7 @@ const Terms = () => {
           <p className="mb-3 pl-4"><strong>21.3.</strong> In the event of a discrepancy between information displayed through the website and the applicable executed loan agreement or verified organizational records, the Organization may investigate and correct the discrepancy in accordance with its records and applicable law.</p>
           <p className="mb-3 pl-4"><strong>21.4.</strong> Customers must contact the Organization promptly if they identify an apparent error in their personal information, loan information, installment schedule, payment status, or receipt.</p>
           <hr className="my-8 border-[#bc7b1f]" />
-          <h2 className="text-3xl font-bold text-[#673c1c] mt-8 mb-4 text-center">IMPORTANT NOTICE TO APPLICANTS</h2>
+          <h2 className="text-3xl font-bold text-[#673c1c] mt-8 mb-4 text-center">{t('important_notice')}</h2>
           <p className="mb-4">Please read all loan documents carefully before accepting a loan. Make sure you understand the loan amount, interest rate, fees, repayment schedule, due dates, and consequences of default. Do not provide false information or conceal existing financial obligations.</p>
           <p className="mb-4">Registration on the Organization's website does not guarantee loan approval. A loan application will be considered only after the Organization completes its applicable verification and approval process.</p>
           <p className="mb-4">The website primarily functions as a customer communication, application-management, loan-ledger, installment-tracking, and record-keeping platform. It does not itself provide banking services, hold customer funds, or independently process or execute financial transactions. Actual financial transactions and their verification are handled separately by the Organization according to its applicable procedures.</p>
@@ -144,7 +149,7 @@ const Terms = () => {
           <p className="mb-4">For any questions regarding eligibility, registration, repayment, loan terms, payment status, or other matters, please contact the Organization before accepting or signing the applicable loan agreement.</p>
           <p className="mb-4">By proceeding with registration or a loan application, the applicant confirms that they have read, understood, and agreed to the applicable Terms & Conditions.</p>
 
-          <h2 className="text-2xl font-bold text-[#7b481c] mt-12 mb-4">Contact Information</h2>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-12 mb-4">{t('contact_information')}</h2>
           <p className="mb-4 text-lg">
             For any queries or concerns regarding these Terms, please contact us at:<br /><br />
             <strong>Shudhara Women Development Organization</strong><br />
@@ -153,6 +158,16 @@ const Terms = () => {
           </p>
 
         </div>
+      </div>
+      
+      {/* Fixed Footer Button */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e1b73e] p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 flex justify-center">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="bg-[#bc7b1f] text-white px-8 py-3 rounded-lg font-bold text-lg shadow-md hover:bg-[#965a1a] hover:shadow-lg transition-all"
+        >
+          {t('go_back_to_dashboard')}
+        </button>
       </div>
     </div>
   );

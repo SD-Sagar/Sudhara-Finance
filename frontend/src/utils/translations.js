@@ -77,6 +77,13 @@ export const translations = {
     "no_pending_registrations": "No pending registrations.",
     "email": "Email",
     "view_photo": "View Photo",
+
+    // Terms
+    "terms_and_conditions": "Terms and Conditions",
+    "contact_information": "Contact Information",
+    "go_back_to_dashboard": "Go Back to Dashboard",
+    "important_notice": "IMPORTANT NOTICE TO APPLICANTS",
+
     "approve": "Approve",
     "reject": "Reject",
     "no_pending_loans": "No pending loan requests.",
@@ -186,6 +193,13 @@ export const translations = {
     "no_pending_registrations": "কোনো অপেক্ষমাণ নিবন্ধন নেই।",
     "email": "ইমেইল",
     "view_photo": "ছবি দেখুন",
+
+    // Terms
+    "terms_and_conditions": "শর্তাবলী",
+    "contact_information": "যোগাযোগের তথ্য",
+    "go_back_to_dashboard": "ড্যাশবোর্ডে ফিরে যান",
+    "important_notice": "আবেদনকারীদের জন্য গুরুত্বপূর্ণ বিজ্ঞপ্তি",
+
     "approve": "অনুমোদন করুন",
     "reject": "প্রত্যাখ্যান করুন",
     "no_pending_loans": "কোনো অপেক্ষমাণ ঋণের আবেদন নেই।",
