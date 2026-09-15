@@ -68,12 +68,15 @@ const getCustomerById = async (req, res, next) => {
 const addCustomerDirectly = async (req, res, next) => {
     try {
         const {
-            name, bankAccountNumber, whatsappNumber, mobileNumber, email,
-            aadhaar, voterId, pan, maritalStatus, permanentAddress
+            name, whatsappNumber, mobileNumber, email,
+            aadhaar, voterId, pan, maritalStatus, permanentAddress, password
         } = req.body;
 
+        const conflictQuery = [{ aadhaar }, { pan }];
+        if (email) conflictQuery.push({ email });
+
         const existingCustomer = await Customer.findOne({
-            $or: [{ email }, { aadhaar }, { pan }]
+            $or: conflictQuery
         });
         if (existingCustomer) {
             res.status(400);
@@ -197,13 +200,12 @@ const updateCustomer = async (req, res, next) => {
         }
 
         const {
-            name, bankAccountNumber, whatsappNumber, mobileNumber, email,
+            name, whatsappNumber, mobileNumber, email,
             aadhaar, voterId, pan, maritalStatus, permanentAddress
         } = req.body;
 
         // Update text fields
         if (name) customer.name = name;
-        if (bankAccountNumber) customer.bankAccountNumber = bankAccountNumber;
         if (whatsappNumber) customer.whatsappNumber = whatsappNumber;
         if (mobileNumber) customer.mobileNumber = mobileNumber;
         if (email) customer.email = email;

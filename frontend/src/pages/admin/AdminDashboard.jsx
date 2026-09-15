@@ -30,7 +30,7 @@ const AdminDashboard = () => {
 
   // Add Customer State
   const [addCustomerData, setAddCustomerData] = useState({
-    name: '', bankAccountNumber: '', whatsappNumber: '', mobileNumber: '', email: '',
+    name: '', whatsappNumber: '', mobileNumber: '', email: '',
     aadhaar: '', voterId: '', pan: '', maritalStatus: 'Unmarried', permanentAddress: '', password: ''
   });
   const [addCustomerFiles, setAddCustomerFiles] = useState({
@@ -280,7 +280,7 @@ const AdminDashboard = () => {
       });
       alert('Customer created successfully and credentials sent to customer email.');
       setAddCustomerData({
-        name: '', bankAccountNumber: '', whatsappNumber: '', mobileNumber: '', email: '',
+        name: '', whatsappNumber: '', mobileNumber: '', email: '',
         aadhaar: '', voterId: '', pan: '', maritalStatus: 'Unmarried', permanentAddress: '', password: ''
       });
       setAddCustomerFiles({ photo: null, aadhaarDoc: null, voterIdDoc: null, panDoc: null });
@@ -655,7 +655,6 @@ const AdminDashboard = () => {
                   <div className="space-y-2 text-[#bc7b1f]">
                     <p><strong className="text-[#7b481c]">Aadhaar:</strong> {selectedCustomer.aadhaar}</p>
                     <p><strong className="text-[#7b481c]">PAN:</strong> {selectedCustomer.pan}</p>
-                    <p><strong className="text-[#7b481c]">Bank A/C:</strong> {selectedCustomer.bankAccountNumber}</p>
                     <p><strong className="text-[#7b481c]">Login Password:</strong> <span className="font-mono bg-[#f5eecc] px-2 py-1 rounded text-[#7b481c] border">{selectedCustomer.plainPassword}</span></p>
                     
                     {/* CIBIL Score Display */}
@@ -684,7 +683,6 @@ const AdminDashboard = () => {
                   onClick={() => {
                     setEditCustomerData({
                       name: selectedCustomer.name,
-                      bankAccountNumber: selectedCustomer.bankAccountNumber,
                       whatsappNumber: selectedCustomer.whatsappNumber,
                       mobileNumber: selectedCustomer.mobileNumber,
                       email: selectedCustomer.email,
@@ -713,13 +711,12 @@ const AdminDashboard = () => {
                 <h4 className="text-xl font-bold text-[#7b481c] mb-4">Edit Information</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <input type="text" placeholder="Full Name" value={editCustomerData.name} onChange={e => setEditCustomerData({...editCustomerData, name: e.target.value})} className="p-3 border rounded-lg" required />
-                  <input type="email" placeholder="Email" value={editCustomerData.email} onChange={e => setEditCustomerData({...editCustomerData, email: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="email" placeholder="Email" value={editCustomerData.email} onChange={e => setEditCustomerData({...editCustomerData, email: e.target.value})} className="p-3 border rounded-lg" />
                   <input type="text" placeholder={t('mobile_number') || "Mobile Number"} value={editCustomerData.mobileNumber} onChange={e => setEditCustomerData({...editCustomerData, mobileNumber: e.target.value})} className="p-3 border rounded-lg" required />
                   <input type="text" placeholder="WhatsApp Number" value={editCustomerData.whatsappNumber} onChange={e => setEditCustomerData({...editCustomerData, whatsappNumber: e.target.value})} className="p-3 border rounded-lg" required />
-                  <input type="text" placeholder="Bank Account Number" value={editCustomerData.bankAccountNumber} onChange={e => setEditCustomerData({...editCustomerData, bankAccountNumber: e.target.value})} className="p-3 border rounded-lg" required />
                   <input type="text" placeholder="Aadhaar Number" value={editCustomerData.aadhaar} onChange={e => setEditCustomerData({...editCustomerData, aadhaar: e.target.value})} className="p-3 border rounded-lg" required />
                   <input type="text" placeholder="PAN Number" value={editCustomerData.pan} onChange={e => setEditCustomerData({...editCustomerData, pan: e.target.value})} className="p-3 border rounded-lg" required />
-                  <input type="text" placeholder="Voter ID" value={editCustomerData.voterId} onChange={e => setEditCustomerData({...editCustomerData, voterId: e.target.value})} className="p-3 border rounded-lg" required />
+                  <input type="text" placeholder="Voter ID" value={editCustomerData.voterId} onChange={e => setEditCustomerData({...editCustomerData, voterId: e.target.value})} className="p-3 border rounded-lg" />
                   <select value={editCustomerData.maritalStatus} onChange={e => setEditCustomerData({...editCustomerData, maritalStatus: e.target.value})} className="p-3 border rounded-lg">
                     <option value="Unmarried">Unmarried</option>
                     <option value="Married">Married</option>
@@ -922,32 +919,28 @@ const AdminDashboard = () => {
                 <input type="text" required value={addCustomerData.name} onChange={e => setAddCustomerData({...addCustomerData, name: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#965a1a]">{t('email_address')}</label>
-                <input type="email" required value={addCustomerData.email} onChange={e => setAddCustomerData({...addCustomerData, email: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('email_address')} (Optional)</label>
+                <input type="email" value={addCustomerData.email} onChange={e => setAddCustomerData({...addCustomerData, email: e.target.value})} pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#965a1a]">{t('whatsapp_number')}</label>
-                <input type="text" required value={addCustomerData.whatsappNumber} onChange={e => setAddCustomerData({...addCustomerData, whatsappNumber: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+                <input type="text" required value={addCustomerData.whatsappNumber} onChange={e => setAddCustomerData({...addCustomerData, whatsappNumber: e.target.value})} maxLength="10" minLength="10" pattern="\d{10}" title="Must be exactly 10 digits" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#965a1a]">{t('mobile_number') || "Mobile Number"}</label>
-                <input type="text" required value={addCustomerData.mobileNumber} onChange={e => setAddCustomerData({...addCustomerData, mobileNumber: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-[#965a1a]">{t('bank_account_number')}</label>
-                <input type="text" required value={addCustomerData.bankAccountNumber} onChange={e => setAddCustomerData({...addCustomerData, bankAccountNumber: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+                <input type="text" required value={addCustomerData.mobileNumber} onChange={e => setAddCustomerData({...addCustomerData, mobileNumber: e.target.value})} maxLength="10" minLength="10" pattern="\d{10}" title="Must be exactly 10 digits" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#965a1a]">{t('aadhaar_number')}</label>
-                <input type="text" required value={addCustomerData.aadhaar} onChange={e => setAddCustomerData({...addCustomerData, aadhaar: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+                <input type="text" required value={addCustomerData.aadhaar} onChange={e => setAddCustomerData({...addCustomerData, aadhaar: e.target.value})} maxLength="12" minLength="12" pattern="\d{12}" title="Must be exactly 12 digits" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#965a1a]">{t('pan_number')}</label>
-                <input type="text" required value={addCustomerData.pan} onChange={e => setAddCustomerData({...addCustomerData, pan: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+                <input type="text" required value={addCustomerData.pan} onChange={e => setAddCustomerData({...addCustomerData, pan: e.target.value})} maxLength="10" minLength="10" pattern="[a-zA-Z0-9]{10}" title="Must be exactly 10 alphanumeric characters" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] uppercase" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#965a1a]">{t('voter_id')}</label>
-                <input type="text" required value={addCustomerData.voterId} onChange={e => setAddCustomerData({...addCustomerData, voterId: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+                <label className="block text-sm font-medium text-[#965a1a]">{t('voter_id')} (Optional)</label>
+                <input type="text" value={addCustomerData.voterId} onChange={e => setAddCustomerData({...addCustomerData, voterId: e.target.value})} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#965a1a]">{t('marital_status')}</label>
@@ -985,31 +978,31 @@ const AdminDashboard = () => {
 
               <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('aadhaar_document')}</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('aadhaar_document')}*</span>
                   <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
-                  <input type="file" name="aadhaarDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <input type="file" name="aadhaarDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                   <span className="text-sm font-medium text-[#bc7b1f]">{addCustomerFiles.aadhaarDoc ? addCustomerFiles.aadhaarDoc.name : 'Click to Upload'}</span>
                 </label>
               </div>
 
               <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('pan_document')}</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('pan_document')}*</span>
                   <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
-                  <input type="file" name="panDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <input type="file" name="panDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                   <span className="text-sm font-medium text-[#bc7b1f]">{addCustomerFiles.panDoc ? addCustomerFiles.panDoc.name : 'Click to Upload'}</span>
                 </label>
               </div>
 
               <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('voter_document')}</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('voter_document')} (Optional)</span>
                   <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>

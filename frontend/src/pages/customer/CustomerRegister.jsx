@@ -7,7 +7,6 @@ const CustomerRegister = () => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
-    bankAccountNumber: '',
     whatsappNumber: '',
     mobileNumber: '',
     email: '',
@@ -87,7 +86,7 @@ const CustomerRegister = () => {
       });
       // Reset form
       setFormData({
-        name: '', bankAccountNumber: '', whatsappNumber: '', mobileNumber: '', email: '',
+        name: '', whatsappNumber: '', mobileNumber: '', email: '',
         aadhaar: '', voterId: '', pan: '', maritalStatus: 'Unmarried', permanentAddress: ''
       });
       // File inputs can't be easily reset without refs, but keeping it simple for prototype
@@ -119,32 +118,28 @@ const CustomerRegister = () => {
               <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#965a1a]">{t('email_address')}</label>
-              <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('email_address')} (Optional)</label>
+              <input type="email" name="email" value={formData.email} onChange={handleInputChange} pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[#965a1a]">{t('whatsapp_number')}</label>
-              <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+              <input type="text" name="whatsappNumber" value={formData.whatsappNumber} onChange={handleInputChange} required maxLength="10" minLength="10" pattern="\d{10}" title="Must be exactly 10 digits" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[#965a1a]">{t('mobile_number')}</label>
-              <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#965a1a]">{t('bank_account_number')}</label>
-              <input type="text" name="bankAccountNumber" value={formData.bankAccountNumber} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
+              <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} required maxLength="10" minLength="10" pattern="\d{10}" title="Must be exactly 10 digits" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] focus:ring-2 focus:ring-[#fbf8eb]0 focus:outline-none" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[#965a1a]">{t('aadhaar_number')}</label>
-              <input type="text" name="aadhaar" value={formData.aadhaar} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+              <input type="text" name="aadhaar" value={formData.aadhaar} onChange={handleInputChange} required maxLength="12" minLength="12" pattern="\d{12}" title="Must be exactly 12 digits" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[#965a1a]">{t('pan_number')}</label>
-              <input type="text" name="pan" value={formData.pan} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+              <input type="text" name="pan" value={formData.pan} onChange={handleInputChange} required maxLength="10" minLength="10" pattern="[a-zA-Z0-9]{10}" title="Must be exactly 10 alphanumeric characters" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f] uppercase" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#965a1a]">{t('voter_id')}</label>
-              <input type="text" name="voterId" value={formData.voterId} onChange={handleInputChange} required className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+              <label className="block text-sm font-medium text-[#965a1a]">{t('voter_id')} (Optional)</label>
+              <input type="text" name="voterId" value={formData.voterId} onChange={handleInputChange} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
             </div>
             <div>
               <label className="block text-sm font-medium text-[#965a1a]">{t('marital_status')}</label>
@@ -176,24 +171,24 @@ const CustomerRegister = () => {
 
             <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
               <label className="cursor-pointer block">
-                <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('aadhaar_document')}</span>
+                <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('aadhaar_document')}*</span>
                 <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
-                <input type="file" name="aadhaarDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <input type="file" name="aadhaarDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <span className="text-sm font-medium text-[#bc7b1f]">{files.aadhaarDoc ? files.aadhaarDoc.name : 'Click to Upload'}</span>
               </label>
             </div>
 
             <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
               <label className="cursor-pointer block">
-                <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('pan_document')}</span>
+                <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('pan_document')}*</span>
                 <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
-                <input type="file" name="panDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                <input type="file" name="panDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <span className="text-sm font-medium text-[#bc7b1f]">{files.panDoc ? files.panDoc.name : 'Click to Upload'}</span>
               </label>
             </div>

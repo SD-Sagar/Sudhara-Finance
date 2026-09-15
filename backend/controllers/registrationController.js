@@ -11,13 +11,16 @@ const bcrypt = require('bcryptjs');
 const submitRegistration = async (req, res, next) => {
     try {
         const {
-            name, bankAccountNumber, whatsappNumber, mobileNumber, email,
+            name, whatsappNumber, mobileNumber, email,
             aadhaar, voterId, pan, maritalStatus, permanentAddress
         } = req.body;
 
         // Check if customer already exists with email or aadhaar/pan
+        const conflictQuery = [{ aadhaar }, { pan }];
+        if (email) conflictQuery.push({ email });
+
         const existingCustomer = await Customer.findOne({
-            $or: [{ email }, { aadhaar }, { pan }]
+            $or: conflictQuery
         });
         if (existingCustomer) {
             res.status(400);
@@ -25,7 +28,7 @@ const submitRegistration = async (req, res, next) => {
         }
 
         const existingRequest = await RegistrationRequest.findOne({
-            $or: [{ email }, { aadhaar }, { pan }],
+            $or: conflictQuery,
             status: 'PENDING'
         });
         if (existingRequest) {
@@ -57,7 +60,7 @@ const submitRegistration = async (req, res, next) => {
         }
 
         const request = await RegistrationRequest.create({
-            name, bankAccountNumber, whatsappNumber, mobileNumber, email,
+            name, whatsappNumber, mobileNumber, email,
             aadhaar, voterId, pan, maritalStatus, permanentAddress,
             photoUrl, aadhaarDocUrl, voterIdDocUrl, panDocUrl
         });
@@ -135,7 +138,6 @@ const approveRegistration = async (req, res, next) => {
         const customer = await Customer.create({
             customerId,
             name: request.name,
-            bankAccountNumber: request.bankAccountNumber,
             whatsappNumber: request.whatsappNumber,
             mobileNumber: request.mobileNumber,
             email: request.email,
