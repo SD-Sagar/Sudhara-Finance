@@ -98,9 +98,6 @@ const addCustomerDirectly = async (req, res, next) => {
 
         if (req.files && req.files.photo && req.files.photo[0]) {
             photoUrl = await uploadToCloudinary(req.files.photo[0].buffer, 'sudhara/photos', req.files.photo[0].originalname);
-        } else {
-             res.status(400);
-             return next(new Error('Photograph is required'));
         }
 
         if (req.files && req.files.aadhaarDoc && req.files.aadhaarDoc[0]) {

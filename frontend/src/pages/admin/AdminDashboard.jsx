@@ -986,36 +986,36 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6 mt-6">
               <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('passport_photo')}*</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('passport_photo')} (Optional)</span>
                   <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                   </div>
-                  <input type="file" name="photo" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <input type="file" name="photo" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                   <span className="text-sm font-medium text-[#bc7b1f]">{addCustomerFiles.photo ? addCustomerFiles.photo.name : 'Click to Upload'}</span>
                 </label>
               </div>
 
               <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('aadhaar_document')}*</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('aadhaar_document')} (Optional)</span>
                   <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
-                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                   </div>
-                  <input type="file" name="aadhaarDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <input type="file" name="aadhaarDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                   <span className="text-sm font-medium text-[#bc7b1f]">{addCustomerFiles.aadhaarDoc ? addCustomerFiles.aadhaarDoc.name : 'Click to Upload'}</span>
                 </label>
               </div>
 
               <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
                 <label className="cursor-pointer block">
-                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('pan_document')}*</span>
+                  <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('pan_document')} (Optional)</span>
                   <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                   <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
-                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                   </div>
-                  <input type="file" name="panDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <input type="file" name="panDoc" onChange={handleAddCustomerFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                   <span className="text-sm font-medium text-[#bc7b1f]">{addCustomerFiles.panDoc ? addCustomerFiles.panDoc.name : 'Click to Upload'}</span>
                 </label>
               </div>
