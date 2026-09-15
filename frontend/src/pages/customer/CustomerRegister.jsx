@@ -379,7 +379,7 @@ const CustomerRegister = () => {
                 Ranaghat, Nadia, Ramnagar Milan Bagan school para<br />
                 Phone: 7029368862 / 9046377730
               </p>
-              \n              <p className="font-bold mt-8 pb-4 text-center text-[#bc7b1f]">--- End of Terms ---</p>
+              <p className="font-bold mt-8 pb-4 text-center text-[#bc7b1f]">--- End of Terms ---</p>
             </div>
 
             <div className="p-6 bg-[#fbf8eb] border-t border-[#e1b73e] flex justify-end gap-4">
