@@ -116,9 +116,13 @@ const AdminDashboard = () => {
   // Removed auto-calculate useEffects to prevent infinite loops
   // Actions - Registrations
   const handleApproveRegistration = async (id) => {
-    const password = prompt('Create a password for this customer:');
+    const password = prompt('Create a password for this customer (min 6 chars):');
     if (!password) {
         alert('Approval cancelled. Password is required.');
+        return;
+    }
+    if (password.length < 6) {
+        alert('Password must be at least 6 characters.');
         return;
     }
 
@@ -975,7 +979,7 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 gap-4 mb-4">
                <div>
                   <label className="block text-sm font-medium text-[#965a1a]">{t('set_initial_password')}</label>
-                  <input type="text" required value={addCustomerData.password} onChange={e => setAddCustomerData({...addCustomerData, password: e.target.value})} placeholder="e.g. password123" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+                  <input type="text" required minLength="6" value={addCustomerData.password} onChange={e => setAddCustomerData({...addCustomerData, password: e.target.value})} placeholder="e.g. password123" className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
                </div>
             </div>
 

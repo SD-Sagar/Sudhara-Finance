@@ -13,42 +13,145 @@ const Terms = () => {
         </h1>
         
         <div className="prose prose-amber max-w-none text-[#965a1a]">
-          <p className="mb-4">
-            <strong>Last Updated: {new Date().toLocaleDateString()}</strong>
-          </p>
-          
-          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">1. Introduction</h2>
-          <p className="mb-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </p>
+          <h2 className="text-3xl font-bold text-[#673c1c] mt-8 mb-4 text-center">SHUDHARA WOMEN DEVELOPMENT ORGANIZATION</h2>
+          <h2 className="text-3xl font-bold text-[#673c1c] mt-8 mb-4 text-center">LOAN TERMS & CONDITIONS</h2>
+          <p className="mb-4">Effective Date: __________</p>
+          <p className="mb-4">Shudhara Women Development Organization (“the Organization”) provides financial assistance/loan facilities subject to the following terms and conditions. Applicants are required to read and understand these Terms & Conditions carefully before submitting a registration or loan application through the Organization's website or through any other application channel.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">1. Eligibility of Applicants</h2>
+          <p className="mb-3 pl-4"><strong>1.1.</strong> The loan facility is available only to married women and married couples, subject to fulfillment of all other eligibility requirements.</p>
+          <p className="mb-3 pl-4"><strong>1.2.</strong> Applicants must meet the minimum age requirements specified by the Organization and applicable law.</p>
+          <p className="mb-3 pl-4"><strong>1.3.</strong> The Organization reserves the right to verify the applicant's identity, age, marital status, residential address, occupation, income, financial obligations, and other information provided in the application.</p>
+          <p className="mb-3 pl-4"><strong>1.4.</strong> Submission of a customer registration through the Organization's website does not by itself establish eligibility for a loan or guarantee that a loan will be approved.</p>
+          <p className="mb-3 pl-4"><strong>1.5.</strong> The Organization may approve, reject, request additional information for, or otherwise process a registration or loan application according to its applicable policies, verification procedures, and applicable law.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">2. Age Requirement</h2>
+          <p className="mb-3 pl-4"><strong>2.1.</strong> Applicants must be 18 years of age or above to be considered for services provided by the Organization.</p>
+          <p className="mb-3 pl-4"><strong>2.2.</strong> For loan approval and disbursement, the applicant must be 21 years of age or above, unless otherwise permitted by applicable law or the Organization's specific loan policy.</p>
+          <p className="mb-3 pl-4"><strong>2.3.</strong> Valid government-issued identification and age proof may be required during the application and verification process.</p>
+          <p className="mb-3 pl-4"><strong>2.4.</strong> Providing an incorrect date of birth, age, or identity information may result in rejection of the application or other action permitted under the applicable agreement and law.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">3. Criminal and Loan/Credit Background</h2>
+          <p className="mb-3 pl-4"><strong>3.1.</strong> Every applicant must have a clear and satisfactory criminal background.</p>
+          <p className="mb-3 pl-4"><strong>3.2.</strong> The applicant must also have a satisfactory loan/credit repayment history.</p>
+          <p className="mb-3 pl-4"><strong>3.3.</strong> The Organization may conduct reasonable verification of the information provided by the applicant, including verification of existing or previous loans, repayment records, and other relevant financial information, subject to applicable law.</p>
+          <p className="mb-3 pl-4"><strong>3.4.</strong> Providing false, misleading, incomplete, or fraudulent information may result in rejection of the application or cancellation of an approved loan.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">4. Existing Loans and Financial Obligations</h2>
+          <p className="mb-3 pl-4"><strong>4.1.</strong> Applicants must disclose all existing loans, credit facilities, and other significant financial obligations held with banks, financial institutions, organizations, lenders, or other parties.</p>
+          <p className="mb-3 pl-4"><strong>4.2.</strong> If an applicant already has an active loan or significant outstanding borrowing elsewhere, the Organization may decline to approve a new loan, depending on the applicant's repayment capacity and applicable lending rules.</p>
+          <p className="mb-3 pl-4"><strong>4.3.</strong> The applicant must not conceal any existing loan or financial obligation for the purpose of obtaining approval.</p>
+          <p className="mb-3 pl-4"><strong>4.4.</strong> Loan approval is subject to the Organization's assessment of the applicant's financial position and ability to repay.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">5. First-Time Loan Limit</h2>
+          <p className="mb-3 pl-4"><strong>5.1.</strong> For a customer applying for a loan from the Organization for the first time, the maximum initial loan amount shall be ₹10,000 (Rupees Ten Thousand only), unless otherwise permitted under the Organization's approved policy.</p>
+          <p className="mb-3 pl-4"><strong>5.2.</strong> A first-time applicant cannot demand or require a loan amount higher than the applicable first-loan limit.</p>
+          <p className="mb-3 pl-4"><strong>5.3.</strong> The initial loan amount may be determined after considering the applicant's eligibility, repayment capacity, documentation, and verification results.</p>
+          <p className="mb-3 pl-4"><strong>5.4.</strong> After successful repayment of the first loan and subject to the Organization's assessment, the applicant may become eligible to apply for a higher loan amount.</p>
+          <p className="mb-3 pl-4"><strong>5.5.</strong> Approval of a higher loan amount is not automatic and remains at the discretion of the Organization, subject to applicable laws and regulations.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">6. Registration and Website Application Process</h2>
+          <p className="mb-3 pl-4"><strong>6.1.</strong> The Organization may provide an online registration facility through its website for applicants who wish to become customers of the Organization.</p>
+          <p className="mb-3 pl-4"><strong>6.2.</strong> During registration, applicants may be required to provide personal information and supporting documents, including name, contact information, residential address, identification information, photographs, marital status, and other information reasonably required by the Organization.</p>
+          <p className="mb-3 pl-4"><strong>6.3.</strong> Applicants are responsible for ensuring that all information and documents submitted through the website are accurate, complete, valid, and belong to the applicant.</p>
+          <p className="mb-3 pl-4"><strong>6.4.</strong> The Organization may review and verify registration requests before approving a customer account.</p>
+          <p className="mb-3 pl-4"><strong>6.5.</strong> Registration through the website does not constitute loan approval, loan sanction, loan disbursement, or a promise that a loan will be provided.</p>
+          <p className="mb-3 pl-4"><strong>6.6.</strong> The Organization may approve or reject a registration request after reviewing the information and documents submitted by the applicant.</p>
+          <p className="mb-3 pl-4"><strong>6.7.</strong> Where registration is approved, the Organization may provide the customer with a unique customer identification number and login credentials through the communication method selected or used by the Organization.</p>
+          <p className="mb-3 pl-4"><strong>6.8.</strong> Customers are responsible for keeping their login credentials confidential and must not share their credentials with unauthorized persons.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">7. Loan Application and Approval</h2>
+          <p className="mb-3 pl-4"><strong>7.1.</strong> A registered customer may submit a loan application through the website or through another application method provided by the Organization.</p>
+          <p className="mb-3 pl-4"><strong>7.2.</strong> Submission of a loan application does not guarantee approval.</p>
+          <p className="mb-3 pl-4"><strong>7.3.</strong> The Organization reserves the right to approve, reject, modify, defer, or request additional information regarding a loan application based on eligibility, documentation, verification, repayment capacity, and applicable lending requirements.</p>
+          <p className="mb-3 pl-4"><strong>7.4.</strong> The Organization may independently verify the applicant's information before approving or disbursing a loan.</p>
+          <p className="mb-3 pl-4"><strong>7.5.</strong> The approved loan amount, applicable interest, fees, repayment schedule, due dates, and other financial terms shall be communicated to the borrower before disbursement.</p>
+          <p className="mb-3 pl-4"><strong>7.6.</strong> The borrower is responsible for reviewing and accepting the applicable loan agreement before receiving the loan amount.</p>
+          <p className="mb-3 pl-4"><strong>7.7.</strong> The loan information displayed through the website is intended to provide the customer with a convenient record of the Organization's loan and repayment information. The final financial terms shall be determined by the applicable loan agreement and records maintained by the Organization.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">8. Loan Disbursement and Financial Transactions</h2>
+          <p className="mb-3 pl-4"><strong>8.1.</strong> The Organization's website is intended primarily for customer registration, loan application, communication, record-keeping, and ledger-management purposes.</p>
+          <p className="mb-3 pl-4"><strong>8.2.</strong> The website does not itself operate as a bank, banking platform, payment gateway, wallet, or financial institution.</p>
+          <p className="mb-3 pl-4"><strong>8.3.</strong> The website does not provide customers with banking services, hold customer funds, or independently execute bank transfers or other financial transactions.</p>
+          <p className="mb-3 pl-4"><strong>8.4.</strong> Actual loan disbursement, repayment, payment verification, and other financial transactions shall be handled by the Organization and the customer through the applicable process communicated by the Organization.</p>
+          <p className="mb-3 pl-4"><strong>8.5.</strong> Where a customer makes a repayment outside the website, the Organization may verify the payment separately and then update the corresponding installment record through its administrative system.</p>
+          <p className="mb-3 pl-4"><strong>8.6.</strong> The customer must not treat the ability to view or submit information through the website as evidence that a payment, loan, or financial transaction has been completed unless the Organization has confirmed and recorded the relevant transaction.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">9. Repayment Obligations</h2>
+          <p className="mb-3 pl-4"><strong>9.1.</strong> The borrower must repay the loan according to the agreed repayment schedule and specified due dates.</p>
+          <p className="mb-3 pl-4"><strong>9.2.</strong> The borrower is responsible for making payments on time and maintaining sufficient funds or otherwise arranging the required payment to meet scheduled repayments.</p>
+          <p className="mb-3 pl-4"><strong>9.3.</strong> Any delay or failure to make repayments may result in applicable late-payment charges, additional consequences, or other remedies as specified in the loan agreement and permitted by law.</p>
+          <p className="mb-3 pl-4"><strong>9.4.</strong> The borrower should immediately inform the Organization if circumstances arise that may affect their ability to make a scheduled repayment.</p>
+          <p className="mb-3 pl-4"><strong>9.5.</strong> The repayment schedule displayed in the customer account may show installment amounts, due dates, payment status, completed installments, pending installments, overdue installments, and other relevant repayment information.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">10. Installment Records and Digital Ledger</h2>
+          <p className="mb-3 pl-4"><strong>10.1.</strong> The Organization may maintain a digital record of each customer's loan and installment history through its website.</p>
+          <p className="mb-3 pl-4"><strong>10.2.</strong> The digital ledger may contain information including the loan amount, installment amount, scheduled due date, payment status, payment date, outstanding amount, applicable charges, and other relevant loan information.</p>
+          <p className="mb-3 pl-4"><strong>10.3.</strong> The Organization's authorized administrator may update an installment as paid after independently verifying that the corresponding payment has been received.</p>
+          <p className="mb-3 pl-4"><strong>10.4.</strong> Customers must not assume that an installment has been paid merely because a payment was attempted or communicated to the Organization. The installment will be treated as completed when the Organization has verified and recorded the payment.</p>
+          <p className="mb-3 pl-4"><strong>10.5.</strong> Where the Organization provides a digital or printed receipt, the receipt will serve as a record of the payment acknowledged by the Organization, subject to the applicable transaction and loan records.</p>
+          <p className="mb-3 pl-4"><strong>10.6.</strong> The Organization may correct an accidental or erroneous ledger entry where necessary, while maintaining appropriate records of such corrections.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">11. Late Payment and Default</h2>
+          <p className="mb-3 pl-4"><strong>11.1.</strong> Failure to pay an installment by its specified due date may result in the installment being treated as overdue.</p>
+          <p className="mb-3 pl-4"><strong>11.2.</strong> Any late-payment charge, fine, or other applicable consequence shall be determined according to the applicable loan agreement, Organization policy, and applicable law.</p>
+          <p className="mb-3 pl-4"><strong>11.3.</strong> The Organization may issue reminders or notifications regarding upcoming or overdue installments.</p>
+          <p className="mb-3 pl-4"><strong>11.4.</strong> The customer remains responsible for repayment even if the customer does not receive a reminder or notification due to an incorrect phone number, email address, technical issue, communication failure, or other reason.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">12. Long-Term or Serious Default</h2>
+          <p className="mb-3 pl-4"><strong>12.1.</strong> If a loan remains overdue for three (3) months or more, the Organization may classify the account as a serious/defaulted account, subject to the applicable loan agreement and law.</p>
+          <p className="mb-3 pl-4"><strong>12.2.</strong> In the event of prolonged non-payment, the Organization may take appropriate legal recovery action to recover the outstanding amount, subject to applicable laws and regulations.</p>
+          <p className="mb-3 pl-4"><strong>12.3.</strong> Before taking legal action, the Organization may issue notices, reminders, or demands for payment as required or appropriate.</p>
+          <p className="mb-3 pl-4"><strong>12.4.</strong> Any recovery or legal action shall be conducted in accordance with applicable law. The Organization will not use unlawful threats, harassment, intimidation, or coercive recovery practices.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">13. False Information or Fraud</h2>
+          <p className="mb-3 pl-4"><strong>13.1.</strong> Applicants must provide accurate, complete, and truthful information in all application forms and documents.</p>
+          <p className="mb-3 pl-4"><strong>13.2.</strong> If any information or document is found to be false, forged, misleading, or intentionally concealed, the Organization may reject the application or take appropriate action in accordance with the loan agreement and applicable law.</p>
+          <p className="mb-3 pl-4"><strong>13.3.</strong> The Organization may suspend or terminate a customer's access to the website where fraudulent, unauthorized, abusive, or otherwise unlawful activity is reasonably suspected, subject to applicable law and the Organization's policies.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">14. Documents and Verification</h2>
+          <p className="mb-3 pl-4"><strong>14.1.</strong> Applicants may be required to provide valid identification, address proof, age proof, marital-status documents, income/occupation information, bank details, photographs, and other documents reasonably required for loan assessment.</p>
+          <p className="mb-3 pl-4"><strong>14.2.</strong> The Organization may verify submitted documents and information before approving or disbursing a loan.</p>
+          <p className="mb-3 pl-4"><strong>14.3.</strong> Failure to provide required documents may result in delay or rejection of the application.</p>
+          <p className="mb-3 pl-4"><strong>14.4.</strong> Documents and personal information submitted through the website may be stored and processed for customer registration, identity verification, loan assessment, record-keeping, communication, and other legitimate business purposes of the Organization, subject to applicable law and the Organization's privacy practices.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">15. Customer Account and Website Access</h2>
+          <p className="mb-3 pl-4"><strong>15.1.</strong> Approved customers may be provided with login credentials to access their customer account.</p>
+          <p className="mb-3 pl-4"><strong>15.2.</strong> Customers are responsible for maintaining the confidentiality of their login credentials and must immediately inform the Organization if they believe their account credentials have been compromised.</p>
+          <p className="mb-3 pl-4"><strong>15.3.</strong> Customers must not attempt to access another customer's account, information, loan records, documents, or other restricted information.</p>
+          <p className="mb-3 pl-4"><strong>15.4.</strong> The Organization may suspend or restrict access where it reasonably believes that an account is being misused, compromised, or accessed without authorization.</p>
+          <p className="mb-3 pl-4"><strong>15.5.</strong> The Organization may temporarily suspend website services for maintenance, security updates, technical issues, or other operational reasons.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">16. Electronic Communication and Notifications</h2>
+          <p className="mb-3 pl-4"><strong>16.1.</strong> By using the website and providing contact information, the applicant/customer agrees that the Organization may use the provided email address, telephone number, or other permitted communication channels to communicate regarding registration, account status, loan applications, repayment schedules, payment confirmations, reminders, and other matters related to the Organization's services, subject to applicable law.</p>
+          <p className="mb-3 pl-4"><strong>16.2.</strong> The Organization may send electronic notifications regarding upcoming installment dates, overdue payments, loan application status, registration status, and other relevant account information.</p>
+          <p className="mb-3 pl-4"><strong>16.3.</strong> Customers are responsible for keeping their contact information accurate and updated.</p>
+          <p className="mb-3 pl-4"><strong>16.4.</strong> The Organization shall not be responsible for communication failures caused by incorrect customer-provided contact information, unavailable communication services, network problems, or other circumstances outside the Organization's reasonable control.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">17. Acceptance of Terms</h2>
+          <p className="mb-3 pl-4"><strong>17.1.</strong> By submitting a registration or loan application through the website, the applicant confirms that they have read and understood these Terms & Conditions and agree to comply with the applicable requirements.</p>
+          <p className="mb-3 pl-4"><strong>17.2.</strong> The applicant confirms that the information provided is true and complete to the best of their knowledge.</p>
+          <p className="mb-3 pl-4"><strong>17.3.</strong> By accepting a loan, the borrower agrees to comply with the applicable loan agreement, repayment schedule, and related terms and conditions.</p>
+          <p className="mb-3 pl-4"><strong>17.4.</strong> The borrower acknowledges that loan approval and the amount sanctioned are subject to the Organization's eligibility criteria and applicable laws.</p>
+          <p className="mb-3 pl-4"><strong>17.5.</strong> Where electronic acceptance is used, the Organization may maintain a record of the customer's acceptance, including the applicable Terms & Conditions version, date, and time of acceptance, for administrative and record-keeping purposes.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">18. Privacy and Protection of Information</h2>
+          <p className="mb-3 pl-4"><strong>18.1.</strong> The Organization may collect personal information and documents reasonably required for customer registration, verification, loan assessment, account management, repayment records, communication, and other legitimate business purposes.</p>
+          <p className="mb-3 pl-4"><strong>18.2.</strong> The Organization will take reasonable measures to protect customer information against unauthorized access, alteration, disclosure, or misuse, subject to applicable law.</p>
+          <p className="mb-3 pl-4"><strong>18.3.</strong> Access to sensitive customer information should be limited to authorized persons who require such information for legitimate organizational purposes.</p>
+          <p className="mb-3 pl-4"><strong>18.4.</strong> Customers should not submit information belonging to another person without appropriate authorization.</p>
+          <p className="mb-3 pl-4"><strong>18.5.</strong> The Organization may retain relevant customer, loan, payment, and transaction records for the period required for business, accounting, legal, regulatory, dispute-resolution, or other legitimate purposes, subject to applicable law.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">19. Changes to Terms & Conditions</h2>
+          <p className="mb-3 pl-4"><strong>19.1.</strong> Shudhara Women Development Organization reserves the right to amend or update these Terms & Conditions when necessary, subject to applicable law.</p>
+          <p className="mb-3 pl-4"><strong>19.2.</strong> Any material changes applicable to an existing borrower will be communicated as required under the applicable agreement or law.</p>
+          <p className="mb-3 pl-4"><strong>19.3.</strong> The applicable version of the Terms & Conditions may be identified by its effective date or version information.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">20. Governing Law</h2>
+          <p className="mb-3 pl-4"><strong>20.1.</strong> All loan transactions, agreements, recovery procedures, and disputes shall be governed by the laws applicable in India.</p>
+          <p className="mb-3 pl-4"><strong>20.2.</strong> Any dispute shall be handled through the appropriate legal or dispute-resolution process available under applicable law.</p>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">21. Website Records and Technical Disclaimer</h2>
+          <p className="mb-3 pl-4"><strong>21.1.</strong> The website is provided as a digital platform for customer interaction, application management, communication, loan information, installment tracking, and record-keeping.</p>
+          <p className="mb-3 pl-4"><strong>21.2.</strong> The Organization will take reasonable measures to maintain the availability and accuracy of the information displayed through the website; however, temporary technical interruptions, maintenance, network failures, or other technical issues may occur.</p>
+          <p className="mb-3 pl-4"><strong>21.3.</strong> In the event of a discrepancy between information displayed through the website and the applicable executed loan agreement or verified organizational records, the Organization may investigate and correct the discrepancy in accordance with its records and applicable law.</p>
+          <p className="mb-3 pl-4"><strong>21.4.</strong> Customers must contact the Organization promptly if they identify an apparent error in their personal information, loan information, installment schedule, payment status, or receipt.</p>
+          <hr className="my-8 border-[#bc7b1f]" />
+          <h2 className="text-3xl font-bold text-[#673c1c] mt-8 mb-4 text-center">IMPORTANT NOTICE TO APPLICANTS</h2>
+          <p className="mb-4">Please read all loan documents carefully before accepting a loan. Make sure you understand the loan amount, interest rate, fees, repayment schedule, due dates, and consequences of default. Do not provide false information or conceal existing financial obligations.</p>
+          <p className="mb-4">Registration on the Organization's website does not guarantee loan approval. A loan application will be considered only after the Organization completes its applicable verification and approval process.</p>
+          <p className="mb-4">The website primarily functions as a customer communication, application-management, loan-ledger, installment-tracking, and record-keeping platform. It does not itself provide banking services, hold customer funds, or independently process or execute financial transactions. Actual financial transactions and their verification are handled separately by the Organization according to its applicable procedures.</p>
+          <p className="mb-4">Please ensure that all personal information and documents submitted to the Organization are accurate and belong to you or are submitted with appropriate authorization.</p>
+          <p className="mb-4">For any questions regarding eligibility, registration, repayment, loan terms, payment status, or other matters, please contact the Organization before accepting or signing the applicable loan agreement.</p>
+          <p className="mb-4">By proceeding with registration or a loan application, the applicant confirms that they have read, understood, and agreed to the applicable Terms & Conditions.</p>
 
-          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">2. Eligibility for Loans</h2>
-          <p className="mb-4">
-            Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat.
-          </p>
-
-          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">3. Repayment Terms</h2>
-          <p className="mb-4">
-            Phasellus tristique libero vel justo aliquam pellentesque. Morbi egestas mattis placerat. Aenean hendrerit tristique congue. In hendrerit magna eu rhoncus fermentum. Integer consequat erat leo, eu ullamcorper justo faucibus in. Morbi facilisis turpis sit amet auctor egestas. Pellentesque aliquet accumsan iaculis. Praesent egestas in magna quis luctus. Etiam a orci pretium, hendrerit mauris eu, consequat mauris. Nullam sodales vel ipsum et ullamcorper. Praesent feugiat eros quis neque ornare, sed luctus felis dictum. 
-          </p>
-
-          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">4. Fines and Penalties</h2>
-          <p className="mb-4">
-            Fusce euismod consequat ante. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Pellentesque sed dui ut augue blandit vehicula. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam aliquet volutpat. Integer adipiscing erat eget risus. Vestibulum rutrum, mi nec elementum vehicula, eros quam gravida nisl, id fringilla neque ante vel mi. 
-          </p>
-
-          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">5. Account Cancellation</h2>
-          <p className="mb-4">
-            Nam adipiscing. Vestibulum cursus interdum urna. Nullam hendrerit diam in magna. Praesent in arcu ac diam vulputate semper. Morbi eu mauris. Quisque sollicitudin elit eu odio. Aliquam hendrerit mi vel magna. Curabitur accumsan pretium dolor. Fusce nec enim tempor turpis vehicula congue. Proin sodales metus ac magna condimentum imperdiet. Phasellus vitae pede vitae purus rhoncus porta. Suspendisse non neque. Donec eu diam quis odio aliquet placerat. Proin consequat, ante ac faucibus viverra, ante eros tincidunt neque, et varius nibh turpis in lacus. Vestibulum ac purus vitae nulla aliquet aliquet. Aenean aliquet mattis mauris.
-          </p>
-
-          <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">6. Contact Information</h2>
-          <p className="mb-4">
-            If you have any questions about these Terms, please contact us at:<br/>
+          <h2 className="text-2xl font-bold text-[#7b481c] mt-12 mb-4">Contact Information</h2>
+          <p className="mb-4 text-lg">
+            For any queries or concerns regarding these Terms, please contact us at:<br/><br/>
             <strong>Shudhara Women Development Organization</strong><br/>
             Ranaghat, Nadia, Ramnagar Milan Bagan school para<br/>
             Phone: 7029368862 / 9046377730
           </p>
+
         </div>
       </div>
     </div>

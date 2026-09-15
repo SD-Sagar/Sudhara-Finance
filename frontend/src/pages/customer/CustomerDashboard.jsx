@@ -9,6 +9,7 @@ const CustomerDashboard = () => {
   const [customerProfile, setCustomerProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showPaymentContact, setShowPaymentContact] = useState(false);
   const [showLoanModal, setShowLoanModal] = useState(false);
   const [loanRequestData, setLoanRequestData] = useState({
     requestedAmount: '',
@@ -82,7 +83,7 @@ const CustomerDashboard = () => {
   };
 
   const handlePaymentContact = (installmentId) => {
-    alert(`Please contact the administrator and provide your Customer ID to verify and process payment for installment.`);
+    setShowPaymentContact(true);
   };
 
   const handleCancelRequest = async (requestId) => {
@@ -395,6 +396,34 @@ const CustomerDashboard = () => {
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Payment Contact Modal */}
+      {showPaymentContact && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-[#fbf8eb] rounded-xl shadow-lg border border-[#e1b73e] max-w-sm w-full p-6 text-center">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 mb-4">
+              <svg className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            </div>
+            <h3 className="text-lg leading-6 font-bold text-[#673c1c] mb-2">Payment Contact</h3>
+            <div className="mt-2">
+              <p className="text-sm text-[#965a1a]">
+                Please call <strong className="text-[#bc7b1f]">7029368862</strong> / <strong className="text-[#bc7b1f]">9046377730</strong> for the transaction.
+              </p>
+            </div>
+            <div className="mt-6">
+              <button
+                type="button"
+                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#bc7b1f] text-base font-medium text-white hover:bg-[#965a1a] focus:outline-none sm:text-sm"
+                onClick={() => setShowPaymentContact(false)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
