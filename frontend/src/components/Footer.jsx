@@ -9,7 +9,7 @@ const Footer = () => {
     <footer className="bg-[#673c1c] text-[#fbf8eb] border-t-4 border-[#bc7b1f] mt-auto">
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          
+
           {/* About Section */}
           <div className="flex flex-col">
             <div className="flex items-center gap-3 mb-4">
@@ -72,13 +72,13 @@ const Footer = () => {
           <p>&copy; {new Date().getFullYear()} Shudhara Women Development Organization. All Rights Reserved.</p>
           <p>
             Developed by{' '}
-            <a 
-              href="https://sd-portfolio-latest.netlify.app/" 
-              target="_blank" 
+            <a
+              href="https://sd-portfolio-latest.netlify.app/"
+              target="_blank"
               rel="noopener noreferrer"
               className="font-bold text-[#e1b73e] hover:text-[#fbf8eb] transition underline decoration-[#bc7b1f] underline-offset-2"
             >
-              sd-Sagar
+              Sagar Dey
             </a>
           </p>
         </div>
