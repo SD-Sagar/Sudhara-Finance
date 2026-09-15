@@ -203,7 +203,7 @@ const updateCustomer = async (req, res, next) => {
 
         const {
             name, whatsappNumber, mobileNumber, email,
-            aadhaar, voterId, pan, maritalStatus, permanentAddress
+            aadhaar, voterId, pan, maritalStatus, permanentAddress, cibilScore
         } = req.body;
 
         // Update text fields
@@ -216,6 +216,7 @@ const updateCustomer = async (req, res, next) => {
         if (pan) customer.pan = pan;
         if (maritalStatus) customer.maritalStatus = maritalStatus;
         if (permanentAddress) customer.permanentAddress = permanentAddress;
+        if (cibilScore !== undefined) customer.cibilScore = cibilScore;
 
         // Handle optional file uploads
         const { uploadToCloudinary } = require('../utils/cloudinary');

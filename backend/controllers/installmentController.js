@@ -8,7 +8,7 @@ const sendEmail = async () => {}; // NODEMAILER DISABLED AS REQUESTED
 // @access  Private/Admin
 const markInstallmentPaid = async (req, res, next) => {
     try {
-        const { paymentMethod } = req.body; // 'Cash' or 'Online'
+        const { paymentMethod, paymentDate } = req.body; // 'Cash' or 'Online'
 
         const installment = await Installment.findById(req.params.id).populate('loan').populate('customer');
         
@@ -23,7 +23,7 @@ const markInstallmentPaid = async (req, res, next) => {
         }
 
         installment.status = 'PAID';
-        installment.paymentDate = Date.now();
+        installment.paymentDate = paymentDate ? new Date(paymentDate) : Date.now();
         installment.paymentMethod = paymentMethod;
         installment.verifiedBy = req.user._id;
 
@@ -71,35 +71,39 @@ const checkOverdueInstallments = async (req, res, next) => {
         const overdueInstallments = await Installment.find({
             status: { $in: ['PENDING', 'OVERDUE'] },
             dueDate: { $lt: currentDate }
-        }).populate('customer');
+        }).populate('customer').populate('loan');
 
         let updatedCount = 0;
 
         for (const installment of overdueInstallments) {
             let hasChanges = false;
             
-            // Mark as overdue and apply one-time fine if it was PENDING
-            if (installment.status === 'PENDING') {
-                installment.status = 'OVERDUE';
-                installment.fine += 10; // Apply ₹10 fine once
-                hasChanges = true;
-            }
+            // Determine cycle in days (default to 30 for Monthly, 7 for Weekly)
+            const isWeekly = installment.loan?.duration?.toLowerCase().includes('week');
+            const cycleDays = isWeekly ? 7 : 30;
 
-            // Calculate daily CIBIL penalty
             const timeDiff = currentDate.getTime() - new Date(installment.dueDate).getTime();
             const daysOverdue = Math.floor(timeDiff / (1000 * 3600 * 24));
             
-            const currentPenaltyDays = installment.penaltyAppliedDays || 0;
-            if (daysOverdue > currentPenaltyDays) {
-                const penaltyDaysToApply = daysOverdue - currentPenaltyDays;
-                installment.penaltyAppliedDays = daysOverdue;
-                hasChanges = true;
+            if (daysOverdue >= 0) {
+                // cyclesOverdue: 0-6 days (weekly) = 1, 7-13 days = 2
+                const cyclesOverdue = Math.floor(daysOverdue / cycleDays) + 1;
+                const currentPenaltyCycles = installment.penaltyAppliedDays || 0; // Using this field to store cycles
                 
-                // Deduct 5 points per overdue day
-                if (installment.customer) {
-                    const currentScore = installment.customer.cibilScore || 600;
-                    installment.customer.cibilScore = Math.max(150, currentScore - (5 * penaltyDaysToApply));
-                    await installment.customer.save();
+                if (cyclesOverdue > currentPenaltyCycles) {
+                    const cyclesToApply = cyclesOverdue - currentPenaltyCycles;
+                    installment.penaltyAppliedDays = cyclesOverdue;
+                    
+                    installment.status = 'OVERDUE';
+                    installment.fine += (10 * cyclesToApply); // Add ₹10 fine per cycle
+                    hasChanges = true;
+                    
+                    // Deduct 10 points per overdue cycle
+                    if (installment.customer) {
+                        const currentScore = installment.customer.cibilScore || 600;
+                        installment.customer.cibilScore = Math.max(150, currentScore - (10 * cyclesToApply));
+                        await installment.customer.save();
+                    }
                 }
             }
 

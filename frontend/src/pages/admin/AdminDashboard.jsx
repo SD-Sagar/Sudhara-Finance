@@ -18,6 +18,8 @@ const AdminDashboard = () => {
 
   // Modals / Selected Items
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [expandedLoans, setExpandedLoans] = useState({});
+  const toggleLoan = (loanId) => setExpandedLoans(prev => ({...prev, [loanId]: !prev[loanId]}));
   const [selectedLoanRequest, setSelectedLoanRequest] = useState(null);
   
   // Edit Customer State
@@ -188,6 +190,10 @@ const AdminDashboard = () => {
   };
 
   const handleMarkPaid = async (installmentId) => {
+    let paymentDate = prompt('Enter payment date (YYYY-MM-DD). Leave empty for today:');
+    if (paymentDate === null) return;
+    if (paymentDate.trim() === '') paymentDate = undefined;
+
     const paymentMethod = prompt('Enter payment method (Cash or Online):', 'Cash');
     if (!paymentMethod || !['Cash', 'Online'].includes(paymentMethod)) {
       alert('Invalid payment method. Cancelled.');
@@ -195,7 +201,7 @@ const AdminDashboard = () => {
     }
     
     try {
-      await api.put(`/api/installments/${installmentId}/pay`, { paymentMethod });
+      await api.put(`/api/installments/${installmentId}/pay`, { paymentMethod, paymentDate });
       // refresh profile
       viewCustomerProfile(selectedCustomer._id);
     } catch (err) {
@@ -710,7 +716,8 @@ const AdminDashboard = () => {
                       voterId: selectedCustomer.voterId,
                       pan: selectedCustomer.pan,
                       maritalStatus: selectedCustomer.maritalStatus,
-                      permanentAddress: selectedCustomer.permanentAddress
+                      permanentAddress: selectedCustomer.permanentAddress,
+                      cibilScore: selectedCustomer.cibilScore
                     });
                     setIsEditingCustomer(true);
                   }} 
@@ -736,7 +743,8 @@ const AdminDashboard = () => {
                   <input type="text" placeholder="WhatsApp Number" value={editCustomerData.whatsappNumber} onChange={e => setEditCustomerData({...editCustomerData, whatsappNumber: e.target.value})} className="p-3 border rounded-lg" required />
                   <input type="text" placeholder="Aadhaar Number" value={editCustomerData.aadhaar} onChange={e => setEditCustomerData({...editCustomerData, aadhaar: e.target.value})} className="p-3 border rounded-lg" required />
                   <input type="text" placeholder="PAN Number" value={editCustomerData.pan} onChange={e => setEditCustomerData({...editCustomerData, pan: e.target.value})} className="p-3 border rounded-lg" required />
-                  <input type="text" placeholder="Voter ID" value={editCustomerData.voterId} onChange={e => setEditCustomerData({...editCustomerData, voterId: e.target.value})} className="p-3 border rounded-lg" />
+                                    <input type="text" placeholder="Voter ID" value={editCustomerData.voterId} onChange={e => setEditCustomerData({...editCustomerData, voterId: e.target.value})} className="p-3 border rounded-lg" />
+                  <input type="number" placeholder="CIBIL Score" min="150" max="800" value={editCustomerData.cibilScore || ''} onChange={e => setEditCustomerData({...editCustomerData, cibilScore: e.target.value})} className="p-3 border rounded-lg" />
                   <select value={editCustomerData.maritalStatus} onChange={e => setEditCustomerData({...editCustomerData, maritalStatus: e.target.value})} className="p-3 border rounded-lg">
                     <option value="Unmarried">Unmarried</option>
                     <option value="Married">Married</option>
@@ -794,16 +802,30 @@ const AdminDashboard = () => {
           {selectedCustomer.loansData?.length === 0 && <p className="text-[#d79e27]">{t('no_loan_history')}</p>}
           
           <div className="space-y-6">
-            {selectedCustomer.loansData?.map(data => (
+            {selectedCustomer.loansData?.map(data => {
+              const totalPaid = data.installments.filter(i => i.status === 'PAID').reduce((sum, i) => sum + i.amount, 0);
+              const isExpanded = expandedLoans[data.loan._id];
+              return (
               <div key={data.loan._id} className="bg-white rounded border overflow-hidden shadow-sm">
-                <div className="bg-[#fbf8eb] p-4 border-b flex justify-between">
+                <div 
+                  className="bg-[#fbf8eb] p-4 border-b flex justify-between items-center cursor-pointer hover:bg-[#f5eecc] transition"
+                  onClick={() => toggleLoan(data.loan._id)}
+                >
                   <div>
-                    <h4 className="font-bold">Loan: ₹{data.loan.approvedAmount}</h4>
-                    <p className="text-sm text-[#bc7b1f]">Duration: {data.loan.duration} | Status: {data.loan.status}</p>
+                    <h4 className="font-bold text-[#7b481c] flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-transform ${isExpanded ? 'rotate-90' : ''}`} viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                      Loan: ₹{data.loan.approvedAmount}
+                    </h4>
+                    <p className="text-sm text-[#bc7b1f] ml-7">
+                      Start Date: {new Date(data.loan.startDate).toLocaleDateString()} | Duration: {data.loan.duration} | Status: {data.loan.status}
+                    </p>
+                    <p className="text-sm font-bold text-green-700 ml-7 mt-1">Total Paid So Far: ₹{totalPaid}</p>
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
                     <p className="text-sm font-medium">{data.loan.completedInstallments} / {data.loan.totalInstallments} Paid</p>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                       <button 
                         onClick={() => handleDownloadLoanPDF(data, selectedCustomer)}
                         className="text-xs bg-[#bc7b1f] text-white px-2 py-1 rounded hover:bg-[#965a1a] transition hover:-translate-y-1 shadow-md hover:shadow-lg"
@@ -820,6 +842,8 @@ const AdminDashboard = () => {
                   </div>
                 </div>
                 
+                {isExpanded && (
+                <div className="overflow-x-auto">
                 <table className="min-w-full text-sm divide-y divide-gray-200">
                   <thead className="bg-[#f5eecc]">
                     <tr>
@@ -873,8 +897,11 @@ const AdminDashboard = () => {
                     ))}
                   </tbody>
                 </table>
+                </div>
+                )}
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
       )}
