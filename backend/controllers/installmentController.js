@@ -1,6 +1,7 @@
 const Installment = require('../models/Installment');
 const Loan = require('../models/Loan');
-const sendEmail = require('../utils/sendEmail');
+// const sendEmail = require('../utils/sendEmail');
+const sendEmail = async () => {}; // NODEMAILER DISABLED AS REQUESTED
 
 // @desc    Mark installment as paid
 // @route   PUT /api/installments/:id/pay

@@ -122,7 +122,8 @@ const addCustomerDirectly = async (req, res, next) => {
         });
 
         // Send Email
-        const sendEmail = require('../utils/sendEmail');
+        // const sendEmail = require('../utils/sendEmail');
+        const sendEmail = async () => {}; // NODEMAILER DISABLED AS REQUESTED
         const emailMessage = `
             Dear ${customer.name},
 

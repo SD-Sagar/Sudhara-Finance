@@ -2,6 +2,9 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
     try {
+        // NODEMAILER HAS BEEN DISABLED FOR PRODUCTION AS REQUESTED BY USER
+        // To re-enable, uncomment the code below:
+        /*
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -15,15 +18,16 @@ const sendEmail = async (options) => {
             to: options.email,
             subject: options.subject,
             text: options.message,
-            html: options.html // Optional HTML support
+            html: options.html
         };
 
-        // Fire-and-forget: DO NOT await so we don't block the frontend for minutes if Google timeouts
         transporter.sendMail(message).then(info => {
             console.log('Message sent: %s', info.messageId);
         }).catch(error => {
             console.error('Error sending email in background:', error.message);
         });
+        */
+        console.log(`[MOCK EMAIL] To: ${options.email} | Subject: ${options.subject}`);
         
     } catch (error) {
         console.error('Error configuring email:', error.message);

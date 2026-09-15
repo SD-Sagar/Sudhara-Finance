@@ -2,7 +2,8 @@ const LoanRequest = require('../models/LoanRequest');
 const Loan = require('../models/Loan');
 const Installment = require('../models/Installment');
 const User = require('../models/User');
-const sendEmail = require('../utils/sendEmail');
+// const sendEmail = require('../utils/sendEmail');
+const sendEmail = async () => {}; // NODEMAILER DISABLED AS REQUESTED
 
 // @desc    Request a loan
 // @route   POST /api/loans/request

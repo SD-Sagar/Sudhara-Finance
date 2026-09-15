@@ -25,6 +25,28 @@ const CustomerRegister = () => {
   });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
+  
+  // Terms and Conditions State
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+
+  const handleScroll = (e) => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 5; // 5px tolerance
+    if (bottom && !hasScrolledToBottom) {
+      setHasScrolledToBottom(true);
+    }
+  };
+
+  const handleOpenTerms = (e) => {
+    e.preventDefault();
+    if (!files.photo) {
+      setStatus({ type: 'error', message: 'Photograph is required' });
+      return;
+    }
+    // Form is valid enough to show terms
+    setShowTermsModal(true);
+    setHasScrolledToBottom(false);
+  };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,12 +62,10 @@ const CustomerRegister = () => {
     setFiles({ ...files, [e.target.name]: file });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!files.photo) {
-      setStatus({ type: 'error', message: 'Photograph is required' });
-      return;
-    }
+  const handleSubmit = async () => {
+    setShowTermsModal(false);
+    setLoading(true);
+    setStatus({ type: '', message: '' });
 
     setLoading(true);
     setStatus({ type: '', message: '' });
@@ -193,11 +213,12 @@ const CustomerRegister = () => {
           </div>
 
           <button 
-            type="submit" 
+            type="button" 
+            onClick={handleOpenTerms}
             disabled={loading}
             className="w-full mt-6 bg-[#bc7b1f] text-white font-medium py-3 rounded hover:bg-[#965a1a] transition hover:-translate-y-1 shadow-md hover:shadow-lg disabled:bg-blue-400"
           >
-            {loading ? t('submitting') : t('register')}
+            {loading ? t('submitting') : 'Continue to Terms & Conditions'}
           </button>
         </form>
       ) : null}
@@ -205,6 +226,65 @@ const CustomerRegister = () => {
       <div className="mt-6 text-center text-[#bc7b1f]">
         <Link to="/customer/login" className="text-[#bc7b1f] hover:underline">Back to Login</Link>
       </div>
+
+      {/* Terms and Conditions Modal */}
+      {showTermsModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#fbf8eb] rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden border-2 border-[#bc7b1f]">
+            
+            <div className="p-6 bg-[#673c1c] text-[#fbf8eb] flex justify-between items-center">
+              <h3 className="text-xl md:text-2xl font-bold">Terms and Conditions</h3>
+              <button onClick={() => setShowTermsModal(false)} className="text-[#f5eecc] hover:text-white transition">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            <div 
+              className="p-6 overflow-y-auto flex-grow bg-white text-[#673c1c] leading-relaxed relative"
+              onScroll={handleScroll}
+            >
+              <div className="sticky top-0 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded shadow-sm text-sm font-medium mb-4 z-10 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" /></svg>
+                Please read full thing and scroll to the bottom to agree before proceeding.
+              </div>
+
+              <h4 className="font-bold text-lg mb-2 text-[#bc7b1f]">1. Introduction</h4>
+              <p className="mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              
+              <h4 className="font-bold text-lg mb-2 text-[#bc7b1f]">2. Eligibility for Loans</h4>
+              <p className="mb-4">Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula.</p>
+              
+              <h4 className="font-bold text-lg mb-2 text-[#bc7b1f]">3. Repayment Terms</h4>
+              <p className="mb-4">Phasellus tristique libero vel justo aliquam pellentesque. Morbi egestas mattis placerat. Aenean hendrerit tristique congue. In hendrerit magna eu rhoncus fermentum. Integer consequat erat leo, eu ullamcorper justo faucibus in.</p>
+              
+              <h4 className="font-bold text-lg mb-2 text-[#bc7b1f]">4. Fines and Penalties</h4>
+              <p className="mb-4">Fusce euismod consequat ante. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Pellentesque sed dui ut augue blandit vehicula. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh.</p>
+              
+              <h4 className="font-bold text-lg mb-2 text-[#bc7b1f]">5. Account Cancellation</h4>
+              <p className="mb-4">Nam adipiscing. Vestibulum cursus interdum urna. Nullam hendrerit diam in magna. Praesent in arcu ac diam vulputate semper. Morbi eu mauris. Quisque sollicitudin elit eu odio. Aliquam hendrerit mi vel magna. Curabitur accumsan pretium dolor. Fusce nec enim tempor turpis vehicula congue.</p>
+              
+              <p className="font-bold mt-8 pb-4 text-center text-[#bc7b1f]">--- End of Terms ---</p>
+            </div>
+
+            <div className="p-6 bg-[#fbf8eb] border-t border-[#e1b73e] flex justify-end gap-4">
+              <button 
+                onClick={() => setShowTermsModal(false)}
+                className="px-6 py-2 rounded border border-[#bc7b1f] text-[#673c1c] font-medium hover:bg-[#f5eecc] transition"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSubmit}
+                disabled={!hasScrolledToBottom}
+                className={`px-8 py-2 rounded font-bold transition shadow-md ${hasScrolledToBottom ? 'bg-[#bc7b1f] text-white hover:bg-[#965a1a] hover:shadow-lg' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              >
+                I Agree & Register
+              </button>
+            </div>
+            
+          </div>
+        </div>
+      )}
     </div>
   );
 };

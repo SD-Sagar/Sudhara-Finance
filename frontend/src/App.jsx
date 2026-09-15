@@ -8,6 +8,8 @@ import CustomerDashboard from './pages/customer/CustomerDashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Terms from './pages/Terms';
 
 const ProtectedRoute = ({ children, allowedRole }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -68,6 +70,7 @@ const App = () => {
         <main className="flex-grow container mx-auto px-4 py-8">
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/terms" element={<Terms />} />
             
             {/* Customer Routes */}
             <Route path="/customer/login" element={<CustomerLogin />} />
@@ -93,6 +96,7 @@ const App = () => {
             />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
     </LanguageProvider>

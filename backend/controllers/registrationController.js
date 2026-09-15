@@ -1,7 +1,8 @@
 const RegistrationRequest = require('../models/RegistrationRequest');
 const Customer = require('../models/Customer');
 const { uploadToCloudinary } = require('../utils/cloudinary');
-const sendEmail = require('../utils/sendEmail');
+// const sendEmail = require('../utils/sendEmail');
+const sendEmail = async () => {}; // NODEMAILER DISABLED AS REQUESTED
 const bcrypt = require('bcryptjs');
 
 // @desc    Submit registration request
