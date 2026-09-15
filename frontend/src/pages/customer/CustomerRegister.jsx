@@ -24,7 +24,7 @@ const CustomerRegister = () => {
   });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
-  
+
   // Terms and Conditions State
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
@@ -80,9 +80,9 @@ const CustomerRegister = () => {
       await api.post('/api/registration', submitData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setStatus({ 
-        type: 'success', 
-        message: 'Request received. You will receive your password and login credentials through email and WhatsApp within 24 hours.' 
+      setStatus({
+        type: 'success',
+        message: 'Request received. You will receive your password and login credentials through email and WhatsApp within 24 hours.'
       });
       // Reset form
       setFormData({
@@ -91,9 +91,9 @@ const CustomerRegister = () => {
       });
       // File inputs can't be easily reset without refs, but keeping it simple for prototype
     } catch (err) {
-      setStatus({ 
-        type: 'error', 
-        message: err.response?.data?.message || 'Registration failed. Please try again.' 
+      setStatus({
+        type: 'error',
+        message: err.response?.data?.message || 'Registration failed. Please try again.'
       });
     } finally {
       setLoading(false);
@@ -103,7 +103,7 @@ const CustomerRegister = () => {
   return (
     <div className="max-w-2xl mx-auto mt-8 bg-[#fbf8eb] p-8 rounded-xl border border-[#bc7b1f] shadow-md border border-gray-100">
       <h2 className="text-2xl font-bold text-center text-[#673c1c] mb-6">{t('register_new_customer')}</h2>
-      
+
       {status.message && (
         <div className={`p-4 rounded mb-6 text-center font-medium ${status.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
           {status.message}
@@ -156,13 +156,13 @@ const CustomerRegister = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6 mt-6">
-            
+
             <div className="border-2 border-dashed border-[#d79e27] p-4 rounded-lg text-center hover:bg-[#fbf8eb] transition relative">
               <label className="cursor-pointer block">
                 <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('passport_photo')}*</span>
                 <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
                 <input type="file" name="photo" onChange={handleFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <span className="text-sm font-medium text-[#bc7b1f]">{files.photo ? files.photo.name : 'Click to Upload'}</span>
@@ -174,7 +174,7 @@ const CustomerRegister = () => {
                 <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('aadhaar_document')}*</span>
                 <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
                 <input type="file" name="aadhaarDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <span className="text-sm font-medium text-[#bc7b1f]">{files.aadhaarDoc ? files.aadhaarDoc.name : 'Click to Upload'}</span>
@@ -186,7 +186,7 @@ const CustomerRegister = () => {
                 <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('pan_document')}*</span>
                 <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
                 <input type="file" name="panDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <span className="text-sm font-medium text-[#bc7b1f]">{files.panDoc ? files.panDoc.name : 'Click to Upload'}</span>
@@ -198,7 +198,7 @@ const CustomerRegister = () => {
                 <span className="block text-sm font-bold text-[#965a1a] mb-1">{t('voter_document')}</span>
                 <span className="block text-xs text-[#d79e27] mb-2">JPG, PNG (Max 150KB)</span>
                 <div className="bg-[#fbf8eb] text-[#bc7b1f] p-3 rounded mx-auto w-12 h-12 flex items-center justify-center mb-2">
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </div>
                 <input type="file" name="voterIdDoc" onChange={handleFileChange} accept=".jpg,.jpeg,.png" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                 <span className="text-sm font-medium text-[#bc7b1f]">{files.voterIdDoc ? files.voterIdDoc.name : 'Click to Upload'}</span>
@@ -207,8 +207,8 @@ const CustomerRegister = () => {
 
           </div>
 
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={handleOpenTerms}
             disabled={loading}
             className="w-full mt-6 bg-[#bc7b1f] text-white font-medium py-3 rounded hover:bg-[#965a1a] transition hover:-translate-y-1 shadow-md hover:shadow-lg disabled:bg-blue-400"
@@ -226,7 +226,7 @@ const CustomerRegister = () => {
       {showTermsModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-[#fbf8eb] rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden border-2 border-[#bc7b1f]">
-            
+
             <div className="p-6 bg-[#673c1c] text-[#fbf8eb] flex justify-between items-center">
               <h3 className="text-xl md:text-2xl font-bold">Terms and Conditions</h3>
               <button onClick={() => setShowTermsModal(false)} className="text-[#f5eecc] hover:text-white transition">
@@ -234,7 +234,7 @@ const CustomerRegister = () => {
               </button>
             </div>
 
-            <div 
+            <div
               className="p-6 overflow-y-auto flex-grow bg-white text-[#673c1c] leading-relaxed relative"
               onScroll={handleScroll}
             >
@@ -243,7 +243,7 @@ const CustomerRegister = () => {
                 Please read full thing and scroll to the bottom to agree before proceeding.
               </div>\n              <h2 className="text-3xl font-bold text-[#673c1c] mt-8 mb-4 text-center">SHUDHARA WOMEN DEVELOPMENT ORGANIZATION</h2>
               <h2 className="text-3xl font-bold text-[#673c1c] mt-8 mb-4 text-center">LOAN TERMS & CONDITIONS</h2>
-              <p className="mb-4">Effective Date: __________</p>
+              <p className="mb-4">Effective Date: 15/09/2026</p>
               <p className="mb-4">Shudhara Women Development Organization (“the Organization”) provides financial assistance/loan facilities subject to the following terms and conditions. Applicants are required to read and understand these Terms & Conditions carefully before submitting a registration or loan application through the Organization's website or through any other application channel.</p>
               <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">1. Eligibility of Applicants</h2>
               <p className="mb-3 pl-4"><strong>1.1.</strong> The loan facility is available only to married women and married couples, subject to fulfillment of all other eligibility requirements.</p>
@@ -374,22 +374,22 @@ const CustomerRegister = () => {
 
               <h2 className="text-2xl font-bold text-[#7b481c] mt-12 mb-4">Contact Information</h2>
               <p className="mb-4 text-lg">
-                For any queries or concerns regarding these Terms, please contact us at:<br/><br/>
-                <strong>Shudhara Women Development Organization</strong><br/>
-                Ranaghat, Nadia, Ramnagar Milan Bagan school para<br/>
+                For any queries or concerns regarding these Terms, please contact us at:<br /><br />
+                <strong>Shudhara Women Development Organization</strong><br />
+                Ranaghat, Nadia, Ramnagar Milan Bagan school para<br />
                 Phone: 7029368862 / 9046377730
               </p>
-\n              <p className="font-bold mt-8 pb-4 text-center text-[#bc7b1f]">--- End of Terms ---</p>
+              \n              <p className="font-bold mt-8 pb-4 text-center text-[#bc7b1f]">--- End of Terms ---</p>
             </div>
 
             <div className="p-6 bg-[#fbf8eb] border-t border-[#e1b73e] flex justify-end gap-4">
-              <button 
+              <button
                 onClick={() => setShowTermsModal(false)}
                 className="px-6 py-2 rounded border border-[#bc7b1f] text-[#673c1c] font-medium hover:bg-[#f5eecc] transition"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={handleSubmit}
                 disabled={!hasScrolledToBottom}
                 className={`px-8 py-2 rounded font-bold transition shadow-md ${hasScrolledToBottom ? 'bg-[#bc7b1f] text-white hover:bg-[#965a1a] hover:shadow-lg' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
@@ -397,7 +397,7 @@ const CustomerRegister = () => {
                 I Agree & Register
               </button>
             </div>
-            
+
           </div>
         </div>
       )}
