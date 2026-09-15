@@ -11,11 +11,11 @@ const Terms = () => {
         <h1 className="text-3xl md:text-4xl font-bold text-[#673c1c] mb-6 border-b-2 border-[#bc7b1f] pb-4">
           Terms and Conditions
         </h1>
-        
+
         <div className="prose prose-amber max-w-none text-[#965a1a]">
           <h2 className="text-3xl font-bold text-[#673c1c] mt-8 mb-4 text-center">SHUDHARA WOMEN DEVELOPMENT ORGANIZATION</h2>
           <h2 className="text-3xl font-bold text-[#673c1c] mt-8 mb-4 text-center">LOAN TERMS & CONDITIONS</h2>
-          <p className="mb-4">Effective Date: __________</p>
+          <p className="mb-4">Effective Date: 15/09/2026</p>
           <p className="mb-4">Shudhara Women Development Organization (“the Organization”) provides financial assistance/loan facilities subject to the following terms and conditions. Applicants are required to read and understand these Terms & Conditions carefully before submitting a registration or loan application through the Organization's website or through any other application channel.</p>
           <h2 className="text-2xl font-bold text-[#7b481c] mt-8 mb-4">1. Eligibility of Applicants</h2>
           <p className="mb-3 pl-4"><strong>1.1.</strong> The loan facility is available only to married women and married couples, subject to fulfillment of all other eligibility requirements.</p>
@@ -146,9 +146,9 @@ const Terms = () => {
 
           <h2 className="text-2xl font-bold text-[#7b481c] mt-12 mb-4">Contact Information</h2>
           <p className="mb-4 text-lg">
-            For any queries or concerns regarding these Terms, please contact us at:<br/><br/>
-            <strong>Shudhara Women Development Organization</strong><br/>
-            Ranaghat, Nadia, Ramnagar Milan Bagan school para<br/>
+            For any queries or concerns regarding these Terms, please contact us at:<br /><br />
+            <strong>Shudhara Women Development Organization</strong><br />
+            Ranaghat, Nadia, Ramnagar Milan Bagan school para<br />
             Phone: 7029368862 / 9046377730
           </p>
 
