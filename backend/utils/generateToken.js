@@ -8,8 +8,7 @@ const generateToken = (res, userId, role) => {
     res.cookie('jwt', token, {
         httpOnly: true,
         secure: true, // Required by browsers for cross-site cookies
-        sameSite: 'none', // Allow cross-site cookies between vercel and render
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+        sameSite: 'none' // Allow cross-site cookies between vercel and render
     });
 };
 
