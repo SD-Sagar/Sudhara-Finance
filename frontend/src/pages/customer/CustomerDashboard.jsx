@@ -101,8 +101,15 @@ const CustomerDashboard = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-[#7b481c]">{t('my_dashboard')}</h1>
+      <div className="flex justify-between items-start mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-[#7b481c]">{t('my_dashboard')}</h1>
+          {customerProfile && (
+            <p className="text-[#bc7b1f] font-bold mt-1 tracking-wide">
+              Customer ID: <span className="bg-[#f5eecc] px-2 py-0.5 rounded text-[#965a1a]">{customerProfile.customerId}</span>
+            </p>
+          )}
+        </div>
         <button 
           onClick={() => setShowLoanModal(true)}
           className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-[#965a1a] transition hover:-translate-y-1 shadow-md hover:shadow-lg"
@@ -225,7 +232,9 @@ const CustomerDashboard = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {installments.map(inst => (
+                      {installments.map((inst, index) => {
+                        const isUnlocked = inst.status !== 'PAID' && (index === 0 || installments[index-1].status === 'PAID');
+                        return (
                         <tr key={inst._id}>
                           <td className="px-4 py-3 text-sm text-[#673c1c]">{new Date(inst.dueDate).toLocaleDateString()}</td>
                           <td className="px-4 py-3 text-sm text-[#673c1c]">₹{inst.amount}</td>
@@ -240,7 +249,7 @@ const CustomerDashboard = () => {
                             </span>
                           </td>
                           <td className="px-4 py-3 text-sm">
-                            {inst.status !== 'PAID' && (
+                            {isUnlocked && (
                               <button 
                                 onClick={() => handlePaymentContact(inst._id)}
                                 className="text-[#bc7b1f] hover:text-[#673c1c] font-medium"
@@ -248,12 +257,15 @@ const CustomerDashboard = () => {
                                 {t('pay_contact_admin')}
                               </button>
                             )}
+                            {inst.status !== 'PAID' && !isUnlocked && (
+                              <span className="text-gray-400 italic text-xs">Locked</span>
+                            )}
                             {inst.status === 'PAID' && (
                               <span className="text-green-600 font-medium">{t('paid_on')} {new Date(inst.paymentDate).toLocaleDateString()}</span>
                             )}
                           </td>
                         </tr>
-                      ))}
+                      )})}
                     </tbody>
                   </table>
                 </div>

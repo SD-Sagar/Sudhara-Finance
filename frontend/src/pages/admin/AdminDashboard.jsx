@@ -292,47 +292,124 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDownloadLoanPDF = (loanData, customer) => {
+  const getLogoBase64 = () => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.onerror = () => resolve(null);
+      img.src = '/ShudharaIcon.png';
+    });
+  };
+
+  const handleDownloadLoanPDF = async (loanData, customer) => {
     const doc = new jsPDF();
+    const logoData = await getLogoBase64();
+    if (logoData) {
+      doc.addImage(logoData, 'PNG', 14, 10, 20, 20); // small logo top left
+      // Watermark in center (light opacity)
+      doc.setGState(new doc.GState({opacity: 0.1}));
+      doc.addImage(logoData, 'PNG', 50, 80, 100, 100);
+      doc.setGState(new doc.GState({opacity: 1})); // reset
+    }
+
+    doc.setFontSize(22);
+    doc.setTextColor(103, 60, 28); // #673c1c
+    doc.text(`Shudhara Women Development Organization`, 38, 24);
     
-    // Header
-    doc.setFontSize(18);
-    doc.text(`Loan History - Shudhara Women Development Organization`, 14, 20);
-    
+    doc.setFontSize(16);
+    doc.setTextColor(188, 123, 31); // #bc7b1f
+    doc.text(`Full Loan History`, 14, 45);
+
     // Customer Info
     doc.setFontSize(12);
-    doc.text(`Customer Name: ${customer.name}`, 14, 30);
-    doc.text(`Customer ID: ${customer.customerId}`, 14, 37);
-    
-    // Loan Info
-    doc.text(`Loan Amount: Rs. ${loanData.loan.approvedAmount}`, 14, 47);
-    doc.text(`Duration: ${loanData.loan.duration}`, 14, 54);
-    doc.text(`Status: ${loanData.loan.status}`, 14, 61);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Customer Name: ${customer.name}`, 14, 55);
+    doc.text(`Customer ID: ${customer.customerId}`, 14, 62);
+    doc.text(`Loan Amount: Rs. ${loanData.loan.approvedAmount}`, 14, 69);
+    doc.text(`Duration: ${loanData.loan.duration}`, 14, 76);
 
-    // Table Data
     const tableColumn = ["Due Date", "Amount (Rs)", "Fine (Rs)", "Status", "Payment Date"];
     const tableRows = [];
 
     loanData.installments.forEach(inst => {
-      const rowData = [
+      tableRows.push([
         new Date(inst.dueDate).toLocaleDateString(),
         inst.amount,
         inst.fine,
         inst.status,
         inst.paymentDate ? new Date(inst.paymentDate).toLocaleDateString() : '-'
-      ];
-      tableRows.push(rowData);
+      ]);
     });
 
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
-      startY: 70,
-      styles: { fontSize: 10 },
-      headStyles: { fillColor: [16, 185, 129] } // gold-500 equivalent
+      startY: 85,
+      styles: { fontSize: 10, halign: 'center' },
+      headStyles: { fillColor: [188, 123, 31], textColor: [255,255,255] }, // #bc7b1f
+      alternateRowStyles: { fillColor: [251, 248, 235] } // #fbf8eb
     });
 
-    doc.save(`Loan_${customer.customerId}_${loanData.loan._id.substring(0, 6)}.pdf`);
+    // Authority Signature
+    const finalY = doc.lastAutoTable.finalY || 85;
+    doc.setFontSize(12);
+    doc.setTextColor(103, 60, 28);
+    doc.text(`Authorized Signatory: _________________________`, 110, finalY + 40);
+
+    doc.save(`LoanHistory_${customer.customerId}_${loanData.loan._id.substring(0, 6)}.pdf`);
+  };
+
+  const handleDownloadReceipt = async (installment, loanData, customer) => {
+    const doc = new jsPDF();
+    const logoData = await getLogoBase64();
+    if (logoData) {
+      doc.addImage(logoData, 'PNG', 14, 10, 20, 20);
+      doc.setGState(new doc.GState({opacity: 0.1}));
+      doc.addImage(logoData, 'PNG', 50, 80, 100, 100);
+      doc.setGState(new doc.GState({opacity: 1}));
+    }
+
+    doc.setFontSize(22);
+    doc.setTextColor(103, 60, 28);
+    doc.text(`Shudhara Women Development Organization`, 38, 24);
+    
+    doc.setFontSize(18);
+    doc.setTextColor(188, 123, 31);
+    doc.text(`Payment Receipt`, 14, 45);
+
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Date of Payment: ${new Date(installment.paymentDate).toLocaleDateString()}`, 120, 45);
+    
+    doc.text(`Customer Name: ${customer.name}`, 14, 60);
+    doc.text(`Customer ID: ${customer.customerId}`, 14, 67);
+    doc.text(`Loan Amount: Rs. ${loanData.loan.approvedAmount}`, 14, 74);
+    
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(188, 123, 31);
+    doc.line(14, 85, 196, 85);
+
+    doc.setFontSize(14);
+    doc.setTextColor(103, 60, 28);
+    doc.text(`Amount Paid: Rs. ${installment.amount}`, 14, 100);
+    if(installment.fine > 0) {
+        doc.text(`Late Fine Paid: Rs. ${installment.fine}`, 14, 110);
+    }
+    doc.text(`Payment Method: ${installment.paymentMethod || 'Cash'}`, 14, installment.fine > 0 ? 120 : 110);
+
+    doc.line(14, 135, 196, 135);
+
+    doc.setFontSize(12);
+    doc.text(`Authorized Signatory: _________________________`, 110, 170);
+
+    doc.save(`Receipt_${customer.customerId}_${installment._id.substring(0, 6)}.pdf`);
   };
 
   const handleDeleteLoan = async (loanData, customer) => {
@@ -761,7 +838,18 @@ const AdminDashboard = () => {
                             </button>
                           )}
                           {inst.status === 'PAID' && (
-                            <span className="text-[#d79e27]">Paid on {new Date(inst.paymentDate).toLocaleDateString()}</span>
+                            <div className="flex items-center gap-3">
+                              <span className="text-[#d79e27]">Paid on {new Date(inst.paymentDate).toLocaleDateString()}</span>
+                              <button 
+                                onClick={() => handleDownloadReceipt(inst, data, selectedCustomer)}
+                                className="text-xs bg-[#fbf8eb] text-[#bc7b1f] border border-[#bc7b1f] px-2 py-1 rounded hover:bg-[#f5eecc] transition flex items-center gap-1 font-medium shadow-sm hover:shadow"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                                Receipt
+                              </button>
+                            </div>
                           )}
                         </td>
                       </tr>

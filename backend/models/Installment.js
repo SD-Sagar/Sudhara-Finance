@@ -10,7 +10,7 @@ const installmentSchema = new mongoose.Schema({
     fine: { type: Number, default: 0 },
     penaltyAppliedDays: { type: Number, default: 0 },
     paymentMethod: { type: String, enum: ['Cash', 'Online'], default: null },
-    verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } // Admin who verified
+    verifiedBy: { type: String } // Admin who verified (e.g. 'admin')
 }, { timestamps: true });
 
 const Installment = mongoose.model('Installment', installmentSchema);

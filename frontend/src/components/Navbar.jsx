@@ -30,7 +30,7 @@ const Navbar = () => {
           100% { background-position: 0% 50%; }
         }
       `}</style>
-      <div className="container mx-auto px-2 py-3 md:px-4 md:py-6 lg:py-8 flex flex-wrap justify-between items-center gap-2">
+      <div className="w-full px-2 md:px-6 lg:px-8 py-3 md:py-5 lg:py-6 flex flex-wrap justify-between items-center gap-2">
         
         {/* Logo and Title */}
         <Link to="/" className="flex items-center gap-2 md:gap-3 shrink-0">
@@ -73,7 +73,7 @@ const Navbar = () => {
                   </div>
                 </div>
               )}
-              <span className="font-medium whitespace-nowrap text-xs md:text-lg lg:text-xl hidden sm:inline-block text-[#fbf8eb]">
+              <span className="font-medium whitespace-nowrap text-xs md:text-sm lg:text-base hidden md:inline-block text-[#fbf8eb]">
                 Welcome, {userInfo.name || userInfo.email}
               </span>
               <button 
