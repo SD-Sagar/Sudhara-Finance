@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/axiosConfig';
 import { useLanguage } from '../../contexts/LanguageContext';
+import TermsContentEn from '../../components/TermsContentEn';
+import TermsContentBn from '../../components/TermsContentBn';
 
 const CustomerRegister = () => {
   const { t, language } = useLanguage();
