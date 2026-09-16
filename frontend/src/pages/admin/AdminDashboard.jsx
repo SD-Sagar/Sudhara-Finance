@@ -12,6 +12,8 @@ const AdminDashboard = () => {
   const [registrations, setRegistrations] = useState([]);
   const [loanRequests, setLoanRequests] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -110,8 +112,18 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchNotifications = async () => {
+    try {
+      const { data } = await api.get('/api/notifications/admin');
+      setNotifications(data);
+    } catch (err) {
+      console.error('Failed to fetch notifications', err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchNotifications();
     setSelectedCustomer(null);
   }, [activeTab]);
 
@@ -465,7 +477,56 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-[#7b481c] mb-8">{t('admin_dashboard')}</h1>
+      <div className="flex justify-between items-center mb-8 relative">
+        <h1 className="text-3xl font-bold text-[#7b481c]">{t('admin_dashboard')}</h1>
+        
+        <div className="relative">
+          <button 
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="p-2 rounded-full hover:bg-gray-100 transition relative"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-[#bc7b1f]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            {notifications.length > 0 && (
+              <span className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                {notifications.length}
+              </span>
+            )}
+          </button>
+
+          {showNotifications && (
+            <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden">
+              <div className="p-3 bg-[#f5eecc] border-b font-bold text-[#7b481c]">
+                Notifications
+              </div>
+              <div className="max-h-64 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="p-4 text-gray-500 text-sm text-center">No new notifications</div>
+                ) : (
+                  notifications.map(notif => (
+                    <div 
+                      key={notif.id}
+                      onClick={() => {
+                        setActiveTab(notif.actionTab);
+                        setShowNotifications(false);
+                      }}
+                      className="p-3 border-b hover:bg-gray-50 cursor-pointer transition text-sm text-gray-800 flex items-start gap-3"
+                    >
+                      <div className="mt-0.5">
+                        {notif.type === 'registration' && <span className="w-2 h-2 mt-1.5 block rounded-full bg-blue-500"></span>}
+                        {notif.type === 'loan' && <span className="w-2 h-2 mt-1.5 block rounded-full bg-yellow-500"></span>}
+                        {notif.type === 'installment' && <span className="w-2 h-2 mt-1.5 block rounded-full bg-red-500"></span>}
+                      </div>
+                      <span className="font-medium">{notif.message}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Tabs */}
       <div className="flex gap-4 border-b border-gray-200 mb-6 overflow-x-auto">

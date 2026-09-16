@@ -63,6 +63,7 @@ const registrationRoutes = require('./routes/registrationRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const loanRoutes = require('./routes/loanRoutes');
 const installmentRoutes = require('./routes/installmentRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 app.get('/api/health', (req, res) => {
@@ -74,6 +75,7 @@ app.use('/api/registration', registrationRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/loans', loanRoutes);
 app.use('/api/installments', installmentRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
