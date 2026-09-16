@@ -24,11 +24,13 @@ app.use(cors({
             'http://localhost:5173', 
             'http://localhost:5174', 
             'http://localhost:5175',
+            'https://swdo.in',
+            'https://www.swdo.in',
             process.env.FRONTEND_URL
         ];
 
         // Also allow any vercel app for smooth deployments
-        if (origin.includes('vercel.app') || allowedOrigins.includes(origin)) {
+        if (origin.includes('vercel.app') || origin.includes('swdo.in') || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
