@@ -17,7 +17,7 @@ const getAdminNotifications = async (req, res, next) => {
                 type: 'registration',
                 count: pendingRegistrations,
                 message: `${pendingRegistrations} New Customer Registration Request(s)`,
-                actionTab: 'approvals'
+                actionTab: 'registrations'
             });
         }
 
@@ -48,7 +48,7 @@ const getAdminNotifications = async (req, res, next) => {
                 type: 'installment',
                 count: urgentInstallments,
                 message: `${urgentInstallments} Installment(s) Overdue or Due Soon`,
-                actionTab: 'payments'
+                actionTab: 'customers'
             });
         }
 
