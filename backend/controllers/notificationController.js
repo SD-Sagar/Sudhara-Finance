@@ -15,6 +15,7 @@ const getAdminNotifications = async (req, res, next) => {
             notifications.push({
                 id: 'notif_reg',
                 type: 'registration',
+                count: pendingRegistrations,
                 message: `${pendingRegistrations} New Customer Registration Request(s)`,
                 actionTab: 'approvals'
             });
@@ -26,6 +27,7 @@ const getAdminNotifications = async (req, res, next) => {
             notifications.push({
                 id: 'notif_loan',
                 type: 'loan',
+                count: pendingLoans,
                 message: `${pendingLoans} New Loan Request(s) Pending`,
                 actionTab: 'loans'
             });
@@ -44,6 +46,7 @@ const getAdminNotifications = async (req, res, next) => {
             notifications.push({
                 id: 'notif_inst',
                 type: 'installment',
+                count: urgentInstallments,
                 message: `${urgentInstallments} Installment(s) Overdue or Due Soon`,
                 actionTab: 'payments'
             });

@@ -115,7 +115,13 @@ const AdminDashboard = () => {
   const fetchNotifications = async () => {
     try {
       const { data } = await api.get('/api/notifications/admin');
-      setNotifications(data);
+      const cleared = JSON.parse(localStorage.getItem('cleared_notifs') || '{}');
+      const activeNotifs = data.filter(n => {
+        // If the cleared count is greater than or equal to current count, hide it
+        if (cleared[n.id] && cleared[n.id] >= n.count) return false;
+        return true;
+      });
+      setNotifications(activeNotifs);
     } catch (err) {
       console.error('Failed to fetch notifications', err);
     }
@@ -510,6 +516,10 @@ const AdminDashboard = () => {
                       onClick={() => {
                         setActiveTab(notif.actionTab);
                         setShowNotifications(false);
+                        const cleared = JSON.parse(localStorage.getItem('cleared_notifs') || '{}');
+                        cleared[notif.id] = notif.count;
+                        localStorage.setItem('cleared_notifs', JSON.stringify(cleared));
+                        setNotifications(prev => prev.filter(n => n.id !== notif.id));
                       }}
                       className="p-3 border-b hover:bg-gray-50 cursor-pointer transition text-sm text-gray-800 flex items-start gap-3"
                     >
