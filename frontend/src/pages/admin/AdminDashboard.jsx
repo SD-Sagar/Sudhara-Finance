@@ -23,6 +23,7 @@ const AdminDashboard = () => {
   const [expandedLoans, setExpandedLoans] = useState({});
   const toggleLoan = (loanId) => setExpandedLoans(prev => ({...prev, [loanId]: !prev[loanId]}));
   const [selectedLoanRequest, setSelectedLoanRequest] = useState(null);
+  const [selectedInstallments, setSelectedInstallments] = useState([]);
   
   // Edit Customer State
   const [isEditingCustomer, setIsEditingCustomer] = useState(false);
@@ -208,9 +209,22 @@ const AdminDashboard = () => {
   };
 
   const handleMarkPaid = async (installmentId) => {
-    let paymentDate = prompt('Enter payment date (YYYY-MM-DD). Leave empty for today:');
-    if (paymentDate === null) return;
-    if (paymentDate.trim() === '') paymentDate = undefined;
+    const today = new Date();
+    const defaultDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+    
+    let paymentDateStr = prompt('Enter payment date (DD-MM-YYYY). Leave empty for today:', defaultDate);
+    if (paymentDateStr === null) return;
+    
+    let paymentDate;
+    if (paymentDateStr.trim() !== '') {
+      const parts = paymentDateStr.trim().split('-');
+      if (parts.length === 3) {
+        paymentDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Convert to YYYY-MM-DD for backend
+      } else {
+        alert('Invalid date format. Please use DD-MM-YYYY');
+        return;
+      }
+    }
 
     const paymentMethod = prompt('Enter payment method (Cash or Online):', 'Cash');
     if (!paymentMethod || !['Cash', 'Online'].includes(paymentMethod)) {
@@ -224,6 +238,45 @@ const AdminDashboard = () => {
       viewCustomerProfile(selectedCustomer._id);
     } catch (err) {
       alert(err.response?.data?.message || 'Error marking as paid');
+    }
+  };
+
+  const handleBulkMarkPaid = async () => {
+    if (selectedInstallments.length === 0) return;
+    
+    const today = new Date();
+    const defaultDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+    
+    let paymentDateStr = prompt(`Marking ${selectedInstallments.length} installments paid.\nEnter payment date (DD-MM-YYYY):`, defaultDate);
+    if (paymentDateStr === null) return;
+    
+    let paymentDate;
+    if (paymentDateStr.trim() !== '') {
+      const parts = paymentDateStr.trim().split('-');
+      if (parts.length === 3) {
+        paymentDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      } else {
+        alert('Invalid date format. Please use DD-MM-YYYY');
+        return;
+      }
+    }
+
+    const paymentMethod = prompt('Enter payment method (Cash or Online) for all selected:', 'Cash');
+    if (!paymentMethod || !['Cash', 'Online'].includes(paymentMethod)) {
+      alert('Invalid payment method. Cancelled.');
+      return;
+    }
+
+    try {
+      await api.put(`/api/installments/bulk-pay`, { 
+        installmentIds: selectedInstallments, 
+        paymentMethod, 
+        paymentDate 
+      });
+      setSelectedInstallments([]);
+      viewCustomerProfile(selectedCustomer._id);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Error marking bulk as paid');
     }
   };
 
@@ -384,11 +437,11 @@ const AdminDashboard = () => {
 
     loanData.installments.forEach(inst => {
       tableRows.push([
-        new Date(inst.dueDate).toLocaleDateString(),
+        new Date(inst.dueDate).toLocaleDateString('en-GB'),
         inst.amount,
         inst.fine,
         inst.status,
-        inst.paymentDate ? new Date(inst.paymentDate).toLocaleDateString() : '-'
+        inst.paymentDate ? new Date(inst.paymentDate).toLocaleDateString('en-GB') : '-'
       ]);
     });
 
@@ -430,7 +483,7 @@ const AdminDashboard = () => {
 
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.text(`Date of Payment: ${new Date(installment.paymentDate).toLocaleDateString()}`, 120, 45);
+    doc.text(`Date of Payment: ${new Date(installment.paymentDate).toLocaleDateString('en-GB')}`, 120, 45);
     
     doc.text(`Customer Name: ${customer.name}`, 14, 60);
     doc.text(`Customer ID: ${customer.customerId}`, 14, 67);
@@ -631,7 +684,7 @@ const AdminDashboard = () => {
                   </h3>
                   <p className="text-[#bc7b1f]">{t('requested')}: ₹{req.requestedAmount} for {req.requestedDuration}</p>
                   <p className="text-[#bc7b1f]">{t('reason')}: {req.reason}</p>
-                  <p className="text-sm text-gray-400">{t('date')}: {new Date(req.createdAt).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-400">{t('date')}: {new Date(req.createdAt).toLocaleDateString('en-GB')}</p>
                 </div>
                 <div className="flex flex-col gap-2">
                   {!req.cancellationRequested ? (
@@ -890,7 +943,7 @@ const AdminDashboard = () => {
                       Loan: ₹{data.loan.approvedAmount}
                     </h4>
                     <p className="text-sm text-[#bc7b1f] ml-7">
-                      Start Date: {new Date(data.loan.startDate).toLocaleDateString()} | Duration: {data.loan.duration} | Status: {data.loan.status}
+                      Start Date: {new Date(data.loan.startDate).toLocaleDateString('en-GB')} | Duration: {data.loan.duration} | Status: {data.loan.status}
                     </p>
                     <p className="text-sm font-bold text-green-700 ml-7 mt-1">Total Paid So Far: ₹{totalPaid}</p>
                   </div>
@@ -914,10 +967,22 @@ const AdminDashboard = () => {
                 </div>
                 
                 {isExpanded && (
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto relative">
+                  {selectedInstallments.length > 0 && (
+                    <div className="bg-[#f5eecc] p-3 border-b flex justify-between items-center">
+                      <span className="font-medium text-[#7b481c]">{selectedInstallments.length} installment(s) selected</span>
+                      <button 
+                        onClick={handleBulkMarkPaid}
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium shadow transition text-sm"
+                      >
+                        Mark Selected as Paid
+                      </button>
+                    </div>
+                  )}
                 <table className="min-w-full text-sm divide-y divide-gray-200">
                   <thead className="bg-[#f5eecc]">
                     <tr>
+                      <th className="px-4 py-2 text-left text-[#bc7b1f] w-10"></th>
                       <th className="px-4 py-2 text-left text-[#bc7b1f]">Due Date</th>
                       <th className="px-4 py-2 text-left text-[#bc7b1f]">Amount</th>
                       <th className="px-4 py-2 text-left text-[#bc7b1f]">Fine</th>
@@ -928,7 +993,23 @@ const AdminDashboard = () => {
                   <tbody className="divide-y divide-gray-200">
                     {data.installments.map(inst => (
                       <tr key={inst._id}>
-                        <td className="px-4 py-2">{new Date(inst.dueDate).toLocaleDateString()}</td>
+                        <td className="px-4 py-2">
+                          {inst.status !== 'PAID' && (
+                            <input 
+                              type="checkbox"
+                              checked={selectedInstallments.includes(inst._id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedInstallments([...selectedInstallments, inst._id]);
+                                } else {
+                                  setSelectedInstallments(selectedInstallments.filter(id => id !== inst._id));
+                                }
+                              }}
+                              className="rounded text-[#bc7b1f] focus:ring-[#bc7b1f]"
+                            />
+                          )}
+                        </td>
+                        <td className="px-4 py-2">{new Date(inst.dueDate).toLocaleDateString('en-GB')}</td>
                         <td className="px-4 py-2">₹{inst.amount}</td>
                         <td className="px-4 py-2 text-red-600">{inst.fine > 0 ? `₹${inst.fine}` : '-'}</td>
                         <td className="px-4 py-2">
@@ -951,7 +1032,7 @@ const AdminDashboard = () => {
                           )}
                           {inst.status === 'PAID' && (
                             <div className="flex items-center gap-3">
-                              <span className="text-[#d79e27]">Paid on {new Date(inst.paymentDate).toLocaleDateString()}</span>
+                              <span className="text-[#d79e27]">Paid on {new Date(inst.paymentDate).toLocaleDateString('en-GB')}</span>
                               <button 
                                 onClick={() => handleDownloadReceipt(inst, data, selectedCustomer)}
                                 className="text-xs bg-[#fbf8eb] text-[#bc7b1f] border border-[#bc7b1f] px-2 py-1 rounded hover:bg-[#f5eecc] transition flex items-center gap-1 font-medium shadow-sm hover:shadow"

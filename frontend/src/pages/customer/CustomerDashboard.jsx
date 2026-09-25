@@ -31,7 +31,7 @@ const CustomerDashboard = () => {
 
   const getNextDueDate = (installments) => {
     const nextInst = installments.find(i => i.status === 'PENDING' || i.status === 'OVERDUE');
-    if (nextInst) return new Date(nextInst.dueDate).toLocaleDateString();
+    if (nextInst) return new Date(nextInst.dueDate).toLocaleDateString('en-GB');
     return t('all_paid');
   };
 
@@ -154,7 +154,7 @@ const CustomerDashboard = () => {
                     <div>
                       <h3 className="font-bold text-xl text-[#673c1c] mb-1">Requested: ₹{req.requestedAmount}</h3>
                       <p className="text-[#bc7b1f] mb-1 font-medium">Duration: {req.requestedDuration} | Reason: {req.reason}</p>
-                      <p className="text-sm text-gray-400">Requested on {new Date(req.createdAt).toLocaleDateString()}</p>
+                      <p className="text-sm text-gray-400">Requested on {new Date(req.createdAt).toLocaleDateString('en-GB')}</p>
                     </div>
                     <div className="text-right">
                       <span className={`inline-block px-4 py-2 rounded-full text-sm font-bold ${req.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : req.status === 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
@@ -237,7 +237,7 @@ const CustomerDashboard = () => {
                         const isUnlocked = inst.status !== 'PAID' && (index === 0 || installments[index-1].status === 'PAID');
                         return (
                         <tr key={inst._id}>
-                          <td className="px-4 py-3 text-sm text-[#673c1c]">{new Date(inst.dueDate).toLocaleDateString()}</td>
+                          <td className="px-4 py-3 text-sm text-[#673c1c]">{new Date(inst.dueDate).toLocaleDateString('en-GB')}</td>
                           <td className="px-4 py-3 text-sm text-[#673c1c]">₹{inst.amount}</td>
                           <td className="px-4 py-3 text-sm text-red-600">{inst.fine > 0 ? `₹${inst.fine}` : '-'}</td>
                           <td className="px-4 py-3 text-sm">
@@ -262,7 +262,7 @@ const CustomerDashboard = () => {
                               <span className="text-gray-400 italic text-xs">Locked</span>
                             )}
                             {inst.status === 'PAID' && (
-                              <span className="text-green-600 font-medium">{t('paid_on')} {new Date(inst.paymentDate).toLocaleDateString()}</span>
+                              <span className="text-green-600 font-medium">{t('paid_on')} {new Date(inst.paymentDate).toLocaleDateString('en-GB')}</span>
                             )}
                           </td>
                         </tr>

@@ -51,7 +51,7 @@ const markInstallmentPaid = async (req, res, next) => {
         await sendEmail({
             email: installment.customer.email,
             subject: 'Shudhara Women Development Organization - Payment Received',
-            message: `Dear ${installment.customer.name}, your payment of ${installment.amount} for the installment due on ${new Date(installment.dueDate).toLocaleDateString()} has been successfully recorded.`
+            message: `Dear ${installment.customer.name}, your payment of ${installment.amount} for the installment due on ${new Date(installment.dueDate).toLocaleDateString('en-GB')} has been successfully recorded.`
         });
 
         res.json({ message: 'Installment marked as paid', installment, loan });
@@ -119,7 +119,69 @@ const checkOverdueInstallments = async (req, res, next) => {
     }
 };
 
+// @desc    Bulk mark installments as paid
+// @route   PUT /api/installments/bulk-pay
+// @access  Private/Admin
+const bulkMarkInstallmentsPaid = async (req, res, next) => {
+    try {
+        const { installmentIds, paymentMethod, paymentDate } = req.body;
+        
+        if (!installmentIds || installmentIds.length === 0) {
+            res.status(400);
+            return next(new Error('No installments selected'));
+        }
+
+        const dateToApply = paymentDate ? new Date(paymentDate) : Date.now();
+        const installments = await Installment.find({ _id: { $in: installmentIds } }).populate('loan').populate('customer');
+        
+        let customerToUpdate = null;
+        let cibilIncrease = 0;
+        let loanIds = new Set();
+        let loanCompletedIncrements = {};
+
+        for (let installment of installments) {
+            if (installment.status === 'PAID') continue; // Skip already paid ones to maintain app consistency
+            
+            installment.status = 'PAID';
+            installment.paymentDate = dateToApply;
+            installment.paymentMethod = paymentMethod;
+            installment.verifiedBy = req.user._id;
+
+            const isPaidOnTime = new Date(installment.paymentDate) <= new Date(installment.dueDate);
+            if (isPaidOnTime) {
+                cibilIncrease += 5;
+            }
+
+            customerToUpdate = installment.customer;
+            loanIds.add(installment.loan._id.toString());
+            loanCompletedIncrements[installment.loan._id] = (loanCompletedIncrements[installment.loan._id] || 0) + 1;
+
+            await installment.save();
+        }
+
+        if (customerToUpdate && cibilIncrease > 0) {
+            const currentScore = customerToUpdate.cibilScore || 600;
+            customerToUpdate.cibilScore = Math.min(800, currentScore + cibilIncrease);
+            await customerToUpdate.save();
+        }
+
+        for (let loanId of loanIds) {
+            const loan = await Loan.findById(loanId);
+            loan.completedInstallments += loanCompletedIncrements[loanId];
+            if (loan.completedInstallments >= loan.totalInstallments) {
+                loan.status = 'COMPLETED';
+            }
+            await loan.save();
+        }
+
+        res.json({ message: `${installments.length} installments marked as paid successfully` });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     markInstallmentPaid,
-    checkOverdueInstallments
+    checkOverdueInstallments,
+    bulkMarkInstallmentsPaid
 };
