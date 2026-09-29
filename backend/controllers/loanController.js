@@ -70,7 +70,7 @@ const getLoanRequests = async (req, res, next) => {
 // @access  Private/Admin
 const approveLoan = async (req, res, next) => {
     try {
-        const { approvedAmount, duration, installmentAmount, installmentFrequency, startDate, completionDate } = req.body;
+        const { approvedAmount, duration, installmentAmount, installmentFrequency, startDate, completionDate, loanReceivedDate } = req.body;
         
         const loanRequest = await LoanRequest.findById(req.params.id).populate('customer');
         if (!loanRequest) {
@@ -103,6 +103,7 @@ const approveLoan = async (req, res, next) => {
             duration,
             startDate,
             completionDate,
+            loanReceivedDate: loanReceivedDate ? new Date(loanReceivedDate) : null,
             installmentAmount,
             totalInstallments
         });
@@ -328,6 +329,27 @@ const deleteLoan = async (req, res, next) => {
     }
 };
 
+// @desc    Admin updates loan received date (disbursed date)
+// @route   PUT /api/loans/:id/received-date
+// @access  Private/Admin
+const updateLoanReceivedDate = async (req, res, next) => {
+    try {
+        const { loanReceivedDate } = req.body;
+        const loan = await Loan.findById(req.params.id);
+        if (!loan) {
+            res.status(404);
+            return next(new Error('Loan not found'));
+        }
+
+        loan.loanReceivedDate = loanReceivedDate ? new Date(loanReceivedDate) : null;
+        await loan.save();
+
+        res.json({ message: 'Loan received date updated successfully', loan });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     requestLoan,
     getLoanRequests,
@@ -337,5 +359,6 @@ module.exports = {
     getMyLoanRequests,
     requestCancellation,
     resolveCancellation,
-    deleteLoan
+    deleteLoan,
+    updateLoanReceivedDate
 };

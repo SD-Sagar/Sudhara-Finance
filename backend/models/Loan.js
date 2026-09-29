@@ -10,7 +10,8 @@ const loanSchema = new mongoose.Schema({
     installmentAmount: { type: Number, required: true },
     totalInstallments: { type: Number, required: true },
     completedInstallments: { type: Number, default: 0 },
-    status: { type: String, enum: ['ACTIVE', 'COMPLETED', 'CANCELLED'], default: 'ACTIVE' }
+    status: { type: String, enum: ['ACTIVE', 'COMPLETED', 'CANCELLED'], default: 'ACTIVE' },
+    loanReceivedDate: { type: Date, default: null }
 }, { timestamps: true });
 
 const Loan = mongoose.model('Loan', loanSchema);

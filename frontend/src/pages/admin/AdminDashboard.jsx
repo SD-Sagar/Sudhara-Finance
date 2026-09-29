@@ -45,6 +45,43 @@ const AdminDashboard = () => {
     panDoc: null
   });
   
+  // Helper to format ISO date (YYYY-MM-DD) to Indian Standard (DD-MM-YYYY)
+  const formatDateDDMMYYYY = (isoDateStr) => {
+    if (!isoDateStr) return '';
+    const parts = isoDateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    return isoDateStr;
+  };
+
+  // Helper to calculate completion date based on start date and duration (weeks/months)
+  const calculateCompletionDate = (startDateStr, durationStr) => {
+    if (!startDateStr || !durationStr) return '';
+    const match = durationStr.toLowerCase().match(/(\d+)\s*(week|month)/);
+    if (!match) return '';
+    const value = parseInt(match[1]);
+    const unit = match[2];
+
+    const parts = startDateStr.split('-');
+    if (parts.length !== 3) return '';
+    const year = parseInt(parts[0]);
+    const month = parseInt(parts[1]);
+    const day = parseInt(parts[2]);
+
+    const date = new Date(year, month - 1, day);
+    if (unit.startsWith('week')) {
+      date.setDate(date.getDate() + (value * 7));
+    } else if (unit.startsWith('month')) {
+      date.setMonth(date.getMonth() + value);
+    }
+
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
   // Loan Config State
   const [loanConfig, setLoanConfig] = useState({
     approvedAmount: '',
@@ -52,44 +89,110 @@ const AdminDashboard = () => {
     installmentAmount: '',
     installmentFrequency: 'Monthly', // 'Monthly' or 'Weekly'
     startDate: new Date().toISOString().split('T')[0],
-    completionDate: ''
+    completionDate: '',
+    loanReceivedDate: ''
   });
 
-  const handleDurationChange = (val) => {
-    const newConfig = { ...loanConfig, duration: val };
-    const durationStr = val.toLowerCase();
-    const match = durationStr.match(/(\d+)\s*(week|month)/);
-    if (match && newConfig.startDate) {
-      const value = parseInt(match[1]);
-      const unit = match[2];
-      const date = new Date(newConfig.startDate);
-      if (unit === 'week') {
-        date.setDate(date.getDate() + (value * 7));
-      } else if (unit === 'month') {
-        date.setMonth(date.getMonth() + value);
-      }
-      newConfig.completionDate = date.toISOString().split('T')[0];
+  // State for editing Loan Received Date in Loan History
+  const [editingLoanReceivedDateId, setEditingLoanReceivedDateId] = useState(null);
+  const [loanReceivedDateInput, setLoanReceivedDateInput] = useState('');
+  const [savingLoanReceivedDate, setSavingLoanReceivedDate] = useState(false);
+
+  const handleStartEditReceivedDate = (loan, e) => {
+    if (e) e.stopPropagation();
+    setEditingLoanReceivedDateId(loan._id);
+    if (loan.loanReceivedDate) {
+      const d = new Date(loan.loanReceivedDate);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      setLoanReceivedDateInput(`${y}-${m}-${day}`);
+    } else {
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      setLoanReceivedDateInput(`${y}-${m}-${day}`);
     }
-    setLoanConfig(newConfig);
+  };
+
+  const handleSaveLoanReceivedDate = async (loanId, e) => {
+    if (e) e.stopPropagation();
+    try {
+      setSavingLoanReceivedDate(true);
+      const payload = { loanReceivedDate: loanReceivedDateInput || null };
+      const { data } = await api.put(`/api/loans/${loanId}/received-date`, payload);
+      
+      setSelectedCustomer(prev => {
+        if (!prev || !prev.loansData) return prev;
+        return {
+          ...prev,
+          loansData: prev.loansData.map(ld => {
+            if (ld.loan._id === loanId) {
+              return {
+                ...ld,
+                loan: {
+                  ...ld.loan,
+                  loanReceivedDate: data.loan.loanReceivedDate
+                }
+              };
+            }
+            return ld;
+          })
+        };
+      });
+      setEditingLoanReceivedDateId(null);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Error updating loan received date');
+    } finally {
+      setSavingLoanReceivedDate(false);
+    }
+  };
+
+  const handleDurationChange = (val) => {
+    const compDate = calculateCompletionDate(loanConfig.startDate, val);
+    setLoanConfig(prev => ({
+      ...prev,
+      duration: val,
+      completionDate: compDate || prev.completionDate
+    }));
   };
 
   const handleDatesChange = (field, val) => {
-    const newConfig = { ...loanConfig, [field]: val };
-    
-    if (newConfig.startDate && newConfig.completionDate) {
-      const start = new Date(newConfig.startDate);
-      const end = new Date(newConfig.completionDate);
-      if (end > start) {
-        const timeDiff = end.getTime() - start.getTime();
-        const daysDiff = timeDiff / (1000 * 3600 * 24);
-        if (newConfig.installmentFrequency === 'Monthly') {
-          newConfig.duration = `${Math.ceil(daysDiff / 30)} months`;
-        } else if (newConfig.installmentFrequency === 'Weekly') {
-          newConfig.duration = `${Math.ceil(daysDiff / 7)} weeks`;
+    setLoanConfig(prev => {
+      let newConfig = { ...prev, [field]: val };
+      
+      if (field === 'startDate') {
+        newConfig.completionDate = calculateCompletionDate(val, newConfig.duration) || newConfig.completionDate;
+      } else if (field === 'installmentFrequency') {
+        if (val === 'Weekly' && newConfig.duration.toLowerCase().includes('month')) {
+          const months = parseInt(newConfig.duration) || 6;
+          newConfig.duration = `${months * 4} weeks`;
+          newConfig.completionDate = calculateCompletionDate(newConfig.startDate, newConfig.duration);
+        } else if (val === 'Monthly' && newConfig.duration.toLowerCase().includes('week')) {
+          const weeks = parseInt(newConfig.duration) || 24;
+          newConfig.duration = `${Math.ceil(weeks / 4)} months`;
+          newConfig.completionDate = calculateCompletionDate(newConfig.startDate, newConfig.duration);
+        }
+      } else if (field === 'completionDate') {
+        if (newConfig.startDate && val) {
+          const [sy, sm, sd] = newConfig.startDate.split('-').map(Number);
+          const [ey, em, ed] = val.split('-').map(Number);
+          const start = new Date(sy, sm - 1, sd);
+          const end = new Date(ey, em - 1, ed);
+          if (end > start) {
+            const timeDiff = end.getTime() - start.getTime();
+            const daysDiff = timeDiff / (1000 * 3600 * 24);
+            if (newConfig.installmentFrequency === 'Monthly') {
+              newConfig.duration = `${Math.ceil(daysDiff / 30)} months`;
+            } else if (newConfig.installmentFrequency === 'Weekly') {
+              newConfig.duration = `${Math.ceil(daysDiff / 7)} weeks`;
+            }
+          }
         }
       }
-    }
-    setLoanConfig(newConfig);
+      return newConfig;
+    });
   };
 
   const fetchData = async () => {
@@ -431,6 +534,11 @@ const AdminDashboard = () => {
     doc.text(`Customer ID: ${customer.customerId}`, 14, 62);
     doc.text(`Loan Amount: Rs. ${loanData.loan.approvedAmount}`, 14, 69);
     doc.text(`Duration: ${loanData.loan.duration}`, 14, 76);
+    let startTableY = 85;
+    if (loanData.loan.loanReceivedDate) {
+      doc.text(`Loan Received Date: ${new Date(loanData.loan.loanReceivedDate).toLocaleDateString('en-GB')}`, 14, 83);
+      startTableY = 92;
+    }
 
     const tableColumn = ["Due Date", "Amount (Rs)", "Fine (Rs)", "Status", "Payment Date"];
     const tableRows = [];
@@ -448,7 +556,7 @@ const AdminDashboard = () => {
     autoTable(doc, {
       head: [tableColumn],
       body: tableRows,
-      startY: 85,
+      startY: startTableY,
       styles: { fontSize: 10, halign: 'center' },
       headStyles: { fillColor: [188, 123, 31], textColor: [255,255,255] }, // #bc7b1f
       alternateRowStyles: { fillColor: [251, 248, 235] } // #fbf8eb
@@ -488,23 +596,30 @@ const AdminDashboard = () => {
     doc.text(`Customer Name: ${customer.name}`, 14, 60);
     doc.text(`Customer ID: ${customer.customerId}`, 14, 67);
     doc.text(`Loan Amount: Rs. ${loanData.loan.approvedAmount}`, 14, 74);
+    let sepLineY = 85;
+    let extraOffset = 0;
+    if (loanData.loan.loanReceivedDate) {
+      doc.text(`Loan Received Date: ${new Date(loanData.loan.loanReceivedDate).toLocaleDateString('en-GB')}`, 14, 81);
+      sepLineY = 89;
+      extraOffset = 6;
+    }
     
     doc.setLineWidth(0.5);
     doc.setDrawColor(188, 123, 31);
-    doc.line(14, 85, 196, 85);
+    doc.line(14, sepLineY, 196, sepLineY);
 
     doc.setFontSize(14);
     doc.setTextColor(103, 60, 28);
-    doc.text(`Amount Paid: Rs. ${installment.amount}`, 14, 100);
+    doc.text(`Amount Paid: Rs. ${installment.amount}`, 14, 100 + extraOffset);
     if(installment.fine > 0) {
-        doc.text(`Late Fine Paid: Rs. ${installment.fine}`, 14, 110);
+        doc.text(`Late Fine Paid: Rs. ${installment.fine}`, 14, 110 + extraOffset);
     }
-    doc.text(`Payment Method: ${installment.paymentMethod || 'Cash'}`, 14, installment.fine > 0 ? 120 : 110);
+    doc.text(`Payment Method: ${installment.paymentMethod || 'Cash'}`, 14, (installment.fine > 0 ? 120 : 110) + extraOffset);
 
-    doc.line(14, 135, 196, 135);
+    doc.line(14, 135 + extraOffset, 196, 135 + extraOffset);
 
     doc.setFontSize(12);
-    doc.text(`Authorized Signatory: _________________________`, 110, 170);
+    doc.text(`Authorized Signatory: _________________________`, 110, 170 + extraOffset);
 
     doc.save(`Receipt_${customer.customerId}_${installment._id.substring(0, 6)}.pdf`);
   };
@@ -690,14 +805,20 @@ const AdminDashboard = () => {
                   {!req.cancellationRequested ? (
                     <button 
                       onClick={() => {
+                        const isWeekly = (req.requestedDuration || '').toLowerCase().includes('week');
+                        const today = new Date();
+                        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                        const initialCompDate = calculateCompletionDate(todayStr, req.requestedDuration);
+
                         setSelectedLoanRequest(req);
                         setLoanConfig({
                           approvedAmount: req.requestedAmount,
                           duration: req.requestedDuration,
                           installmentAmount: '',
-                          installmentFrequency: req.requestedDuration.includes('weeks') ? 'Weekly' : 'Monthly',
-                          startDate: new Date().toISOString().split('T')[0],
-                          completionDate: ''
+                          installmentFrequency: isWeekly ? 'Weekly' : 'Monthly',
+                          startDate: todayStr,
+                          completionDate: initialCompDate,
+                          loanReceivedDate: ''
                         });
                       }} 
                       className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-emerald-700"
@@ -946,6 +1067,63 @@ const AdminDashboard = () => {
                       Start Date: {new Date(data.loan.startDate).toLocaleDateString('en-GB')} | Duration: {data.loan.duration} | Status: {data.loan.status}
                     </p>
                     <p className="text-sm font-bold text-green-700 ml-7 mt-1">Total Paid So Far: ₹{totalPaid}</p>
+
+                    {/* Loan Received Date in Collapsed Header */}
+                    <div className="ml-7 mt-2 flex flex-wrap items-center gap-2" onClick={e => e.stopPropagation()}>
+                      {data.loan.loanReceivedDate ? (
+                        <span className="text-xs font-semibold text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5 shadow-xs">
+                          <span>💰 {t('loan_received_date')}:</span>
+                          <span className="font-bold">{formatDateDDMMYYYY(data.loan.loanReceivedDate.split('T')[0])}</span>
+                        </span>
+                      ) : (
+                        <span className="text-xs font-semibold text-amber-900 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-md inline-flex items-center gap-1 shadow-xs">
+                          ⚠️ {t('please_add_loan_received_date')}
+                        </span>
+                      )}
+                      
+                      <button
+                        type="button"
+                        onClick={(e) => handleStartEditReceivedDate(data.loan, e)}
+                        className="text-xs bg-[#f5eecc] hover:bg-[#ebdca0] text-[#965a1a] px-2.5 py-0.5 rounded border border-[#d79e27] font-semibold transition shadow-xs"
+                      >
+                        {data.loan.loanReceivedDate ? `✏️ ${t('edit_date')}` : `+ ${t('set_date')}`}
+                      </button>
+                    </div>
+
+                    {/* Inline Editor for Loan Received Date */}
+                    {editingLoanReceivedDateId === data.loan._id && (
+                      <div className="ml-7 mt-2 p-3 bg-amber-50 border border-amber-300 rounded-lg flex flex-wrap items-center gap-2 shadow-sm" onClick={e => e.stopPropagation()}>
+                        <label className="text-xs font-bold text-[#7b481c]">
+                          {t('loan_received_date')}:
+                        </label>
+                        <input
+                          type="date"
+                          value={loanReceivedDateInput}
+                          onChange={e => setLoanReceivedDateInput(e.target.value)}
+                          className="border border-[#d79e27] rounded px-2 py-1 text-xs bg-white"
+                        />
+                        {loanReceivedDateInput && (
+                          <span className="text-xs font-bold text-[#bc7b1f] bg-[#f5eecc] px-2 py-0.5 rounded">
+                            {formatDateDDMMYYYY(loanReceivedDateInput)} (DD-MM-YYYY)
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          disabled={savingLoanReceivedDate}
+                          onClick={(e) => handleSaveLoanReceivedDate(data.loan._id, e)}
+                          className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1 rounded transition shadow-sm"
+                        >
+                          {savingLoanReceivedDate ? 'Saving...' : 'Save'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setEditingLoanReceivedDateId(null); }}
+                          className="text-xs text-gray-600 hover:text-gray-900 px-2 py-1 font-medium"
+                        >
+                          {t('cancel')}
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
                     <p className="text-sm font-medium">{data.loan.completedInstallments} / {data.loan.totalInstallments} Paid</p>
@@ -968,6 +1146,28 @@ const AdminDashboard = () => {
                 
                 {isExpanded && (
                 <div className="overflow-x-auto relative">
+                  {/* Expanded Loan Received Date Status Bar */}
+                  <div className="bg-[#fffdf5] px-4 py-2.5 border-b border-[#f5eecc] flex flex-wrap justify-between items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#965a1a]">{t('loan_received_date')}:</span>
+                      {data.loan.loanReceivedDate ? (
+                        <span className="text-xs font-bold text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded">
+                          {formatDateDDMMYYYY(data.loan.loanReceivedDate.split('T')[0])} (DD-MM-YYYY)
+                        </span>
+                      ) : (
+                        <span className="text-xs text-amber-900 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded font-semibold">
+                          ⚠️ {t('please_add_loan_received_date')}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => handleStartEditReceivedDate(data.loan, e)}
+                      className="text-xs bg-[#f5eecc] hover:bg-[#ebdca0] text-[#965a1a] px-2.5 py-1 rounded border border-[#d79e27] font-semibold transition"
+                    >
+                      {data.loan.loanReceivedDate ? `✏️ ${t('edit_date')}` : `+ ${t('set_date')}`}
+                    </button>
+                  </div>
                   {selectedInstallments.length > 0 && (
                     <div className="bg-[#f5eecc] p-3 border-b flex justify-between items-center">
                       <span className="font-medium text-[#7b481c]">{selectedInstallments.length} installment(s) selected</span>
@@ -1089,12 +1289,43 @@ const AdminDashboard = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#965a1a]">{t('start_date')}</label>
+                  <label className="block text-sm font-medium text-[#965a1a]">
+                    {t('start_date')}
+                    {loanConfig.startDate && (
+                      <span className="text-xs text-[#bc7b1f] ml-1.5 font-bold bg-[#f5eecc] px-2 py-0.5 rounded">
+                        {formatDateDDMMYYYY(loanConfig.startDate)} (DD-MM-YYYY)
+                      </span>
+                    )}
+                  </label>
                   <input type="date" required value={loanConfig.startDate} onChange={e => handleDatesChange('startDate', e.target.value)} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#965a1a]">{t('completion_date')}</label>
+                  <label className="block text-sm font-medium text-[#965a1a]">
+                    {t('completion_date')}
+                    {loanConfig.completionDate && (
+                      <span className="text-xs text-[#bc7b1f] ml-1.5 font-bold bg-[#f5eecc] px-2 py-0.5 rounded">
+                        {formatDateDDMMYYYY(loanConfig.completionDate)} (DD-MM-YYYY)
+                      </span>
+                    )}
+                  </label>
                   <input type="date" required value={loanConfig.completionDate} onChange={e => handleDatesChange('completionDate', e.target.value)} className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-[#965a1a]">
+                    {t('loan_received_date')} (Optional - Date loan was actually given)
+                    {loanConfig.loanReceivedDate && (
+                      <span className="text-xs text-[#bc7b1f] ml-1.5 font-bold bg-[#f5eecc] px-2 py-0.5 rounded">
+                        {formatDateDDMMYYYY(loanConfig.loanReceivedDate)} (DD-MM-YYYY)
+                      </span>
+                    )}
+                  </label>
+                  <input 
+                    type="date" 
+                    value={loanConfig.loanReceivedDate || ''} 
+                    onChange={e => setLoanConfig({...loanConfig, loanReceivedDate: e.target.value})} 
+                    className="mt-1 w-full border border-[#d79e27] rounded-lg px-4 py-2 transition hover:border-[#bc7b1f]" 
+                  />
+                  <p className="text-[11px] text-gray-500 mt-1">If not entered now, you can add or edit it anytime in the Loan History.</p>
                 </div>
               </div>
 
