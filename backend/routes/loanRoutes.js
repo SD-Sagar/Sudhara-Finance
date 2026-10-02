@@ -10,12 +10,14 @@ const {
     getMyLoanRequests,
     requestCancellation,
     resolveCancellation,
-    deleteLoan
+    deleteLoan,
+    updateLoanReceivedDate
 } = require('../controllers/loanController');
 
 router.post('/request', protect, customer, requestLoan);
 router.get('/requests', protect, admin, getLoanRequests);
 router.post('/approve/:id', protect, admin, approveLoan);
+router.put('/:id/received-date', protect, admin, updateLoanReceivedDate);
 router.get('/myloans', protect, customer, getMyLoans);
 router.get('/my-requests', protect, customer, getMyLoanRequests);
 router.post('/request/:id/cancel-request', protect, customer, requestCancellation);

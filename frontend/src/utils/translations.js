@@ -113,6 +113,10 @@ export const translations = {
     "weekly": "Weekly",
     "start_date": "Start Date",
     "completion_date": "Completion Date",
+    "loan_received_date": "Loan Received Date",
+    "please_add_loan_received_date": "Please add loan starting date (the day loan was actually given)",
+    "set_date": "Set Date",
+    "edit_date": "Edit Date",
     "generate_approve": "Generate & Approve",
   },
   bn: {
@@ -229,6 +233,10 @@ export const translations = {
     "weekly": "সাপ্তাহিক",
     "start_date": "শুরুর তারিখ",
     "completion_date": "সমাপ্তির তারিখ",
+    "loan_received_date": "ঋণ গ্রহণের তারিখ",
+    "please_add_loan_received_date": "অনুগ্রহ করে ঋণ গ্রহণের তারিখ যোগ করুন (যেদিন আসলে ঋণ দেওয়া হয়েছিল)",
+    "set_date": "তারিখ দিন",
+    "edit_date": "সম্পাদনা করুন",
     "generate_approve": "তৈরি এবং অনুমোদন করুন",
   }
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../utils/axiosConfig';
 import { useLanguage } from '../../contexts/LanguageContext';
+import jsPDF from 'jspdf';
 
 const CustomerDashboard = () => {
   const { t } = useLanguage();
@@ -33,6 +34,75 @@ const CustomerDashboard = () => {
     const nextInst = installments.find(i => i.status === 'PENDING' || i.status === 'OVERDUE');
     if (nextInst) return new Date(nextInst.dueDate).toLocaleDateString('en-GB');
     return t('all_paid');
+  };
+
+  const getLogoBase64 = () => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.onerror = () => resolve(null);
+      img.src = '/ShudharaIcon.png';
+    });
+  };
+
+  const handleDownloadReceipt = async (installment, loan) => {
+    const doc = new jsPDF();
+    const logoData = await getLogoBase64();
+    if (logoData) {
+      doc.addImage(logoData, 'PNG', 14, 10, 20, 20);
+      doc.setGState(new doc.GState({opacity: 0.1}));
+      doc.addImage(logoData, 'PNG', 50, 80, 100, 100);
+      doc.setGState(new doc.GState({opacity: 1}));
+    }
+
+    doc.setFontSize(22);
+    doc.setTextColor(103, 60, 28);
+    doc.text(`Shudhara Women Development Organization`, 38, 24);
+    
+    doc.setFontSize(18);
+    doc.setTextColor(188, 123, 31);
+    doc.text(`Payment Receipt`, 14, 45);
+
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Date of Payment: ${new Date(installment.paymentDate).toLocaleDateString('en-GB')}`, 120, 45);
+    
+    doc.text(`Customer Name: ${customerProfile?.name || ''}`, 14, 60);
+    doc.text(`Customer ID: ${customerProfile?.customerId || ''}`, 14, 67);
+    doc.text(`Loan Amount: Rs. ${loan.approvedAmount}`, 14, 74);
+    let sepLineY = 85;
+    let extraOffset = 0;
+    if (loan.loanReceivedDate) {
+      doc.text(`Loan Received Date: ${new Date(loan.loanReceivedDate).toLocaleDateString('en-GB')}`, 14, 81);
+      sepLineY = 89;
+      extraOffset = 6;
+    }
+    
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(188, 123, 31);
+    doc.line(14, sepLineY, 196, sepLineY);
+
+    doc.setFontSize(14);
+    doc.setTextColor(103, 60, 28);
+    doc.text(`Amount Paid: Rs. ${installment.amount}`, 14, 100 + extraOffset);
+    if (installment.fine > 0) {
+      doc.text(`Late Fine Paid: Rs. ${installment.fine}`, 14, 110 + extraOffset);
+    }
+    doc.text(`Payment Method: ${installment.paymentMethod || 'Cash'}`, 14, (installment.fine > 0 ? 120 : 110) + extraOffset);
+
+    doc.line(14, 135 + extraOffset, 196, 135 + extraOffset);
+
+    doc.setFontSize(12);
+    doc.text(`Authorized Signatory: _________________________`, 110, 170 + extraOffset);
+
+    doc.save(`Receipt_${customerProfile?.customerId || 'loan'}_${installment._id.substring(0, 6)}.pdf`);
   };
 
   const fetchLoans = async () => {
@@ -196,6 +266,12 @@ const CustomerDashboard = () => {
                 <div>
                   <h3 className="text-xl font-bold text-[#673c1c]">{t('loan')}: ₹{loan.approvedAmount}</h3>
                   <p className="text-[#bc7b1f] font-medium">{t('next_due')}: <span className="text-red-600">{getNextDueDate(installments)}</span></p>
+                  {loan.loanReceivedDate && (
+                    <p className="text-xs font-semibold text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5 mt-2">
+                      <span>💰 {t('loan_received_date')}:</span>
+                      <span className="font-bold">{new Date(loan.loanReceivedDate).toLocaleDateString('en-GB')}</span>
+                    </p>
+                  )}
                 </div>
                 <div className="text-right flex items-center gap-4">
                   <div>
@@ -220,6 +296,12 @@ const CustomerDashboard = () => {
               
               {expandedLoans[loan._id] && (
               <div className="p-6 border-t border-gray-200">
+                {loan.loanReceivedDate && (
+                  <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between text-sm">
+                    <span className="font-medium text-emerald-900">{t('loan_received_date')}:</span>
+                    <span className="font-bold text-emerald-800">{new Date(loan.loanReceivedDate).toLocaleDateString('en-GB')}</span>
+                  </div>
+                )}
                 <h4 className="font-semibold text-[#965a1a] mb-4">{t('installment_schedule')}</h4>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
@@ -262,7 +344,15 @@ const CustomerDashboard = () => {
                               <span className="text-gray-400 italic text-xs">Locked</span>
                             )}
                             {inst.status === 'PAID' && (
-                              <span className="text-green-600 font-medium">{t('paid_on')} {new Date(inst.paymentDate).toLocaleDateString('en-GB')}</span>
+                              <div className="flex flex-col items-start gap-1">
+                                <span className="text-green-600 font-medium">{t('paid_on')} {new Date(inst.paymentDate).toLocaleDateString('en-GB')}</span>
+                                <button 
+                                  onClick={() => handleDownloadReceipt(inst, loan)}
+                                  className="text-xs bg-[#f5eecc] text-[#965a1a] px-2 py-0.5 rounded border border-[#d79e27] hover:bg-[#ebdca0] transition font-medium"
+                                >
+                                  📄 Receipt PDF
+                                </button>
+                              </div>
                             )}
                           </td>
                         </tr>
