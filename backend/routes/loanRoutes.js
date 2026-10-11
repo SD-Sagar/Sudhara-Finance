@@ -4,6 +4,7 @@ const { protect, admin, customer } = require('../middleware/authMiddleware');
 const {
     requestLoan,
     getLoanRequests,
+    rejectLoanRequest,
     approveLoan,
     getMyLoans,
     getLoanDetails,
@@ -16,6 +17,7 @@ const {
 
 router.post('/request', protect, customer, requestLoan);
 router.get('/requests', protect, admin, getLoanRequests);
+router.post('/request/:id/reject', protect, admin, rejectLoanRequest);
 router.post('/approve/:id', protect, admin, approveLoan);
 router.put('/:id/received-date', protect, admin, updateLoanReceivedDate);
 router.get('/myloans', protect, customer, getMyLoans);

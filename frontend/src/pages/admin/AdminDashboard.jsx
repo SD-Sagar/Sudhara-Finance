@@ -25,6 +25,59 @@ const AdminDashboard = () => {
   const [selectedLoanRequest, setSelectedLoanRequest] = useState(null);
   const [selectedInstallments, setSelectedInstallments] = useState([]);
   
+  // WhatsApp / SMS Message Template Modal State
+  const [whatsappModal, setWhatsappModal] = useState({
+    isOpen: false,
+    customerId: '',
+    customerName: '',
+    phone: '',
+    actionTitle: '',
+    actionDetails: '',
+    dateTime: '',
+    messageText: '',
+    copied: false
+  });
+
+  const generateWhatsAppMessage = ({ customerId, customerName, actionTitle, actionDetails, dateTime }) => {
+    return `*Shudhara Women Development Organization*\n` +
+      `--------------------------------\n` +
+      `👤 *Customer Name:* ${customerName || 'N/A'}\n` +
+      `🆔 *Customer ID:* ${customerId || 'N/A'}\n` +
+      `📌 *Action:* ${actionTitle}\n` +
+      `${actionDetails ? `ℹ️ *Details:* ${actionDetails}\n` : ''}` +
+      `📅 *Date & Time:* ${dateTime}\n` +
+      `🌐 *Website:* https://swdo.in\n` +
+      `--------------------------------\n` +
+      `Thank you for banking with us!`;
+  };
+
+  const openWhatsAppDialog = ({ customerId, customerName, phone, actionTitle, actionDetails, dateObj }) => {
+    const now = dateObj ? new Date(dateObj) : new Date();
+    const dateFormatted = now.toLocaleDateString('en-GB');
+    const timeFormatted = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    const dateTime = `${dateFormatted} at ${timeFormatted}`;
+
+    const messageText = generateWhatsAppMessage({
+      customerId,
+      customerName,
+      actionTitle,
+      actionDetails,
+      dateTime
+    });
+
+    setWhatsappModal({
+      isOpen: true,
+      customerId,
+      customerName,
+      phone: phone || '',
+      actionTitle,
+      actionDetails,
+      dateTime,
+      messageText,
+      copied: false
+    });
+  };
+  
   // Edit Customer State
   const [isEditingCustomer, setIsEditingCustomer] = useState(false);
   const [editCustomerData, setEditCustomerData] = useState({});
@@ -272,12 +325,44 @@ const AdminDashboard = () => {
   const handleApproveLoan = async (e) => {
     e.preventDefault();
     try {
-      await api.post(`/api/loans/approve/${selectedLoanRequest._id}`, loanConfig);
+      const { data } = await api.post(`/api/loans/approve/${selectedLoanRequest._id}`, loanConfig);
+      const approvedReq = selectedLoanRequest;
       setSelectedLoanRequest(null);
       fetchData();
-      alert('Loan approved and schedule generated.');
+      
+      openWhatsAppDialog({
+        customerId: approvedReq.customer?.customerId,
+        customerName: approvedReq.customer?.name,
+        phone: approvedReq.customer?.whatsappNumber || approvedReq.customer?.mobileNumber,
+        actionTitle: 'Loan Request Approved',
+        actionDetails: `Loan of ₹${loanConfig.approvedAmount} has been approved. Duration: ${loanConfig.duration}, Installment: ₹${loanConfig.installmentAmount || 'Scheduled'}.`,
+        dateObj: new Date()
+      });
     } catch (err) {
       alert(err.response?.data?.message || 'Error approving loan');
+    }
+  };
+
+  const handleRejectLoan = async (requestId) => {
+    const reqToReject = loanRequests.find(r => r._id === requestId);
+    if (!window.confirm(`Are you sure you want to reject this loan request for ${reqToReject?.customer?.name || 'this customer'}?`)) {
+      return;
+    }
+
+    try {
+      const { data } = await api.post(`/api/loans/request/${requestId}/reject`);
+      fetchData();
+
+      openWhatsAppDialog({
+        customerId: reqToReject?.customer?.customerId,
+        customerName: reqToReject?.customer?.name,
+        phone: reqToReject?.customer?.whatsappNumber || reqToReject?.customer?.mobileNumber,
+        actionTitle: 'Loan Request Rejected',
+        actionDetails: `Loan request of ₹${reqToReject?.requestedAmount} for ${reqToReject?.requestedDuration} has been rejected. Customer is eligible to re-apply from dashboard.`,
+        dateObj: new Date()
+      });
+    } catch (err) {
+      alert(err.response?.data?.message || 'Error rejecting loan request');
     }
   };
 
@@ -336,9 +421,20 @@ const AdminDashboard = () => {
     }
     
     try {
-      await api.put(`/api/installments/${installmentId}/pay`, { paymentMethod, paymentDate });
+      const { data } = await api.put(`/api/installments/${installmentId}/pay`, { paymentMethod, paymentDate });
       // refresh profile
       viewCustomerProfile(selectedCustomer._id);
+
+      const paidInst = data.installment;
+      const actualPaymentDate = paidInst?.paymentDate ? new Date(paidInst.paymentDate) : new Date();
+      openWhatsAppDialog({
+        customerId: selectedCustomer.customerId,
+        customerName: selectedCustomer.name,
+        phone: selectedCustomer.whatsappNumber || selectedCustomer.mobileNumber,
+        actionTitle: 'Installment Payment Received',
+        actionDetails: `Installment of ₹${paidInst?.amount || ''} marked as PAID via ${paymentMethod}.`,
+        dateObj: actualPaymentDate
+      });
     } catch (err) {
       alert(err.response?.data?.message || 'Error marking as paid');
     }
@@ -370,6 +466,7 @@ const AdminDashboard = () => {
       return;
     }
 
+    const count = selectedInstallments.length;
     try {
       await api.put(`/api/installments/bulk-pay`, { 
         installmentIds: selectedInstallments, 
@@ -378,6 +475,16 @@ const AdminDashboard = () => {
       });
       setSelectedInstallments([]);
       viewCustomerProfile(selectedCustomer._id);
+
+      const actualPaymentDate = paymentDate ? new Date(paymentDate) : new Date();
+      openWhatsAppDialog({
+        customerId: selectedCustomer.customerId,
+        customerName: selectedCustomer.name,
+        phone: selectedCustomer.whatsappNumber || selectedCustomer.mobileNumber,
+        actionTitle: 'Bulk Installments Payment Received',
+        actionDetails: `${count} installments marked as PAID via ${paymentMethod}.`,
+        dateObj: actualPaymentDate
+      });
     } catch (err) {
       alert(err.response?.data?.message || 'Error marking bulk as paid');
     }
@@ -803,28 +910,36 @@ const AdminDashboard = () => {
                 </div>
                 <div className="flex flex-col gap-2">
                   {!req.cancellationRequested ? (
-                    <button 
-                      onClick={() => {
-                        const isWeekly = (req.requestedDuration || '').toLowerCase().includes('week');
-                        const today = new Date();
-                        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-                        const initialCompDate = calculateCompletionDate(todayStr, req.requestedDuration);
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => {
+                          const isWeekly = (req.requestedDuration || '').toLowerCase().includes('week');
+                          const today = new Date();
+                          const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                          const initialCompDate = calculateCompletionDate(todayStr, req.requestedDuration);
 
-                        setSelectedLoanRequest(req);
-                        setLoanConfig({
-                          approvedAmount: req.requestedAmount,
-                          duration: req.requestedDuration,
-                          installmentAmount: '',
-                          installmentFrequency: isWeekly ? 'Weekly' : 'Monthly',
-                          startDate: todayStr,
-                          completionDate: initialCompDate,
-                          loanReceivedDate: ''
-                        });
-                      }} 
-                      className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-emerald-700"
-                    >
-                      {t('configure_approve')}
-                    </button>
+                          setSelectedLoanRequest(req);
+                          setLoanConfig({
+                            approvedAmount: req.requestedAmount,
+                            duration: req.requestedDuration,
+                            installmentAmount: '',
+                            installmentFrequency: isWeekly ? 'Weekly' : 'Monthly',
+                            startDate: todayStr,
+                            completionDate: initialCompDate,
+                            loanReceivedDate: ''
+                          });
+                        }} 
+                        className="bg-[#bc7b1f] text-white px-4 py-2 rounded hover:bg-emerald-700 transition shadow-sm font-medium"
+                      >
+                        {t('configure_approve')}
+                      </button>
+                      <button 
+                        onClick={() => handleRejectLoan(req._id)}
+                        className="bg-red-50 text-red-600 border border-red-300 px-4 py-2 rounded hover:bg-red-100 transition shadow-sm font-medium"
+                      >
+                        Reject
+                      </button>
+                    </div>
                   ) : (
                     <div className="flex gap-2">
                       <button 
@@ -1135,6 +1250,25 @@ const AdminDashboard = () => {
                         Download PDF
                       </button>
                       <button 
+                        onClick={() => {
+                          openWhatsAppDialog({
+                            customerId: selectedCustomer.customerId,
+                            customerName: selectedCustomer.name,
+                            phone: selectedCustomer.whatsappNumber || selectedCustomer.mobileNumber,
+                            actionTitle: 'Loan Approved / Active Record',
+                            actionDetails: `Loan Amount: ₹${data.loan.approvedAmount}, Duration: ${data.loan.duration}, Total Installments: ${data.loan.totalInstallments}. Status: ${data.loan.status}.`,
+                            dateObj: data.loan.startDate
+                          });
+                        }}
+                        title="Open WhatsApp / SMS Message Template"
+                        className="text-xs bg-green-50 text-green-700 border border-green-300 px-2 py-1 rounded hover:bg-green-100 transition flex items-center gap-1 font-medium shadow-sm"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        Message
+                      </button>
+                      <button 
                         onClick={() => handleDeleteLoan(data, selectedCustomer)}
                         className="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 transition"
                       >
@@ -1231,7 +1365,7 @@ const AdminDashboard = () => {
                             </button>
                           )}
                           {inst.status === 'PAID' && (
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                               <span className="text-[#d79e27]">Paid on {new Date(inst.paymentDate).toLocaleDateString('en-GB')}</span>
                               <button 
                                 onClick={() => handleDownloadReceipt(inst, data, selectedCustomer)}
@@ -1241,6 +1375,25 @@ const AdminDashboard = () => {
                                   <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                                 </svg>
                                 Receipt
+                              </button>
+                              <button 
+                                onClick={() => {
+                                  openWhatsAppDialog({
+                                    customerId: selectedCustomer.customerId,
+                                    customerName: selectedCustomer.name,
+                                    phone: selectedCustomer.whatsappNumber || selectedCustomer.mobileNumber,
+                                    actionTitle: 'Installment Payment Received',
+                                    actionDetails: `Installment of ₹${inst.amount} marked as PAID via ${inst.paymentMethod || 'Cash'}.`,
+                                    dateObj: inst.paymentDate
+                                  });
+                                }}
+                                title="Open WhatsApp / SMS Message Template"
+                                className="text-xs bg-green-50 text-green-700 border border-green-300 px-2 py-1 rounded hover:bg-green-100 transition flex items-center gap-1 font-medium shadow-sm hover:shadow"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                </svg>
+                                Message
                               </button>
                             </div>
                           )}
@@ -1447,6 +1600,107 @@ const AdminDashboard = () => {
               {loading ? t('submitting') : t('register_new_customer')}
             </button>
           </form>
+        </div>
+      )}
+
+      {/* WHATSAPP / SMS MESSAGE TEMPLATE MODAL */}
+      {whatsappModal.isOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-emerald-100 flex flex-col gap-4">
+            <div className="flex justify-between items-center border-b pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
+                  💬
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#7b481c]">WhatsApp / SMS Notification</h3>
+                  <p className="text-xs text-gray-500">Auto-generated template ready to copy and send</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setWhatsappModal(prev => ({ ...prev, isOpen: false, copied: false }))}
+                className="text-gray-400 hover:text-gray-700 p-1 rounded-lg hover:bg-gray-100 transition"
+                title="Close"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Customer Details Pill */}
+            <div className="bg-[#fbf8eb] p-3 rounded-xl border border-[#e1b73e]/50 flex flex-wrap justify-between items-center text-sm gap-2">
+              <div>
+                <span className="font-bold text-[#7b481c]">{whatsappModal.customerName}</span>
+                <span className="ml-2 text-xs text-[#965a1a] bg-[#f5eecc] px-2 py-0.5 rounded font-mono">ID: {whatsappModal.customerId}</span>
+              </div>
+              {whatsappModal.phone && (
+                <div className="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                  📱 {whatsappModal.phone}
+                </div>
+              )}
+            </div>
+
+            {/* Template Preview Box */}
+            <div className="relative">
+              <label className="block text-xs font-bold text-[#bc7b1f] uppercase tracking-wider mb-1.5">
+                Message Template (swdo.in)
+              </label>
+              <textarea
+                readOnly
+                value={whatsappModal.messageText}
+                rows={9}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 select-all resize-none shadow-inner"
+              />
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(whatsappModal.messageText);
+                    setWhatsappModal(prev => ({ ...prev, copied: true }));
+                    setTimeout(() => {
+                      setWhatsappModal(prev => ({ ...prev, copied: false }));
+                    }, 3000);
+                  } catch (err) {
+                    alert('Failed to copy to clipboard automatically. Please select text to copy.');
+                  }
+                }}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-bold transition shadow-md ${
+                  whatsappModal.copied 
+                    ? 'bg-emerald-700 text-white shadow-emerald-700/20' 
+                    : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
+                }`}
+              >
+                {whatsappModal.copied ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    Copied to Clipboard!
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                    Copy Message
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setWhatsappModal(prev => ({ ...prev, isOpen: false, copied: false }))}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 px-5 rounded-xl transition"
+              >
+                Close / Go Back
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

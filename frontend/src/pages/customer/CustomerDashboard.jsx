@@ -202,7 +202,7 @@ const CustomerDashboard = () => {
           className={`py-3 px-6 font-medium text-lg border-b-2 transition ${activeTab === 'pending' ? 'border-[#bc7b1f] text-[#bc7b1f]' : 'border-transparent text-[#d79e27] hover:text-[#965a1a]'}`}
           onClick={() => setActiveTab('pending')}
         >
-          Pending / Approved Requests
+          Pending / Approved / Rejected Requests
         </button>
       </div>
 
@@ -210,7 +210,7 @@ const CustomerDashboard = () => {
         <div className="mb-8">
           {loanRequests.length === 0 ? (
             <div className="bg-[#fbf8eb] p-8 rounded-xl border border-[#bc7b1f] shadow text-center text-[#d79e27] text-lg">
-              No pending or approved requests found.
+              No loan requests found.
             </div>
           ) : (
             <div className="space-y-4">

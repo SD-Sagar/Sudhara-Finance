@@ -24,6 +24,12 @@ A full-stack Microfinance platform built to manage loans, customers, installment
   - Generates fines based on whether the loan is weekly or monthly (rather than strict daily accumulation).
   - CIBIL score penalties accurately reflect the loan cycle frequency.
   - Custom Payment Dates: Admins can back-date installment payments to ensure customers aren't unfairly penalized for legacy records.
+  - Bulk Mark as Paid: Select multiple unpaid installments and record payment in one step with customizable payment date and method.
+  - Loan Rejection & Reapplication: Admins can reject loan requests with a single click, instantly updating the customer dashboard with a "REJECTED" status and freeing the customer to submit a new loan request.
+- **WhatsApp / SMS Instant Notification System**:
+  - Interactive popup modal triggered automatically upon key admin actions (Loan Approval, Loan Rejection, Installment Marked Paid, and Bulk Payments).
+  - Pre-formatted copyable message template complete with Customer Name, Customer ID, action details, timestamp, and company domain (`swdo.in`).
+  - Persistent message buttons across loan cards and payment records allowing admins to re-open and copy notification messages anytime with a single tap.
 - **Document Generation**: Export customer loan schedules and individual payment receipts directly to PDF.
 
 ### 3. SEO & Deployment

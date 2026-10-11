@@ -65,6 +65,39 @@ const getLoanRequests = async (req, res, next) => {
     }
 };
 
+// @desc    Reject loan request
+// @route   POST /api/loans/request/:id/reject
+// @access  Private/Admin
+const rejectLoanRequest = async (req, res, next) => {
+    try {
+        const loanRequest = await LoanRequest.findById(req.params.id).populate('customer', 'name customerId email phone');
+        if (!loanRequest) {
+            res.status(404);
+            return next(new Error('Loan request not found'));
+        }
+
+        if (loanRequest.status !== 'PENDING') {
+            res.status(400);
+            return next(new Error(`Loan request is already ${loanRequest.status}`));
+        }
+
+        loanRequest.status = 'REJECTED';
+        loanRequest.cancellationRequested = false;
+        await loanRequest.save();
+
+        // Email notification to customer
+        await sendEmail({
+            email: loanRequest.customer.email,
+            subject: 'Shudhara Women Development Organization - Loan Request Update',
+            message: `Dear ${loanRequest.customer.name}, your loan request for ₹${loanRequest.requestedAmount} has been rejected. You may apply again from your dashboard.`
+        });
+
+        res.json({ message: 'Loan request rejected successfully', loanRequest });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // @desc    Approve loan request
 // @route   POST /api/loans/approve/:id
 // @access  Private/Admin
@@ -353,6 +386,7 @@ const updateLoanReceivedDate = async (req, res, next) => {
 module.exports = {
     requestLoan,
     getLoanRequests,
+    rejectLoanRequest,
     approveLoan,
     getMyLoans,
     getLoanDetails,
