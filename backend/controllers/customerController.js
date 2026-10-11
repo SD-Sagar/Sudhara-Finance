@@ -1,6 +1,7 @@
 const Customer = require('../models/Customer');
 const Loan = require('../models/Loan');
 const bcrypt = require('bcryptjs');
+const { applyOverdueFinesAndCibil } = require('./installmentController');
 
 // Helper
 const generateUniqueId = async () => {
@@ -48,6 +49,7 @@ const getAllCustomers = async (req, res, next) => {
 // @access  Private/Admin
 const getCustomerById = async (req, res, next) => {
     try {
+        await applyOverdueFinesAndCibil();
         const customer = await Customer.findById(req.params.id).select('-password');
         if (!customer) {
             res.status(404);

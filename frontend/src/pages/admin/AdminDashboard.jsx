@@ -52,9 +52,26 @@ const AdminDashboard = () => {
   };
 
   const openWhatsAppDialog = ({ customerId, customerName, phone, actionTitle, actionDetails, dateObj }) => {
-    const now = dateObj ? new Date(dateObj) : new Date();
-    const dateFormatted = now.toLocaleDateString('en-GB');
-    const timeFormatted = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    // If dateObj is provided and has zero time (e.g. from YYYY-MM-DD), use today's current time
+    let dateFormatted = '';
+    let timeFormatted = '';
+
+    if (dateObj) {
+      const d = new Date(dateObj);
+      dateFormatted = d.toLocaleDateString('en-GB');
+      
+      // If it's UTC midnight (hours === 0 && mins === 0 in UTC), attach current action time
+      if (d.getUTCHours() === 0 && d.getUTCMinutes() === 0 && d.getUTCSeconds() === 0) {
+        timeFormatted = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+      } else {
+        timeFormatted = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+      }
+    } else {
+      const now = new Date();
+      dateFormatted = now.toLocaleDateString('en-GB');
+      timeFormatted = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    }
+
     const dateTime = `${dateFormatted} at ${timeFormatted}`;
 
     const messageText = generateWhatsAppMessage({
@@ -427,12 +444,13 @@ const AdminDashboard = () => {
 
       const paidInst = data.installment;
       const actualPaymentDate = paidInst?.paymentDate ? new Date(paidInst.paymentDate) : new Date();
+      const fineText = paidInst?.fine > 0 ? ` (Amount: ₹${paidInst.amount} + Late Fine: ₹${paidInst.fine} = Total Paid: ₹${paidInst.amount + paidInst.fine})` : `Amount: ₹${paidInst?.amount || ''}`;
       openWhatsAppDialog({
         customerId: selectedCustomer.customerId,
         customerName: selectedCustomer.name,
         phone: selectedCustomer.whatsappNumber || selectedCustomer.mobileNumber,
         actionTitle: 'Installment Payment Received',
-        actionDetails: `Installment of ₹${paidInst?.amount || ''} marked as PAID via ${paymentMethod}.`,
+        actionDetails: `Installment marked as PAID via ${paymentMethod}. ${fineText}.`,
         dateObj: actualPaymentDate
       });
     } catch (err) {
@@ -1344,12 +1362,25 @@ const AdminDashboard = () => {
                           )}
                         </td>
                         <td className="px-4 py-2">{new Date(inst.dueDate).toLocaleDateString('en-GB')}</td>
-                        <td className="px-4 py-2">₹{inst.amount}</td>
-                        <td className="px-4 py-2 text-red-600">{inst.fine > 0 ? `₹${inst.fine}` : '-'}</td>
+                        <td className="px-4 py-2">
+                          <span className="font-semibold">₹{inst.amount}</span>
+                          {inst.fine > 0 && inst.status !== 'PAID' && (
+                            <div className="text-xs text-red-600 font-bold">
+                              Total: ₹{inst.amount + inst.fine}
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-4 py-2 text-red-600 font-bold">
+                          {inst.fine > 0 ? (
+                            <span className="bg-red-50 text-red-700 px-2 py-0.5 rounded border border-red-200 text-xs">
+                              ₹{inst.fine}
+                            </span>
+                          ) : '-'}
+                        </td>
                         <td className="px-4 py-2">
                           <span className={`px-2 py-1 rounded text-xs ${
                             inst.status === 'PAID' ? 'bg-green-100 text-green-800' :
-                            inst.status === 'OVERDUE' ? 'bg-red-100 text-red-800' :
+                            inst.status === 'OVERDUE' ? 'bg-red-100 text-red-800 font-bold' :
                             'bg-yellow-100 text-yellow-800'
                           }`}>
                             {inst.status}

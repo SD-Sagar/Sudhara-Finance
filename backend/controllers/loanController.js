@@ -2,6 +2,7 @@ const LoanRequest = require('../models/LoanRequest');
 const Loan = require('../models/Loan');
 const Installment = require('../models/Installment');
 const User = require('../models/User');
+const { applyOverdueFinesAndCibil } = require('./installmentController');
 // const sendEmail = require('../utils/sendEmail');
 const sendEmail = async () => {}; // NODEMAILER DISABLED AS REQUESTED
 
@@ -186,6 +187,7 @@ const approveLoan = async (req, res, next) => {
 // @access  Private/Customer
 const getMyLoans = async (req, res, next) => {
     try {
+        await applyOverdueFinesAndCibil();
         const loans = await Loan.find({ customer: req.user._id }).sort({ createdAt: -1 });
         res.json(loans);
     } catch (error) {
@@ -198,6 +200,7 @@ const getMyLoans = async (req, res, next) => {
 // @access  Private
 const getLoanDetails = async (req, res, next) => {
     try {
+        await applyOverdueFinesAndCibil();
         const loan = await Loan.findById(req.params.id).populate('customer', 'name customerId');
         if (!loan) {
             res.status(404);

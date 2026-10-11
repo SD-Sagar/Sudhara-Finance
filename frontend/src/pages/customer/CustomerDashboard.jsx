@@ -30,10 +30,20 @@ const CustomerDashboard = () => {
     }));
   };
 
-  const getNextDueDate = (installments) => {
+  const getNextDueInfo = (installments) => {
     const nextInst = installments.find(i => i.status === 'PENDING' || i.status === 'OVERDUE');
-    if (nextInst) return new Date(nextInst.dueDate).toLocaleDateString('en-GB');
-    return t('all_paid');
+    if (!nextInst) return { dateStr: t('all_paid'), totalDue: 0, fine: 0, hasFine: false };
+    
+    const fine = nextInst.fine || 0;
+    const totalDue = nextInst.amount + fine;
+    return {
+      dateStr: new Date(nextInst.dueDate).toLocaleDateString('en-GB'),
+      baseAmount: nextInst.amount,
+      fine,
+      totalDue,
+      hasFine: fine > 0,
+      status: nextInst.status
+    };
   };
 
   const getLogoBase64 = () => {
@@ -265,7 +275,22 @@ const CustomerDashboard = () => {
               >
                 <div>
                   <h3 className="text-xl font-bold text-[#673c1c]">{t('loan')}: ₹{loan.approvedAmount}</h3>
-                  <p className="text-[#bc7b1f] font-medium">{t('next_due')}: <span className="text-red-600">{getNextDueDate(installments)}</span></p>
+                  {(() => {
+                    const dueInfo = getNextDueInfo(installments);
+                    return (
+                      <div className="mt-1">
+                        <p className="text-[#bc7b1f] font-medium">
+                          {t('next_due')}: <span className="text-red-600 font-bold">{dueInfo.dateStr}</span>
+                          {dueInfo.totalDue > 0 && (
+                            <span className="ml-2 text-sm text-[#7b481c]">
+                              (Payable: <strong className="text-emerald-800">₹{dueInfo.totalDue}</strong>
+                              {dueInfo.hasFine && <span className="text-xs text-red-600 font-semibold ml-1">[₹{dueInfo.baseAmount} + ₹{dueInfo.fine} fine]</span>})
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    );
+                  })()}
                   {loan.loanReceivedDate && (
                     <p className="text-xs font-semibold text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5 mt-2">
                       <span>💰 {t('loan_received_date')}:</span>
@@ -320,12 +345,25 @@ const CustomerDashboard = () => {
                         return (
                         <tr key={inst._id}>
                           <td className="px-4 py-3 text-sm text-[#673c1c]">{new Date(inst.dueDate).toLocaleDateString('en-GB')}</td>
-                          <td className="px-4 py-3 text-sm text-[#673c1c]">₹{inst.amount}</td>
-                          <td className="px-4 py-3 text-sm text-red-600">{inst.fine > 0 ? `₹${inst.fine}` : '-'}</td>
+                          <td className="px-4 py-3 text-sm text-[#673c1c]">
+                            <span className="font-semibold">₹{inst.amount}</span>
+                            {inst.fine > 0 && inst.status !== 'PAID' && (
+                              <div className="text-xs text-red-600 font-bold mt-0.5">
+                                Total Due: ₹{inst.amount + inst.fine}
+                              </div>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-red-600 font-bold">
+                            {inst.fine > 0 ? (
+                              <span className="bg-red-50 text-red-700 px-2 py-0.5 rounded border border-red-200">
+                                ₹{inst.fine}
+                              </span>
+                            ) : '-'}
+                          </td>
                           <td className="px-4 py-3 text-sm">
                             <span className={`px-2 py-1 rounded text-xs font-medium ${
                               inst.status === 'PAID' ? 'bg-green-100 text-green-800' :
-                              inst.status === 'OVERDUE' ? 'bg-red-100 text-red-800' :
+                              inst.status === 'OVERDUE' ? 'bg-red-100 text-red-800 font-bold' :
                               'bg-yellow-100 text-yellow-800'
                             }`}>
                               {inst.status}

@@ -81,7 +81,20 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
-const server = app.listen(PORT, console.log(`Server running on port ${PORT}`));
+const server = app.listen(PORT, async () => {
+    console.log(`Server running on port ${PORT}`);
+    // Auto-check overdue fines and CIBIL status on startup
+    try {
+        const { applyOverdueFinesAndCibil } = require('./controllers/installmentController');
+        await applyOverdueFinesAndCibil();
+        // Run periodic overdue check every 6 hours
+        setInterval(async () => {
+            await applyOverdueFinesAndCibil();
+        }, 6 * 60 * 60 * 1000);
+    } catch (e) {
+        console.error('Error starting overdue checker:', e);
+    }
+});
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {

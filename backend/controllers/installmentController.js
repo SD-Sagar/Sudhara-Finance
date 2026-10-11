@@ -60,10 +60,8 @@ const markInstallmentPaid = async (req, res, next) => {
     }
 };
 
-// @desc    Check and update overdue installments (Can be called via cron job, or manually by admin for prototype)
-// @route   POST /api/installments/check-overdue
-// @access  Private/Admin
-const checkOverdueInstallments = async (req, res, next) => {
+// Helper: Check and apply overdue fines & CIBIL deductions automatically
+const applyOverdueFinesAndCibil = async () => {
     try {
         const currentDate = new Date();
         
@@ -86,19 +84,19 @@ const checkOverdueInstallments = async (req, res, next) => {
             const daysOverdue = Math.floor(timeDiff / (1000 * 3600 * 24));
             
             if (daysOverdue >= 0) {
-                // cyclesOverdue: 0-6 days (weekly) = 1, 7-13 days = 2
+                // cyclesOverdue: 0 to (cycleDays-1) = 1 cycle, etc.
                 const cyclesOverdue = Math.floor(daysOverdue / cycleDays) + 1;
-                const currentPenaltyCycles = installment.penaltyAppliedDays || 0; // Using this field to store cycles
+                const currentPenaltyCycles = installment.penaltyAppliedDays || 0;
                 
                 if (cyclesOverdue > currentPenaltyCycles) {
                     const cyclesToApply = cyclesOverdue - currentPenaltyCycles;
                     installment.penaltyAppliedDays = cyclesOverdue;
                     
                     installment.status = 'OVERDUE';
-                    installment.fine += (10 * cyclesToApply); // Add ₹10 fine per cycle
+                    installment.fine = (installment.fine || 0) + (10 * cyclesToApply); // ₹10 per overdue cycle
                     hasChanges = true;
                     
-                    // Deduct 10 points per overdue cycle
+                    // Deduct 10 CIBIL points per overdue cycle (min 150)
                     if (installment.customer) {
                         const currentScore = installment.customer.cibilScore || 600;
                         installment.customer.cibilScore = Math.max(150, currentScore - (10 * cyclesToApply));
@@ -113,6 +111,19 @@ const checkOverdueInstallments = async (req, res, next) => {
             }
         }
 
+        return updatedCount;
+    } catch (err) {
+        console.error('Error applying overdue fines:', err);
+        return 0;
+    }
+};
+
+// @desc    Check and update overdue installments (Can be called via cron job, or manually by admin)
+// @route   POST /api/installments/check-overdue
+// @access  Private/Admin
+const checkOverdueInstallments = async (req, res, next) => {
+    try {
+        const updatedCount = await applyOverdueFinesAndCibil();
         res.json({ message: `Checked overdue installments. Updated: ${updatedCount}` });
     } catch (error) {
         next(error);
@@ -183,5 +194,6 @@ const bulkMarkInstallmentsPaid = async (req, res, next) => {
 module.exports = {
     markInstallmentPaid,
     checkOverdueInstallments,
+    applyOverdueFinesAndCibil,
     bulkMarkInstallmentsPaid
 };
